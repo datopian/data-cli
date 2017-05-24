@@ -1,0 +1,35 @@
+{
+  "name": "datahub-cli",
+  "version": "0.0.1",
+  "description": "CLI for working with data packages",
+  "main": "./lib/index.js",
+  "bin": {
+    "datahub": "./bin/datahub.js"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/datopian/datahub-cli.git"
+  },
+  "keywords": [
+    "datahub",
+    "datapackage"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/datopian/datahub-cli/issues"
+  },
+  "homepage": "https://github.com/datopian/datahub-cli#readme",
+  "dependencies": {
+    "commander": "^2.9.0"
+  },
+  "devDependencies": {
+    "mocha": "^3.4.1"
+  }
+}
