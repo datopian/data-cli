@@ -11,7 +11,7 @@
   },
   "scripts": {
     "test": "mocha test",
-    "datahub": "node bin/datahub.js"  
+    "datahub": "node bin/datahub.js"
   },
   "repository": {
     "type": "git",
@@ -28,9 +28,12 @@
   },
   "homepage": "https://github.com/datopian/datahub-cli#readme",
   "dependencies": {
-    "commander": "^2.9.0"
+    "axios": "^0.16.1",
+    "commander": "^2.9.0",
+    "tmp": "0.0.31"
   },
   "devDependencies": {
-    "mocha": "^3.4.1"
+    "mocha": "^3.4.1",
+    "nock": "^9.0.13"
   }
 }
