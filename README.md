@@ -28,6 +28,8 @@ datahub --version [-V]
 
 ### Commands
 
+#### get - view or download data from DataHub
+
 ```
 datahub get <resource> [dir]
 
@@ -37,6 +39,20 @@ datahub get {publisher}/{package}/{resource}.[extension]
 # Get data on disk
 datahub get {publisher}/{package}/{resource}.[extension] [my_dir]
 ```
+
+#### configure - set credentials to authenticate for DataHub registry
+
+```
+datahub configure [dir]
+
+# Fill with required info
+datahub configure
+> Username: < your user name >
+> Your access token (input hidden): < your secret token >
+> Server URL: < https://example.com >
+
+```
+Your Configurations will be saved in `~/.datahub/config`
 
 # Tests
 
