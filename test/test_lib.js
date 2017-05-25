@@ -14,7 +14,7 @@ describe('basic test for lib directory', () => {
   });
 
   it('get() writes in file', (done) => {
-    get('publisher', 'package', 'resource.csv', [tmpobj.name]).then( () => {
+    get('publisher', 'package', 'resource.csv', tmpobj.name).then( () => {
       let exp  = fs.readFileSync('test/fixtures/sample.csv').toString()
       let res = fs.readFileSync(tmpobj.name + '/resource.csv').toString()
       assert.equal(exp, res)
@@ -23,7 +23,7 @@ describe('basic test for lib directory', () => {
   })
 
   it('get() outputs in stdout', () => {
-    get('publisher', 'package', 'resource.csv', [])
+    get('publisher', 'package', 'resource.csv')
     assert.equal(1, 1)
   })
 
