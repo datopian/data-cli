@@ -1,15 +1,16 @@
 #!/usr/bin/env node --harmony
-
-const program = require('commander')
 const get = require('../lib/index.js').get
-
-console.log('Welcome to Datahub!')
+const program = require('commander')
+const version = require('../package.json').version
 
 program
-  .arguments('<command>')
-  .action(function(command) {
-    if(command === 'get') {
-      get()
-    }
+  .version(version)
+  .usage('<command> [options] ')
+  .description('DataHub CLI')
+  .command('get <package> [dest...]', 'View or Download file from Datahub')
+  .action(function(package, dest) {
+    [ publisher, package, resource ] = package.split('/')
+    get(publisher, package, resource, dest)
   })
-  .parse(process.argv)
+
+program.parse(process.argv)
