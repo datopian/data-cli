@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env node --harmony
 const config = require('../lib/config.js')
 const get = require('../lib/index.js').get
 const program = require('commander')
