@@ -1,6 +1,6 @@
 #!/usr/bin/env node --harmony
 const config = require('../lib/config.js')
-const get = require('../lib/index.js').get
+const client = require('../lib/index.js')
 const program = require('commander')
 const version = require('../package.json').version
 
@@ -14,7 +14,15 @@ program
   .description('View or Download file from DataHub')
   .action(function(package, dest) {
     [ publisher, package, resource ] = package.split('/')
-    get(publisher, package, resource, dest)
+    client.get(publisher, package, resource, dest)
+  })
+
+program
+  .command('push [package]')
+  .description('Publish on DataHub server')
+  .action(function(package) {
+    let conf = config.readConfig()
+    client.push(conf)
   })
 
 program
