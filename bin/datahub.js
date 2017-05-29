@@ -7,7 +7,6 @@ const version = require('../package.json').version
 program
   .version(version)
   .usage('<command> [options] ')
-  .option('-c, --config <path>', 'Use custom config file', config.configFile)
 
 program
   .command('get <package> [dest]')
@@ -29,7 +28,7 @@ program
   .command('configure [dest]')
   .description('Set Up DataHub Configurations')
   .action(function(dest) {
-    config.configure(program.config)
+    config.configure(config.configFile)
   })
 
 program.parse(process.argv)
