@@ -30,7 +30,7 @@ describe('generate dp', () => {
       ]
      }
     const out = generateDescriptor(csvData).then(val => {
-      assert.equal(JSON.stringify(val.resources[0]['schema']), JSON.stringify(expectedSchema))
+      assert.deepEqual(JSON.stringify(val.resources[0]['schema']), JSON.stringify(expectedSchema))
     })
   })
 })
