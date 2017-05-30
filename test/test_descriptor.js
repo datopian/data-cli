@@ -5,7 +5,7 @@ let mock = require('mock-fs');
 
 
 describe('generate dp', () => {
-  it('from inline data', function() {
+  it('from inline data', async () => {
     const csvData = "a,b,c\n1,1991-01-13,test1\n4,1990-01-06,test2"
     const expectedSchema = { 
       fields: [ 
@@ -32,14 +32,13 @@ describe('generate dp', () => {
         }
       ]
      }
-    const out = generateDescriptor(csvData).then(val => {
-      assert.deepEqual(val.resources[0]['schema'], expectedSchema)
-    })
+    const out = await generateDescriptor(csvData)
+      assert.deepEqual(out.resources[0]['schema'], expectedSchema)
   })
 })
 
 describe('generate datapackage.json from local files: single file', () => {
-  it('check for csv data schema', function() { 
+  it('check for csv data schema', async () => { 
     mock({
       'data and Data and data and Data.csv': 'a,b,c\n1,1991-01-01,test1'
     });
@@ -79,16 +78,17 @@ describe('generate datapackage.json from local files: single file', () => {
         }
       ]
     }
-    
-    const out = generateDescriptorForLocalFiles().then(val => {
-      assert.deepEqual(val, expectedSchema)
+    const out = await generateDescriptorForLocalFiles()
+    //const out = generateDescriptorForLocalFiles().then(val => {
+      assert.deepEqual(out, expectedSchema)
+      //assert.deepEqual(val, expectedSchema)
       mock.restore();
-    })  
+      
   })
 })
 
 describe('generate datapackage.json from local files: multiple files', () => {
-  it('check for multiple files', function() { 
+  it('check for multiple files', async () => { 
     mock({
       'dataJSON.json': '{"name":"datapackaed.com","messages":["test 1","test 2","test 3"],"status":100}',
       'dataGEOJSON.geojson': '{ "type": "Point", "coordinates": [0, 0] }',
@@ -146,9 +146,8 @@ describe('generate datapackage.json from local files: multiple files', () => {
         }]
     }
     
-    const out = generateDescriptorForLocalFiles().then(val => {
-      assert.deepEqual(val, expectedSchema)
+    const out = await generateDescriptorForLocalFiles() 
+      assert.deepEqual(out, expectedSchema)
       mock.restore();
-    })  
   })
 })
