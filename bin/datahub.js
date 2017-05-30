@@ -31,4 +31,25 @@ program
     config.configure(config.configFile)
   })
 
+program
+  .command('help')
+  .description('Show help')
+  .action(function(dest) {
+    program.outputHelp()
+  })
+
 program.parse(process.argv)
+
+// Check the program.args obj
+var NO_COMMAND_SPECIFIED = program.args.length === 0
+
+// Handle it however you like
+if (NO_COMMAND_SPECIFIED) {
+  // e.g. display usage
+  console.log('\n  Welcome to the DataHub command line tool.')
+  console.log('\n  DataHub = 📦  + 🐘  A home for all your data, nicely packaged ❒ ')
+  console.log('\n  We hope this tool will bring you much joy as you work with your data and the DataHub.')
+  console.log('\n  ---')
+  program.outputHelp()
+}
+
