@@ -1,7 +1,7 @@
 const assert = require('assert')
 const generateDescriptor = require('../lib/descriptor.js').generateDescriptor
 const generateDescriptorForLocalFiles = require('../lib/descriptor.js').generateDescriptorForLocalFiles
-var mock = require('mock-fs');
+let mock = require('mock-fs');
 
 
 describe('generate dp', () => {
