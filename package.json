@@ -4,14 +4,14 @@
   "description": "CLI for working with data packages",
   "main": "./lib/index.js",
   "bin": {
-    "data": "./bin/datahub.js"
+    "data": "./bin/data.js"
   },
   "directories": {
     "test": "test"
   },
   "scripts": {
     "test": "mocha test",
-    "data": "node bin/datahub.js"
+    "data": "node bin/data.js"
   },
   "repository": {
     "type": "git",
