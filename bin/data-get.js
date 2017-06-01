@@ -31,7 +31,7 @@ const help = () => {
 `)
 }
 
-if (argv.help) {
+if (argv.help || !argv._[0]) {
   help()
   process.exit(0)
 }
