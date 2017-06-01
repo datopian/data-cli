@@ -29,6 +29,7 @@
   "homepage": "https://github.com/datopian/datahub-cli#readme",
   "dependencies": {
     "axios": "^0.16.1",
+    "chalk": "^1.1.3",
     "commander": "^2.9.0",
     "csv-parse": "^1.2.0",
     "expand-home-dir": "0.0.3",

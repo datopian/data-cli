@@ -25,7 +25,8 @@ const pkg = require('../lib/index')
 const defaultCommand = 'help'
 
 const commands = new Set([
-  defaultCommand
+  defaultCommand,
+  'get'
 ])
 
 const aliases = new Map([
