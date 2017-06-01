@@ -84,7 +84,7 @@ test('checkDestIsEmpty returns false if dir exists and not empty', t => {
 })
 
 test('downloadFiles works', async t => {
-  let bUrl = 'https://bits-staging.datapackaged.com/metadata/publisher/package/_v/latest'
+  let bUrl = 'https://bits-staging.datapackaged.com/metadata/publisher/package/_v/latest'+tmpfile
   let path = tmpfile
   let publisher = '/'+tmpdir.split('/')[1]
   let pkg = 'package'
@@ -101,4 +101,18 @@ test('parseDataHubIdentifier parses correctly', t => {
     publisher: "publisher",
   }
   t.deepEqual(res, exp)
+})
+
+
+test('get list of download files', t => {
+  let exp = [
+    {destPath: 'datapackage.json', url: metadata.bitstore_url+'/datapackage.json'},
+    {destPath: 'README', url: metadata.bitstore_url+'/README'},
+    {destPath: 'README.md', url: metadata.bitstore_url+'/README.md'},
+    {destPath: 'README.txt', url: metadata.bitstore_url+'/README.txt'},
+    {destPath: "test/firsts-resource.csv", url: metadata.bitstore_url+'/test/firsts-resource.csv'},
+    {destPath: "data/second-resource.csv", url: 'https://example.com/data/second-resource.csv'}
+  ]
+  let res = get.getFilesToDownload(metadata.bitstore_url, metadata.descriptor)
+  t.deepEqual(exp, res)
 })
