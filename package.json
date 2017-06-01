@@ -4,14 +4,14 @@
   "description": "CLI for working with data packages",
   "main": "./lib/index.js",
   "bin": {
-    "data": "./bin/datahub.js"
+    "data": "./bin/data.js"
   },
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "mocha test",
-    "data": "node bin/datahub.js"
+    "test": "ava",
+    "data": "node bin/data.js"
   },
   "repository": {
     "type": "git",
@@ -38,6 +38,8 @@
     "tmp": "0.0.31"
   },
   "devDependencies": {
+    "ava": "^0.19.1",
+    "cross-spawn": "^5.1.0",
     "mocha": "^3.4.1",
     "nock": "^9.0.13"
   }
