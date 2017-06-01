@@ -5,9 +5,11 @@ const minimist = require('minimist')
 const chalk = require('chalk')
 
 // ours
+const { get } = require('../lib/get')
 const { box, elephant, square } = require('../lib/utils/logo')
 
 const argv = minimist(process.argv.slice(2), {
+  string: ['get'],
   boolean: ['help'],
   alias: { help: 'h' }
 })
@@ -15,7 +17,7 @@ const argv = minimist(process.argv.slice(2), {
 const help = () => {
   console.log(`
   ${chalk.bold(`data get`)}
-  
+
   ${chalk.dim('Options:')}
     -h, --help              Output usage information
 
@@ -33,3 +35,7 @@ if (argv.help) {
   help()
   process.exit(0)
 }
+
+let dhpkgid = argv._[0]
+
+get(dhpkgid)
