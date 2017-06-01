@@ -61,8 +61,8 @@ test('Uses default server URL if config not found', t => {
 
 test('Gets bitStoreUrl if publisher and package is fine', async t => {
   let sUrl = get.getServerUrl('not/config')
-  let res = get.getBitstoreUrl('publisher', 'package', sUrl)
-  t.is(await res, metadata.bitstore_url)
+  let res = get.getMetadata('publisher', 'package', sUrl)
+  t.deepEqual(await res, metadata)
 })
 
 test('checkDestIsEmpty returns true if dir exists and is empty', t => {
@@ -88,7 +88,7 @@ test('downloadFiles works', async t => {
   let path = tmpfile
   let publisher = '/'+tmpdir.split('/')[1]
   let pkg = 'package'
-  await get.downloadFiles(bUrl, path, publisher, pkg)
+  await get.downloadFile(bUrl, path, publisher, pkg)
   t.true(fs.existsSync(publisher, pkg, path))
 })
 
