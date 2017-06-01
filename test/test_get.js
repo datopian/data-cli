@@ -1,6 +1,10 @@
 const test = require('ava')
 const get = require('../lib/get.js')
 const nock = require('nock')
+const tmp = require('tmp');
+
+let tmpobj = tmp.dirSync();
+let tmpfile = tmp.fileSync();
 
 let metadata = {
   "bitstore_url": "https://bits-staging.datapackaged.com/metadata/publisher/package/_v/latest",
@@ -43,4 +47,22 @@ test('Gets bitStoreUrl if publisher and package is fine', async t => {
   let sUrl = get.getServerUrl('not/config')
   let res = get.getBitstoreUrl('publisher', 'package', sUrl)
   t.is(await res, metadata.bitstore_url)
+})
+
+test('checkDestIsEmpty returns true if dir exists and is empty', t => {
+  let [ publisher, pkg ] = tmpobj.name.split('/')
+  let res = get.checkDestIsEmpty(publisher, pkg)
+  t.true(res)
+})
+
+test('checkDestIsEmpty returns true if dir does not exist', t => {
+  let [ publisher, pkg ] = [ tmpobj.name.split('/')[0], 'new' ]
+  let res = get.checkDestIsEmpty(publisher, pkg)
+  t.true(res)
+})
+
+test('checkDestIsEmpty returns false if dir exists and not empty', t => {
+  let publisher = tmpfile.name.split('/')[0]
+  let res = get.checkDestIsEmpty(publisher, '')
+  t.false(res)
 })
