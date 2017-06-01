@@ -1,10 +1,11 @@
 const test = require('ava')
+const fs = require('fs')
 const get = require('../lib/get.js')
 const nock = require('nock')
 const tmp = require('tmp');
 
-let tmpobj = tmp.dirSync();
-let tmpfile = tmp.fileSync();
+let tmpdir = tmp.dirSync().name;
+let tmpfile = tmp.fileSync().name;
 
 let metadata = {
   "bitstore_url": "https://bits-staging.datapackaged.com/metadata/publisher/package/_v/latest",
@@ -31,6 +32,21 @@ let getMeta = nock('https://staging.datapackaged.com')
       .get('/api/package/publisher/package')
       .reply(200, metadata)
 
+let getDPJson = nock('https://bits-staging.datapackaged.com')
+      .persist()
+      .get('/metadata/publisher/package/_v/latest' + tmpfile)
+      .reply(200, metadata.descriptor)
+
+let getFromBitstoreUrl = nock('https://bits-staging.datapackaged.com')
+      .persist()
+      .get('/metadata/publisher/package/_v/latest/test/firsts-resource.csv')
+      .replyWithFile(200, './test/fixtures/sample.csv')
+
+let getFromSourceUrl = nock('https://example.com')
+      .persist()
+      .get('/data/second-resource.csv')
+      .replyWithFile(200, './test/fixtures/sample.csv')
+
 test('Reads server URL from config', t => {
   let sUrl = get.getServerUrl('test/fixtures/config')
   let expUrl = 'https://test.com'
@@ -50,19 +66,28 @@ test('Gets bitStoreUrl if publisher and package is fine', async t => {
 })
 
 test('checkDestIsEmpty returns true if dir exists and is empty', t => {
-  let [ publisher, pkg ] = tmpobj.name.split('/')
-  let res = get.checkDestIsEmpty(publisher, pkg)
+  let [ _, publisher, pkg ] = tmpdir.split('/')
+  let res = get.checkDestIsEmpty('/'+publisher, pkg)
   t.true(res)
 })
 
 test('checkDestIsEmpty returns true if dir does not exist', t => {
-  let [ publisher, pkg ] = [ tmpobj.name.split('/')[0], 'new' ]
-  let res = get.checkDestIsEmpty(publisher, pkg)
+  let [ publisher, pkg ] = [ tmpdir.split('/')[1], 'new' ]
+  let res = get.checkDestIsEmpty('/'+publisher, pkg)
   t.true(res)
 })
 
 test('checkDestIsEmpty returns false if dir exists and not empty', t => {
-  let publisher = tmpfile.name.split('/')[0]
-  let res = get.checkDestIsEmpty(publisher, '')
+  let publisher = tmpfile.split('/')[0]
+  let res = get.checkDestIsEmpty('/'+publisher, '')
   t.false(res)
+})
+
+test('downloadFiles works', async t => {
+  let bUrl = 'https://bits-staging.datapackaged.com/metadata/publisher/package/_v/latest'
+  let path = tmpfile
+  let publisher = '/'+tmpdir.split('/')[1]
+  let pkg = 'package'
+  await get.downloadFiles(bUrl, path, publisher, pkg)
+  t.true(fs.existsSync(publisher, pkg, path))
 })
