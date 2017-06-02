@@ -31,11 +31,10 @@ const help = () => {
 `)
 }
 
-if (argv.help || !argv._[0]) {
+if (argv.help) {
   help()
   process.exit(0)
 }
 
-let dhpkgid = argv._[0]
 
-push(dhpkgid)
+push()
