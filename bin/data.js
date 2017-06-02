@@ -24,7 +24,8 @@ const defaultCommand = 'help'
 
 const commands = new Set([
   defaultCommand,
-  'get'
+  'get',
+  'push'
 ])
 
 const aliases = new Map([
