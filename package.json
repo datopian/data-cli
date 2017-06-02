@@ -12,7 +12,18 @@
   "scripts": {
     "test": "ava -v",
     "watch:test": "npm t -- --watch",
-    "data": "node bin/data.js"
+    "data": "node bin/data.js",
+    "pack": "pkg bin/data.js -c package.json -o packed/datahub"
+  },
+  "pkg": {
+    "scripts": [
+      "bin/*",
+      "lib/**/*"
+    ],
+    "targets": [
+      "node7-linux-x64",
+      "node7-macos-x64"
+    ]
   },
   "repository": {
     "type": "git",
@@ -45,6 +56,7 @@
     "ava": "^0.19.1",
     "cross-spawn": "^5.1.0",
     "mocha": "^3.4.1",
-    "nock": "^9.0.13"
+    "nock": "^9.0.13",
+    "pkg": "^3.0.6"
   }
 }
