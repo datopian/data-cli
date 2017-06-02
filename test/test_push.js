@@ -22,3 +22,9 @@ test('Gets the token', async t => {
   const expToken = 't35tt0k3N'
   t.is(token, expToken)
 })
+
+
+test('Checks if datapackage.json exists in cwd', t => {
+  let out = push.checkDpIsThere()
+  t.false(out)
+})
