@@ -9,6 +9,8 @@
 </p>
 
 [![Build Status](https://travis-ci.org/datopian/datahub-cli.svg?branch=master)](https://travis-ci.org/datopian/datahub-cli)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/atomatichq/data-package-registry-oki)
+[![Issues](https://img.shields.io/badge/issue-tracker-orange.svg)](https://github.com/datopian/datahub-cli/issues)
 
 # Usage
 
