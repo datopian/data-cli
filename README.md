@@ -1,56 +1,71 @@
+<p align="center">
+  <a href="https://staging.datapackaged.com/">
+    <img alt="datahub" src="https://staging.datapackaged.com/static/img/data-hub-logo.png" width="546">
+  </a>
+</p>
+
+<p align="center">
+  The DataHub CLI is used to manage DataHub data packages from the command line.
+</p>
+
 [![Build Status](https://travis-ci.org/datopian/datahub-cli.svg?branch=master)](https://travis-ci.org/datopian/datahub-cli)
 
-# DataHub CLI in JavaScript
+# Usage
 
-The DataHub CLI is used to manage DataHub data packages from the command line.
-
-# Install
-
-### For development
-```
-npm install
-```
-
-### For Command Line Usage
+## Install
 
 ```
-npm install -g
+$ npm install -g
 ```
 
-# Command Line Usage
+After installing run `$ data --help` to see all available options.
 
-### Options
+### Get Data Package
 
-```
-data --help [-h]
-data --version [-V]
-```
-
-### Commands
-
-#### get - download data from DataHub
+`get` command lets you download a Data Package:
 
 ```
-data get {publisher}/{package}
-
+$ data get {publisher}/{package}
 ```
 
-#### configure - set credentials to authenticate for DataHub registry
+#### Example
+
+Following command will download `finance-vix` package from `core` publisher:
 
 ```
-data configure [config]
+$ data get core/finance-vix
+```
 
+### Set credentials to authenticate for DataHub registry
+
+```
 # Fill with required info
-data configure
+$ data configure
+
 > Username: < your user name >
 > Your secret token (input hidden): < your secret token >
 > Server URL: < https://example.com >
-
 ```
 Your Configurations will be saved in `~/.datahub/config`
 
-# Tests
+# For developers
+
+## Install
 
 ```
-npm test
+$ npm install
+```
+
+## Running tests
+
+We use Ava for our tests. For running tests use:
+
+```
+$ [sudo] npm test
+```
+
+To run tests in watch mode:
+
+```
+$ [sudo] npm run watch:test
 ```
