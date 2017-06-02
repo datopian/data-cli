@@ -23,8 +23,29 @@ test('Gets the token', async t => {
   t.is(token, expToken)
 })
 
-
 test('Checks if datapackage.json exists in cwd', t => {
   let out = push.checkDpIsThere()
   t.false(out)
+})
+
+test('Gets correct file info for regular file', t => {
+  const fileInfo = push.getFileInfo('test/fixtures/sample.csv')
+  const exp = {
+    md5: "b0661d9566498a800fbf95365ce28747",
+    name: "test/fixtures/sample.csv",
+    size: 46,
+    type: "binary/octet-stream",
+  }
+  t.deepEqual(fileInfo, exp)
+})
+
+test('Gets correct file info for json file', t => {
+  const fileInfo = push.getFileInfo('test/fixtures/datapackage.json')
+  const exp = {
+    md5: "a2a917cc462afa205b7ae46c590ebf55",
+    name: "test/fixtures/datapackage.json",
+    size: 305,
+    type: "application/json",
+  }
+  t.deepEqual(fileInfo, exp)
 })

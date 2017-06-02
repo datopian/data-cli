@@ -1,0 +1,16 @@
+{
+  "name": "package",
+  "owner": "publisher",
+  "resources": [
+    {
+      "format": "csv",
+      "name": "firstResource",
+      "path": "test/firsts-resource.csv"
+    },
+    {
+      "format": "csv",
+      "name": "secondResource",
+      "url": "https://example.com/data/second-resource.csv"
+    }
+  ]
+}
