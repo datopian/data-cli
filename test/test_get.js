@@ -88,12 +88,13 @@ test('checkDestIsEmpty returns false if dir exists and not empty', t => {
   t.false(res)
 })
 
-test('downloadFiles works', async t => {
+test('downloadFile function works', async t => {
   let bUrl = 'https://bits-staging.datapackaged.com/metadata/publisher/package/_v/latest'+tmpfile
   let path = tmpfile
   let publisher = '/'+tmpdir.split('/')[1]
   let pkg = 'package'
-  await get.downloadFile(bUrl, path, publisher, pkg)
+  let mockBar = {tick: () => {}}
+  await get.downloadFile(bUrl, path, publisher, pkg, mockBar)
   t.true(fs.existsSync(publisher, pkg, path))
 })
 
