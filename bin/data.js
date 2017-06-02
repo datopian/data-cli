@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const { version } = require('../package.json')
 // Native
 const { resolve } = require('path')
 
@@ -34,6 +35,12 @@ const aliases = new Map([
 let cmd = defaultCommand
 let args = process.argv.slice(2)
 const index = args.findIndex(a => commands.has(a))
+
+if (args[0] === '-v' || args[0] === '--version') {
+  console.log(`Version: ${version}`)
+  process.exit()
+}
+
 if (index > -1) {
   cmd = args[index]
   args.splice(index, 1)
