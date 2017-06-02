@@ -22,33 +22,28 @@ npm install -g
 ### Options
 
 ```
-datahub --help [-h]
-datahub --version [-V]
+data --help [-h]
+data --version [-V]
 ```
 
 ### Commands
 
-#### get - view or download data from DataHub
+#### get - download data from DataHub
 
 ```
-datahub get <resource> [dir]
+data get {publisher}/{package}
 
-# View data in stdout
-datahub get {publisher}/{package}/{resource}.[extension]
-
-# Get data on disk
-datahub get {publisher}/{package}/{resource}.[extension] [my_dir]
 ```
 
 #### configure - set credentials to authenticate for DataHub registry
 
 ```
-datahub configure [dir]
+data configure [config]
 
 # Fill with required info
-datahub configure
+data configure
 > Username: < your user name >
-> Your access token (input hidden): < your secret token >
+> Your secret token (input hidden): < your secret token >
 > Server URL: < https://example.com >
 
 ```
