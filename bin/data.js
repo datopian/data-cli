@@ -18,14 +18,13 @@ try {
   process.exit(1)
 }
 
-// Utilities
-const pkg = require('../lib/index')
 
 // This command will be run if no other sub command is specified
 const defaultCommand = 'help'
 
 const commands = new Set([
-  defaultCommand
+  defaultCommand,
+  'get'
 ])
 
 const aliases = new Map([
