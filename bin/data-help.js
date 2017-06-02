@@ -16,7 +16,7 @@ console.log(`
 
   ---
 
-  ${boldText('Usage:')} data <command> [options]
+  ${boldText('Usage:')} $ data <command> [options]
 
   ${underline('Commands:')}
 
