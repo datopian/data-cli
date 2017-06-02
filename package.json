@@ -11,6 +11,7 @@
   },
   "scripts": {
     "test": "ava -v",
+    "watch:test": "npm t -- --watch",
     "data": "node bin/data.js"
   },
   "repository": {

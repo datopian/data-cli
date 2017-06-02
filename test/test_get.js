@@ -4,8 +4,8 @@ const get = require('../lib/get.js')
 const nock = require('nock')
 const tmp = require('tmp');
 
-let tmpdir = tmp.dirSync().name;
-let tmpfile = tmp.fileSync().name;
+let tmpdir = tmp.dirSync({ template: '/tmp/tmp-XXXXXX' }).name;
+let tmpfile = tmp.fileSync({ template: '/tmp/tmp-XXXXXX.file' }).name;
 
 let metadata = {
   "bitstore_url": "https://bits-staging.datapackaged.com/metadata/publisher/package/_v/latest",
@@ -66,20 +66,25 @@ test('Gets bitStoreUrl if publisher and package is fine', async t => {
 })
 
 test('checkDestIsEmpty returns true if dir exists and is empty', t => {
-  let [ _, publisher, pkg ] = tmpdir.split('/')
+  let tempDirPath = tmpdir.split('/')
+      , publisher = tempDirPath[tempDirPath.length - 2]
+      , pkg = tempDirPath[tempDirPath.length - 1]
   let res = get.checkDestIsEmpty('/'+publisher, pkg)
   t.true(res)
 })
 
 test('checkDestIsEmpty returns true if dir does not exist', t => {
-  let [ publisher, pkg ] = [ tmpdir.split('/')[1], 'new' ]
+  let tempDirPath = tmpdir.split('/')
+      , publisher = tempDirPath[tempDirPath.length - 1]
+      , pkg = 'new'
   let res = get.checkDestIsEmpty('/'+publisher, pkg)
   t.true(res)
 })
 
 test('checkDestIsEmpty returns false if dir exists and not empty', t => {
-  let publisher = tmpfile.split('/')[0]
-  let res = get.checkDestIsEmpty('/'+publisher, '')
+  let tempFilePath = tmpfile.split('/')
+  let publisher = tempFilePath[tempFilePath.length - 2]
+  let res = get.checkDestIsEmpty('/' + publisher, '')
   t.false(res)
 })
 
