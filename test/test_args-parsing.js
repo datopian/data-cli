@@ -78,6 +78,30 @@ test('"data push -h --help" prints help message for push command', async t => {
   t.true(stdout[1].includes('data push'))
 })
 
+test('"data help config" prints help message for config command', async t => {
+  const result = await data('help', 'config')
+
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data config'))
+})
+
+test('"data config -h --help" prints help message for config command', async t => {
+  let result = await data('config', '-h')
+
+  t.is(result.code, 0)
+  let stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data config'))
+
+  result = await data('config', '--help')
+
+  t.is(result.code, 0)
+  stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data config'))
+})
 
 function data(...args) {
   return new Promise((resolve, reject) => {

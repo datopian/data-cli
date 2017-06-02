@@ -26,10 +26,13 @@ const defaultCommand = 'help'
 const commands = new Set([
   defaultCommand,
   'get',
-  'push'
+  'push',
+  'config',
+  'configure'
 ])
 
 const aliases = new Map([
+  ['configure', 'config']
 ])
 
 let cmd = defaultCommand
