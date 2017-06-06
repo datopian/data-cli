@@ -103,6 +103,31 @@ test('"data config -h --help" prints help message for config command', async t =
   t.true(stdout[1].includes('data config'))
 })
 
+test('"data help purge" prints help message for purge command', async t => {
+  const result = await data('help', 'purge')
+
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data purge'))
+})
+
+test('"data purge -h --help" prints help message for purge command', async t => {
+  let result = await data('purge', '-h')
+
+  t.is(result.code, 0)
+  let stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data purge'))
+
+  result = await data('purge', '--help')
+
+  t.is(result.code, 0)
+  stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data purge'))
+})
+
 function data(...args) {
   return new Promise((resolve, reject) => {
     const command = path.resolve(__dirname, '../bin/data.js')
