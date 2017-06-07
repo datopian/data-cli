@@ -105,7 +105,7 @@ test('"data config -h --help" prints help message for config command', async t =
 
 test('"data help dp" prints help message for dp command', async t => {
   const result = await data('help', 'dp')
-  
+
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
@@ -115,7 +115,7 @@ test('"data help dp" prints help message for dp command', async t => {
 
 test('"data dp -h --help" prints help message for dp command', async t => {
   const result = await data('dp', '-h')
-  
+
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
@@ -124,7 +124,7 @@ test('"data dp -h --help" prints help message for dp command', async t => {
 
 test('"data dp" if wrong argument given, it prints help message for dp command', async t => {
   const result = await data('dp', 'test')
-  
+
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
@@ -132,33 +132,45 @@ test('"data dp" if wrong argument given, it prints help message for dp command',
 })
 
 
-test('"data dp norm" normalizes datapackage.json in the cwd', async t => {
-  const result = await data('dp', 'norm')
-  
-  t.is(result.code, 0)
-  const stdout = result.stdout.split('\n')
-  t.true(stdout.length > 1)
-  t.true(stdout[0].includes('Datapackage.json has been normalized'))
-})
+test('"data dp norm[alize]" normalizes datapackage.json in the cwd', async t => {
+  const result1 = await data('dp', 'norm')
+  const result2 = await data('dp', 'normalize')
 
-test('"data dp normalize" normalizes datapackage.json in the cwd', async t => {
-  const result = await data('dp', 'normalize')
-  
-  t.is(result.code, 0)
-  const stdout = result.stdout.split('\n')
-  t.true(stdout.length > 1)
-  t.true(stdout[0].includes('Datapackage.json has been normalized'))
+  const stdout1 = result1.stdout.split('\n')
+  t.true(stdout1.length > 1)
+  t.true(stdout1[0].includes('Datapackage.json has been normalized'))
+
+  const stdout2 = result2.stdout.split('\n')
+  t.true(stdout2.length > 1)
+  t.true(stdout2[0].includes('Datapackage.json has been normalized'))
 })
 
 test('"data dp normalize test/fixtures/datapackage.json" normalizes datapackage.json with given file path', async t => {
-  const result = await data('dp', 'normalize', 'test/fixtures/')
-  
+  const result = await data('dp', 'normalize', 'test/fixtures/datapackage.json')
+
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
   t.true(stdout[0].includes('Datapackage.json has been normalize'))
 })
 
+test('"data dp normalize test/fixtures/" normalizes datapackage.json inside given folder', async t => {
+  const result = await data('dp', 'normalize', 'test/fixtures/')
+
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[0].includes('Datapackage.json has been normalize'))
+})
+
+test('"data dp normalize test/fixtures" normalizes datapackage.json inside given folder', async t => {
+  const result = await data('dp', 'normalize', 'test/fixtures')
+
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[0].includes('Datapackage.json has been normalize'))
+})
 
 function data(...args) {
   return new Promise((resolve, reject) => {
