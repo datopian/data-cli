@@ -28,6 +28,7 @@ const commands = new Set([
   'get',
   'push',
   'dp',
+  'purge',
   'config',
   'configure'
 ])
