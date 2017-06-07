@@ -103,6 +103,63 @@ test('"data config -h --help" prints help message for config command', async t =
   t.true(stdout[1].includes('data config'))
 })
 
+test('"data help dp" prints help message for dp command', async t => {
+  const result = await data('help', 'dp')
+  
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data dp [argument]'))
+})
+
+
+test('"data dp -h --help" prints help message for dp command', async t => {
+  const result = await data('dp', '-h')
+  
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data dp [argument]'))
+})
+
+test('"data dp" if wrong argument given, it prints help message for dp command', async t => {
+  const result = await data('dp', 'test')
+  
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data dp [argument]'))
+})
+
+
+test('"data dp norm" normalizes datapackage.json in the cwd', async t => {
+  const result = await data('dp', 'norm')
+  
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[0].includes('Datapackage.json has been normalized'))
+})
+
+test('"data dp normalize" normalizes datapackage.json in the cwd', async t => {
+  const result = await data('dp', 'normalize')
+  
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[0].includes('Datapackage.json has been normalized'))
+})
+
+test('"data dp normalize test/fixtures/datapackage.json" normalizes datapackage.json with given file path', async t => {
+  const result = await data('dp', 'normalize', 'test/fixtures/')
+  
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[0].includes('Datapackage.json has been normalize'))
+})
+
+
 function data(...args) {
   return new Promise((resolve, reject) => {
     const command = path.resolve(__dirname, '../bin/data.js')

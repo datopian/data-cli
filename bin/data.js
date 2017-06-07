@@ -27,6 +27,7 @@ const commands = new Set([
   defaultCommand,
   'get',
   'push',
+  'dp',
   'config',
   'configure'
 ])

@@ -17,9 +17,9 @@ console.log(`
 
     get      <package>    View or Download file from DataHub
     push                  Publish on DataHub server
+    dp normalize          Normalize datapackage.json
     config                Set Up DataHub Configurations
     help                  Show help
-
   Options:
 
     -h,  --help           output usage information

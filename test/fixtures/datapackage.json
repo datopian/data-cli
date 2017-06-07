@@ -1,0 +1,36 @@
+{
+  "name": "example",
+  "licenses": [
+    {
+      "name": "example license",
+      "url": "https://example/license.com"
+    }
+  ],
+  "resources": [
+    {
+      "name": "ppp-gdp",
+      "path": "dp/ppp-gdp.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "schema": {
+        "fields": [
+          {
+            "name": "Country",
+            "type": "string"
+          },
+          {
+            "name": "Country ID",
+            "type": "number",
+            "description": "ISO 3166-1 alpha-2 code"
+          },
+          {
+            "name": "Year",
+            "type": "date",
+            "format": "any",
+            "description": "Relevant year"
+          }
+        ]
+      }
+    }
+  ]
+}
