@@ -129,6 +129,10 @@ test('"data purge -h --help" prints help message for purge command', async t => 
 
 test('"data help dp" prints help message for dp command', async t => {
   const result = await data('help', 'dp')
+
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
   t.true(stdout[1].includes('data dp [argument]'))
 })
 
