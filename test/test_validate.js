@@ -1,6 +1,7 @@
 const test = require('ava')
 const validate = require('../lib/validate')
 const sinon = require('sinon')
+const { data } = require('./data.js')
 
 // descriptor with invalid name and missing resources property
 const invalidDp1 = {
@@ -37,26 +38,23 @@ test.beforeEach(t => {
   console.error = sinon.spy()
 })
 
-test.afterEach(t => {
-  console.error.reset()
-  console.error = t.context.log
-})
-
-test('validateDp function returns false for invalid descriptors, but true for valid', async t => {
-  let result = await validate.validateDp(invalidDp1)
+test('validateDescriptor function returns false for invalid descriptors, but true for valid', async t => {
+  let result = await validate.validateDescriptor(invalidDp1)
   t.false(result)
-  result = await validate.validateDp(invalidDp2)
+  result = await validate.validateDescriptor(invalidDp2)
   t.false(result)
-  result = await validate.validateDp(invalidDp3)
+  result = await validate.validateDescriptor(invalidDp3)
   t.false(result)
   // now pass valid dp
-  result = await validate.validateDp(validDp)
+  result = await validate.validateDescriptor(validDp)
   t.true(result)
+
+  console.error.reset()
 })
 
 test.serial('test error messages when descriptor is invalid', async t => {
   // invalidDp1 has 2 validation errors:
-  await validate.validateDp(invalidDp1)
+  await validate.validateDescriptor(invalidDp1)
   t.true(console.error.calledTwice)
   t.true(console.error.firstCall.args[0].includes("Missing required property: resources"))
   t.true(console.error.secondCall.args[0].includes("String does not match pattern"))
@@ -65,7 +63,7 @@ test.serial('test error messages when descriptor is invalid', async t => {
   console.error.reset()
 
   // invalidDp2 has 1 validation error:
-  await validate.validateDp(invalidDp2)
+  await validate.validateDescriptor(invalidDp2)
   t.true(console.error.calledOnce)
   t.true(console.error.firstCall.args[0].includes("Array is too short (0), minimum 1"))
 
@@ -73,7 +71,25 @@ test.serial('test error messages when descriptor is invalid', async t => {
   console.error.reset()
 
   // invalidDp3 has 1 validation error:
-  await validate.validateDp(invalidDp3)
+  await validate.validateDescriptor(invalidDp3)
   t.true(console.error.calledOnce)
   t.true(console.error.firstCall.args[0].includes("Missing required property: name"))
+
+  console.error.reset()
+})
+
+test('reads descriptor from local path', async t => {
+  const localPath = 'test/fixtures/datapackage.json'
+  const result = await validate.validateDescriptor(localPath)
+
+  t.true(result)
+})
+
+test('"data help validate" prints help message', async t => {
+  const result = await data('help', 'validate')
+
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data validate'))
 })
