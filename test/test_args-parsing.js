@@ -180,26 +180,3 @@ test('"data dp normalize test/fixtures" normalizes datapackage.json inside given
   t.true(stdout.length > 1)
   t.true(stdout[0].includes('Datapackage.json has been normalized'))
 })
-
-function data(...args) {
-  return new Promise((resolve, reject) => {
-    const command = path.resolve(__dirname, '../bin/data.js')
-    const data = spawn(command, args)
-
-    let stdout = ''
-    data.stdout.on('data', data => {
-      stdout += data
-    })
-
-    data.on('error', err => {
-      reject(err)
-    })
-
-    data.on('close', code => {
-      resolve({
-        code,
-        stdout
-      })
-    })
-  })
-}
