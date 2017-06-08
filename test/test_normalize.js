@@ -1,6 +1,6 @@
 const test = require('ava')
-const { 
-  normalizeSchema, normalizeType, nomralizeDateFormat, normalizeAll, normalizeResourceName
+const {
+  normalizeSchema, normalizeType, nomralizeDateFormat, normalizeAll, normalizeNames
 } = require('../lib/normalize.js')
 
 let dp = {
@@ -37,7 +37,7 @@ let dp = {
 }
 
 test('checks normalized schema', t => {
-  
+
   let res = normalizeSchema(dp)
   const exp = {
     "name": "example",
@@ -149,7 +149,7 @@ test('checks normalized date format', t => {
 })
 
 test('checks normalized resourse name', t => {
-  let res = normalizeResourceName(dp)
+  let res = normalizeNames(dp)
   const exp = {
     "name": "example",
     "licenses": [{

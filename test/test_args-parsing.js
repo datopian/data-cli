@@ -132,7 +132,7 @@ test('"data help dp" prints help message for dp command', async t => {
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data dp [argument]'))
+  t.true(stdout[1].includes('data dp <arguments> [path]'))
 })
 
 
@@ -142,7 +142,7 @@ test('"data dp -h --help" prints help message for dp command', async t => {
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data dp [argument]'))
+  t.true(stdout[1].includes('data dp <arguments> [path]'))
 })
 
 test('"data dp" if wrong argument given, it prints help message for dp command', async t => {
@@ -151,7 +151,7 @@ test('"data dp" if wrong argument given, it prints help message for dp command',
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data dp [argument]'))
+  t.true(stdout[1].includes('data dp <arguments> [path]'))
 })
 
 test('"data dp normalize test/fixtures/datapackage.json" normalizes datapackage.json with given file path', async t => {

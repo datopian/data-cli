@@ -5,38 +5,49 @@ const minimist = require('minimist')
 const chalk = require('chalk')
 const fs = require('fs');
 
-
 // ours
 const { normalize } = require('../lib/normalize')
-
-//const writeDatapackage = require('../lib/normalize.js').writeDatapackage
 const { box, elephant, square } = require('../lib/utils/logo')
+
+const dhStyle = chalk.bold.underline
+const italic = chalk.italic
+const boldText = chalk.bold
+const underline = chalk.underline
 
 const argv = minimist(process.argv.slice(2), {
   string: ['normalize'],
   boolean: ['help'],
-  alias: { 
-    help: 'h',
-    normalize: 'norm'
+  alias: {
+    help: 'h'
   }
 })
 const help = () => {
   console.log(`
-  ${chalk.bold(`data dp [argument]`)}
+  ${elephant} ${boldText(` data dp <arguments> [path]`)} command
 
-  ${chalk.dim('Arguments:')}
-    normalize               Normalizes datapackage.json      
-  
-  ${chalk.dim('Options:')}
-    -h, --help              Output usage information
-  
-  ${chalk.dim('Usage:')}
-  ${chalk.bold(`data dp normalize`)}
+  ${underline('Options:')}
 
-  ${chalk.dim('Examples:')}
-  ${chalk.gray('–')} Normalizes the datapackage.json from current directory ${elephant}
-    Returns normalized datapackage.json
-    ${chalk.cyan('$ data dp normalize')}
+    ${boldText('-h, --help')}              ${italic('Output usage information')}
+
+  ${underline('Arguments:')}
+    ${boldText(`normalize`)}               ${italic('Normalizes datapackage.json')}
+
+  ${underline('Usage:')}
+
+    ${chalk.gray('#')} Normalize datapackage.json:
+    ${boldText(`$ data norm [path]`)}
+    ${boldText(`$ data normalize [path]`)}
+
+  ${underline('Example:')}
+
+    ${chalk.gray('#')} Normalize descriptor in current working directory:
+    ${boldText(`$ data normalize`)}
+
+    ${chalk.gray('#')} Normalize descriptor with local path to datapackage.json:
+    ${boldText(`$ data normalize core/finance-vix/datapackage.json`)}
+
+    ${chalk.gray('#')} Normalize descriptor with path to Data Package:
+    ${boldText(`$ data normalize core/finance-vix`)}
 `)
 }
 if (argv.help || !argv._[0]) {
