@@ -15,6 +15,12 @@
     "data": "node bin/data.js",
     "pack": "pkg bin/data.js -c package.json -o packed/datahub"
   },
+  "ava": {
+    "failFast": true,
+    "files": [
+      "test/test_*.js"
+    ]
+  },
   "pkg": {
     "scripts": [
       "bin/*",
