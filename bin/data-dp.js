@@ -5,8 +5,11 @@ const minimist = require('minimist')
 const chalk = require('chalk')
 const fs = require('fs');
 
+
 // ours
-const { normalizeAll } = require('../lib/normalize')
+const { normalize } = require('../lib/normalize')
+
+//const writeDatapackage = require('../lib/normalize.js').writeDatapackage
 const { box, elephant, square } = require('../lib/utils/logo')
 
 const argv = minimist(process.argv.slice(2), {
@@ -42,51 +45,12 @@ if (argv.help || !argv._[0]) {
 }
 
 
-const writeDatapackage = (dp) => {
-  fs.writeFile(path, JSON.stringify(dp, null, 2),  (err) => {
-    if (err) {
-        console.error(err);
-        return;
-    };
-    console.log("Datapackage.json has been normalized");
-  });
-}
-
-const readDatapackage = (path) => {
-  return JSON.parse(fs.readFileSync(path, 'utf8'));
-}
-
 let path = process.argv[3]
+let command = argv._[0]
 
-if(argv._[0] === 'normalize' || argv._[0] === 'norm') {
-  
-  if(!path){
-    path = './datapackage.json'
-    let dp = readDatapackage(path)
-    normalizeAll(dp)
-    writeDatapackage(dp)
-  }
-  else if(fs.lstatSync(path).isFile()) {
-    let dp = readDatapackage(path)
-    normalizeAll(dp)
-    writeDatapackage(dp)
-  }
-  else if(path.slice(0,-1) != '/'){
-    path += '/datapackage.json';
-    let dp = readDatapackage(path)
-    normalizeAll(dp)
-    writeDatapackage(dp)
-  }
-  else {
-    path += 'datapackage.json';
-    let dp = readDatapackage(path)
-    normalizeAll(dp)
-    writeDatapackage(dp)
-  }
-} 
-else {
+if(command === 'normalize' || command === 'norm') {
+  normalize(path)
+}else{
   help()
   process.exit(0)
 }
-
-

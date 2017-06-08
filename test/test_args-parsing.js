@@ -161,7 +161,7 @@ test('"data dp normalize test/fixtures/datapackage.json" normalizes datapackage.
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[0].includes('Datapackage.json has been normalize'))
+  t.true(stdout[0].includes('Datapackage.json has been normalized'))
 })
 
 test('"data dp normalize test/fixtures/" normalizes datapackage.json inside given folder', async t => {
@@ -170,7 +170,7 @@ test('"data dp normalize test/fixtures/" normalizes datapackage.json inside give
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[0].includes('Datapackage.json has been normalize'))
+  t.true(stdout[0].includes('Datapackage.json has been normalized'))
 })
 
 test('"data dp normalize test/fixtures" normalizes datapackage.json inside given folder', async t => {
@@ -179,7 +179,7 @@ test('"data dp normalize test/fixtures" normalizes datapackage.json inside given
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[0].includes('Datapackage.json has been normalize'))
+  t.true(stdout[0].includes('Datapackage.json has been normalized'))
 })
 
 function data(...args) {

@@ -1,9 +1,7 @@
 const test = require('ava')
-const normalizeSchema = require('../lib/normalize.js').normalizeSchema
-const normalizeType = require('../lib/normalize.js').normalizeType
-const nomralizeDateFormat = require('../lib/normalize.js').nomralizeDateFormat
-const normalizeResourceName = require('../lib/normalize.js').normalizeResourceName
-const normalizeAll = require('../lib/normalize.js').normalizeAll
+const { 
+  normalizeSchema, normalizeType, nomralizeDateFormat, normalizeAll, normalizeResourceName
+} = require('../lib/normalize.js')
 
 let dp = {
   "name": "example",
@@ -41,7 +39,7 @@ let dp = {
 test('checks normalized schema', t => {
   
   let res = normalizeSchema(dp)
-  let exp = {
+  const exp = {
     "name": "example",
     "licenses": [{
     "name": "example license",
@@ -78,7 +76,7 @@ test('checks normalized schema', t => {
 
 test('checks normalized types', t => {
   let res = normalizeType(dp)
-  let exp = {
+  const exp = {
     "name": "example",
     "licenses": [{
     "name": "example license",
@@ -115,7 +113,7 @@ test('checks normalized types', t => {
 
 test('checks normalized date format', t => {
   let res = nomralizeDateFormat(dp)
-  let exp = {
+  const exp = {
     "name": "example",
     "licenses": [{
     "name": "example license",
@@ -152,7 +150,7 @@ test('checks normalized date format', t => {
 
 test('checks normalized resourse name', t => {
   let res = normalizeResourceName(dp)
-  let exp = {
+  const exp = {
     "name": "example",
     "licenses": [{
     "name": "example license",
@@ -189,7 +187,7 @@ test('checks normalized resourse name', t => {
 
 test('checks normalized resourse name', t => {
   let res = normalizeAll(dp)
-  let exp = {
+  const exp = {
     "name": "example",
     "licenses": [{
     "name": "example license",
