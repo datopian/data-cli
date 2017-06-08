@@ -2,7 +2,8 @@ const test = require('ava')
 const fs = require('fs')
 const get = require('../lib/get.js')
 const nock = require('nock')
-const tmp = require('tmp');
+const tmp = require('tmp')
+const utils = require('../lib/utils/common')
 
 let tmpdir = tmp.dirSync({ template: '/tmp/tmp-XXXXXX' }).name;
 let tmpfile = tmp.fileSync({ template: '/tmp/tmp-XXXXXX.file' }).name;
@@ -47,20 +48,9 @@ let getFromSourceUrl = nock('https://example.com')
       .get('/data/second-resource.csv')
       .replyWithFile(200, './test/fixtures/sample.csv')
 
-test('Reads server URL from config', t => {
-  let sUrl = get.getServerUrl('test/fixtures/config')
-  let expUrl = 'https://test.com'
-  t.is(sUrl, expUrl)
-})
-
-test('Uses default server URL if config not found', t => {
-  let sUrl = get.getServerUrl('not/config')
-  let expUrl = 'https://staging.datapackaged.com'
-  t.is(sUrl, expUrl)
-})
 
 test('Gets bitStoreUrl if publisher and package is fine', async t => {
-  let sUrl = get.getServerUrl('not/config')
+  let sUrl = utils.getServerUrl('not/config')
   let res = get.getMetadata('publisher', 'package', sUrl)
   t.deepEqual(await res, metadata)
 })

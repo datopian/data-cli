@@ -68,3 +68,15 @@ test('parseDataHubIdentifier parses correctly', t => {
   }
   t.deepEqual(res, exp)
 })
+
+test('Reads server URL from config', t => {
+  let sUrl = utils.getServerUrl('test/fixtures/config')
+  let expUrl = 'https://test.com'
+  t.is(sUrl, expUrl)
+})
+
+test('Uses default server URL if config not found', t => {
+  let sUrl = utils.getServerUrl('not/config')
+  let expUrl = 'https://staging.datapackaged.com'
+  t.is(sUrl, expUrl)
+})
