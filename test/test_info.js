@@ -61,3 +61,39 @@ test('gets descriptor and outputs list of resources', async t => {
 
   console.log.reset()
 })
+
+test('"data info [-help | -h]" prints out help message for info', async t => {
+  console.log = t.context.log
+
+  let result = await data('info')
+  t.is(result.code, 0)
+  let stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data info command'))
+
+  result = await data('info', '-help')
+  stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data info command'))
+
+  result = await data('info', '-h')
+  stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data info command'))
+
+  result = await data('help', 'info')
+  stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data info command'))
+})
+
+test('"data info core/co2-ppm" command prints out readme and resource list', async t => {
+  console.log = t.context.log
+
+  const result = await data('info', 'core/co2-ppm')
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[4].includes('CO2 PPM'))
+  t.true(stdout[16].includes('co2-annmean-mlo'))
+})

@@ -31,7 +31,8 @@ const commands = new Set([
   'purge',
   'config',
   'configure',
-  'validate'
+  'validate',
+  'info'
 ])
 
 const aliases = new Map([
