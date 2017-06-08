@@ -2,6 +2,7 @@ const test = require('ava')
 const chalk = require('chalk')
 const { logger } = require('../lib/utils/log-handler.js')
 const sinon = require('sinon')
+const utils = require('../lib/utils/common.js')
 
 
 test.beforeEach(t => {
@@ -52,4 +53,18 @@ test.serial('defailt log is working fine', t => {
   const exp = `${chalk.bold.green('Success:')} Success message`
   t.true(console.log.calledOnce)
   t.true(console.log.firstCall.args[0].includes(exp))
+})
+
+
+// common
+
+test('parseDataHubIdentifier parses correctly', t => {
+  let dhpkgid = 'publisher/package/resource'
+  let res = utils.parseIdentifier(dhpkgid)
+  let exp = {
+    path: "resource",
+    pkg: "package",
+    publisher: "publisher",
+  }
+  t.deepEqual(res, exp)
 })

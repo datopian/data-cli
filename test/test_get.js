@@ -98,17 +98,6 @@ test('downloadFile function works', async t => {
   t.true(fs.existsSync(publisher, pkg, path))
 })
 
-test('parseDataHubIdentifier parses correctly', t => {
-  let dhpkgid = 'publisher/package/resource'
-  let res = get.parseDataHubIdentifier(dhpkgid)
-  let exp = {
-    path: "resource",
-    pkg: "package",
-    publisher: "publisher",
-  }
-  t.deepEqual(res, exp)
-})
-
 
 test('get list of download files', t => {
   let exp = [
