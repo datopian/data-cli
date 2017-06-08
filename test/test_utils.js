@@ -2,6 +2,7 @@ const test = require('ava')
 const chalk = require('chalk')
 const { logger } = require('../lib/utils/log-handler.js')
 const sinon = require('sinon')
+const utils = require('../lib/utils/common.js')
 
 
 test.beforeEach(t => {
@@ -52,4 +53,30 @@ test.serial('defailt log is working fine', t => {
   const exp = `${chalk.bold.green('Success:')} Success message`
   t.true(console.log.calledOnce)
   t.true(console.log.firstCall.args[0].includes(exp))
+})
+
+
+// common
+
+test('parseDataHubIdentifier parses correctly', t => {
+  let dhpkgid = 'publisher/package/resource'
+  let res = utils.parseIdentifier(dhpkgid)
+  let exp = {
+    path: "resource",
+    pkg: "package",
+    publisher: "publisher",
+  }
+  t.deepEqual(res, exp)
+})
+
+test('Reads server URL from config', t => {
+  let sUrl = utils.getServerUrl('test/fixtures/config')
+  let expUrl = 'https://test.com'
+  t.is(sUrl, expUrl)
+})
+
+test('Uses default server URL if config not found', t => {
+  let sUrl = utils.getServerUrl('not/config')
+  let expUrl = 'https://staging.datapackaged.com'
+  t.is(sUrl, expUrl)
 })
