@@ -79,7 +79,7 @@ test.serial('test error messages when descriptor is invalid', async t => {
 })
 
 test('reads descriptor from local path', async t => {
-  const localPath = 'test/fixtures/datapackage.json'
+  const localPath = 'test/fixtures/valid_datapackage.json'
   const result = await validate.validateDescriptor(localPath)
 
   t.true(result)
