@@ -15,6 +15,12 @@
     "data": "node bin/data.js",
     "pack": "pkg bin/data.js -c package.json -o packed/datahub"
   },
+  "ava": {
+    "failFast": true,
+    "files": [
+      "test/test_*.js"
+    ]
+  },
   "pkg": {
     "scripts": [
       "bin/*",
@@ -44,6 +50,7 @@
     "chalk": "^1.1.3",
     "commander": "^2.9.0",
     "csv-parse": "^1.2.0",
+    "datapackage": "^1.0.0-alpha.4",
     "expand-home-dir": "0.0.3",
     "ini": "^1.3.4",
     "progress": "^2.0.0",
@@ -57,6 +64,7 @@
     "cross-spawn": "^5.1.0",
     "mocha": "^3.4.1",
     "nock": "^9.0.13",
-    "pkg": "^3.0.6"
+    "pkg": "^3.0.6",
+    "sinon": "^2.3.2"
   }
 }

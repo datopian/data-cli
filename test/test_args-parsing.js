@@ -1,7 +1,6 @@
-const path = require('path')
 const test = require('ava')
-const { spawn } = require('cross-spawn')
 const { version } = require('../package.json')
+const { data } = require('./data.js')
 
 test('"data -v --version" prints version', async t => {
   let result = await data('-v')
@@ -127,26 +126,3 @@ test('"data purge -h --help" prints help message for purge command', async t => 
   t.true(stdout.length > 1)
   t.true(stdout[1].includes('data purge'))
 })
-
-function data(...args) {
-  return new Promise((resolve, reject) => {
-    const command = path.resolve(__dirname, '../bin/data.js')
-    const data = spawn(command, args)
-
-    let stdout = ''
-    data.stdout.on('data', data => {
-      stdout += data
-    })
-
-    data.on('error', err => {
-      reject(err)
-    })
-
-    data.on('close', code => {
-      resolve({
-        code,
-        stdout
-      })
-    })
-  })
-}
