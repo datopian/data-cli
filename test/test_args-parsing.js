@@ -1,7 +1,6 @@
-const path = require('path')
 const test = require('ava')
-const { spawn } = require('cross-spawn')
 const { version } = require('../package.json')
+const { data } = require('./data.js')
 
 test('"data -v --version" prints version', async t => {
   let result = await data('-v')
