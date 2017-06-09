@@ -11,9 +11,9 @@ let config = {
 }
 
 const dpinfo = {
-  md5: "2e649885d5c6795adc68c009a19ee614",
+  md5: "85fb2f805ee0f6ae95b0102feb7cc1d3",
   name: "test/fixtures/datapackage.json",
-  size: 713,
+  size: 712,
   type: "application/json",
 }
 
@@ -83,7 +83,7 @@ test('Gets File data (authenticate)', async t => {
 })
 
 test('Gets correct file list', t => {
-  const exp = ['datapackage.json', 'README.md', 'test/firsts-resource.csv']
+  const exp = ['datapackage.json', 'README.md', 'dp/ppp-gdp.csv']
   const res = push.getFileList(dpjson)
   t.deepEqual(exp, res)
 })
@@ -94,15 +94,15 @@ test('Gets correct file info for request', t => {
   const exp = {
     filedata: {
       "README.md": {
-        md5: "2a6a696f62bc05dcd94d87001775fe30",
+        md5: "5823e20594d9b2c3bfb93778213fd7d3",
         name: "README.md",
-        size: 1050,
+        size: 1018,
         type: "binary/octet-stream",
       },
       "test/fixtures/datapackage.json": {
-        md5: "a2a917cc462afa205b7ae46c590ebf55",
+        md5: "85fb2f805ee0f6ae95b0102feb7cc1d3",
         name: "test/fixtures/datapackage.json",
-        size: 305,
+        size: 712,
         type: "application/json",
       },
       "test/fixtures/sample.csv": {
