@@ -8,6 +8,11 @@ const chalk = require('chalk')
 const { config, configFile } = require('../lib/config')
 const { box, elephant, square } = require('../lib/utils/logo')
 
+const dhStyle = chalk.bold.underline
+const italic = chalk.italic
+const boldText = chalk.bold
+const underline = chalk.underline
+
 const argv = minimist(process.argv.slice(2), {
   string: ['config'],
   boolean: ['help'],
@@ -16,23 +21,26 @@ const argv = minimist(process.argv.slice(2), {
 
 const help = () => {
   console.log(`
-  ${chalk.bold(`data config`)}
+  ${elephant} ${boldText(` data config`)} command
 
-  ${chalk.dim('Options:')}
-    -h, --help              Output usage information
+  ${underline('Options:')}
 
-  ${chalk.dim('Usage:')}
-  ${chalk.bold(`data config`)}
-  ${chalk.bold(`data configure`)}
+    ${boldText('-h, --help')}              ${italic('Output usage information')}
 
-  ${chalk.dim('Examples:')}
-  ${chalk.gray('–')} Sets Up Configurations for DataHub ${elephant}
-    config file is saved in ~/.datahub/config
-    ${chalk.cyan('$ data cofig')}
+  ${underline('Usage:')}
 
-  ${chalk.cyan('> Username: DataGeek')}
-  ${chalk.cyan('> Your secret token (input hidden): Y0uR53cr3tt0KeN')}
-  ${chalk.cyan('> Server URL: http://datapackaged.com/')}
+  ${boldText(`$ data config`)}
+  ${boldText(`$ data configure`)}
+
+  ${underline('Examples:')}
+
+    ${chalk.gray('#')} Sets Up Configurations for ${dhStyle('DataHub')} ${elephant}
+    ${chalk.gray('#')} config file is saved in ~/.datahub/config
+    ${boldText('$ data cofig')}
+
+  ${boldText('> Username: DataGeek')}
+  ${boldText('> Your secret token (input hidden): Y0uR53cr3tt0KeN')}
+  ${boldText('> Server URL: http://datapackaged.com/')}
 `)
 }
 
