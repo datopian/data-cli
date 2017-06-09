@@ -7,6 +7,7 @@ const chalk = require('chalk')
 // ours
 const { get } = require('../lib/get')
 const { box, elephant, square } = require('../lib/utils/logo')
+const { spinner } = require('../lib/utils/tools')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['get'],
@@ -38,4 +39,10 @@ if (argv.help || !argv._[0]) {
 
 let dhpkgid = argv._[0]
 
-get(dhpkgid)
+const run = async () => {
+  spinner.start()
+  await get(dhpkgid)
+  spinner.stop()
+}
+
+run()
