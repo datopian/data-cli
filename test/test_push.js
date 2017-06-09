@@ -11,9 +11,9 @@ let config = {
 }
 
 const dpinfo = {
-  md5: "a2a917cc462afa205b7ae46c590ebf55",
+  md5: "2e649885d5c6795adc68c009a19ee614",
   name: "test/fixtures/datapackage.json",
-  size: 305,
+  size: 713,
   type: "application/json",
 }
 
