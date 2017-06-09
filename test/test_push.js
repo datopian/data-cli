@@ -11,7 +11,7 @@ let config = {
 }
 
 const dpinfo = {
-  md5: "85fb2f805ee0f6ae95b0102feb7cc1d3",
+  md5: "hfsvgF7g9q6VsBAv63zB0w==",
   name: "test/fixtures/datapackage.json",
   size: 712,
   type: "application/json",
@@ -52,7 +52,7 @@ test('Checks if datapackage.json exists in cwd', t => {
 test('Gets correct file info for regular file', t => {
   const fileInfo = push.getFileInfo('test/fixtures/sample.csv')
   const exp = {
-    md5: "b0661d9566498a800fbf95365ce28747",
+    md5: "sGYdlWZJioAPv5U2XOKHRw==",
     name: "test/fixtures/sample.csv",
     size: 46,
     type: "binary/octet-stream",
@@ -94,19 +94,19 @@ test('Gets correct file info for request', t => {
   const exp = {
     filedata: {
       "README.md": {
-        md5: "5823e20594d9b2c3bfb93778213fd7d3",
+        md5: "WCPiBZTZssO/uTd4IT/X0w==",
         name: "README.md",
         size: 1018,
         type: "binary/octet-stream",
       },
       "test/fixtures/datapackage.json": {
-        md5: "85fb2f805ee0f6ae95b0102feb7cc1d3",
+        md5: "hfsvgF7g9q6VsBAv63zB0w==",
         name: "test/fixtures/datapackage.json",
         size: 712,
         type: "application/json",
       },
       "test/fixtures/sample.csv": {
-        md5: "b0661d9566498a800fbf95365ce28747",
+        md5: "sGYdlWZJioAPv5U2XOKHRw==",
         name: "test/fixtures/sample.csv",
         size: 46,
         type: "binary/octet-stream",
