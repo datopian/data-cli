@@ -35,7 +35,7 @@ const help = () => {
   ${underline('Example:')}
 
     ${chalk.gray('#')} Get Data Package info for given core publisher and co2-ppm package:
-    ${boldText(`$ data info core/co2-ppm`)}
+    ${boldText(`$ data info core/gdp`)}
   `)
 }
 
