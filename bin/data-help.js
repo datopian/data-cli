@@ -1,27 +1,32 @@
-// const chalk = require('chalk')
+const chalk = require('chalk')
 
 const { box, elephant, square } = require('../lib/utils/logo')
 
+const dhStyle = chalk.bold.underline
+const italic = chalk.italic
+const boldText = chalk.bold
+const underline = chalk.underline
+
 console.log(`
-  Welcome to the DataHub command line tool.
+  ${boldText(`Welcome to the ${dhStyle('DataHub')} command line tool.`)}
 
-  DataHub = ${box}  + ${elephant}  A home for all your data, nicely packaged ${square}
+  ${dhStyle('DataHub')} = ${box}  + ${elephant}  A home for all your data, nicely packaged ${square}
 
-  We hope this tool will bring you much joy as you work with your data and the DataHub.
+  We hope this tool will bring you much joy as you work with your data and the ${dhStyle('DataHub')}.
 
   ---
 
-  Usage: data <command> [options]
+  ${boldText('Usage:')} $ data <command> [options]
 
-  Commands:
+  ${underline('Commands:')}
 
-    get      <package>    View or Download file from DataHub
-    push                  Publish on DataHub server
-    dp normalize          Normalize datapackage.json
-    config                Set Up DataHub Configurations
-    help                  Show help
-  Options:
+    ${boldText('get')}      <dhpkgid>    ${italic('View or Download file from DataHub')}
+    ${boldText('push')}                  ${italic('Publish on DataHub server')}
+    ${boldText('config')}                ${italic('Set Up DataHub Configurations')}
+    ${boldText('help ')}                 ${italic('Show help')}
 
-    -h,  --help           output usage information
-    -v,  --version        output the version number
+  ${underline('Options:')}
+
+    ${boldText('-h,  --help')}           ${italic('output usage information')}
+    ${boldText('-v,  --version')}        ${italic('output the version number')}
 `)

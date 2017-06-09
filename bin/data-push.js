@@ -8,6 +8,11 @@ const chalk = require('chalk')
 const { push } = require('../lib/push')
 const { box, elephant, square } = require('../lib/utils/logo')
 
+const dhStyle = chalk.bold.underline
+const italic = chalk.italic
+const boldText = chalk.bold
+const underline = chalk.underline
+
 const argv = minimist(process.argv.slice(2), {
   string: ['push'],
   boolean: ['help'],
@@ -16,18 +21,21 @@ const argv = minimist(process.argv.slice(2), {
 
 const help = () => {
   console.log(`
-  ${chalk.bold(`data push`)}
+  ${elephant} ${boldText(` data push`)} command
 
-  ${chalk.dim('Options:')}
-    -h, --help              Output usage information
+  ${underline('Options:')}
 
-  ${chalk.dim('Usage:')}
-  ${chalk.bold(`data push`)}
+    ${boldText('-h, --help')}              ${italic('Output usage information')}
 
-  ${chalk.dim('Examples:')}
-  ${chalk.gray('–')} Uploads Data Package to DataHub ${elephant}
-    From Data Package root directory (should have datapackage.json)
-    ${chalk.cyan('$ data push')}
+  ${underline('Usage:')}
+
+    ${boldText(`$ data push`)}
+
+  ${underline('Examples:')}
+
+    ${chalk.gray('#')} Uploads Data Package to ${dhStyle('DataHub')} ${elephant}
+    ${chalk.gray('#')} Data Package root directory should have datapackage.json
+    ${boldText('$ data push')}
 `)
 }
 

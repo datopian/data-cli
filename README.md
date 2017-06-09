@@ -9,46 +9,19 @@
 </p>
 
 [![Build Status](https://travis-ci.org/datopian/datahub-cli.svg?branch=master)](https://travis-ci.org/datopian/datahub-cli)
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/atomatichq/data-package-registry-oki)
 [![Issues](https://img.shields.io/badge/issue-tracker-orange.svg)](https://github.com/datopian/datahub-cli/issues)
 
 # Usage
 
 ## Install
 
-```
-$ npm install -g
-```
+To install `datahub-cli`, you need to download the package from the [releases section](https://github.com/datopian/datahub-cli/releases).
 
-After installing run `$ data --help` to see all available options.
-
-### Get Data Package
-
-`get` command lets you download a Data Package:
+Once it is downloaded and installed run the following command to see all available options:
 
 ```
-$ data get {publisher}/{package}
+$ data --help
 ```
-
-#### Example
-
-Following command will download `finance-vix` package from `core` publisher:
-
-```
-$ data get core/finance-vix
-```
-
-### Set credentials to authenticate for DataHub registry
-
-```
-# Fill with required info
-$ data configure
-
-> Username: < your user name >
-> Your secret token (input hidden): < your secret token >
-> Server URL: < https://example.com >
-```
-Your Configurations will be saved in `~/.datahub/config`
 
 # For developers
 

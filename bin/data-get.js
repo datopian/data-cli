@@ -7,6 +7,12 @@ const chalk = require('chalk')
 // ours
 const { get } = require('../lib/get')
 const { box, elephant, square } = require('../lib/utils/logo')
+const { spinner } = require('../lib/utils/tools')
+
+const dhStyle = chalk.bold.underline
+const italic = chalk.italic
+const boldText = chalk.bold
+const underline = chalk.underline
 
 const argv = minimist(process.argv.slice(2), {
   string: ['get'],
@@ -16,18 +22,21 @@ const argv = minimist(process.argv.slice(2), {
 
 const help = () => {
   console.log(`
-  ${chalk.bold(`data get`)}
+  ${elephant} ${boldText(` data get`)} command
 
-  ${chalk.dim('Options:')}
-    -h, --help              Output usage information
+  ${underline('Options:')}
 
-  ${chalk.dim('Usage:')}
-  ${chalk.bold(`data get <dhpkgid>`)}
+    ${boldText('-h, --help')}              ${italic('Output usage information')}
 
-  ${chalk.dim('Examples:')}
-  ${chalk.gray('–')} Downolads the Data Package from Datahub ${elephant}
-    Saves to relative subdirectory {publisher}/{package}
-    ${chalk.cyan('$ data get publisher/package')}
+  ${underline('Usage:')}
+
+    ${boldText(`$ data get <dhpkgid>`)}
+
+  ${underline('Examples:')}
+
+    ${chalk.gray('#')} Downolads the Data Package from ${dhStyle('DataHub')} ${elephant}
+    ${chalk.gray('#')} Saves to relative subdirectory {publisher}/{package}
+    ${boldText('$ data get publisher/package')}
 `)
 }
 
@@ -38,4 +47,10 @@ if (argv.help || !argv._[0]) {
 
 let dhpkgid = argv._[0]
 
-get(dhpkgid)
+const run = async () => {
+  spinner.start()
+  await get(dhpkgid)
+  spinner.stop()
+}
+
+run()
