@@ -1,0 +1,214 @@
+{
+  "bitstore_url": "https://bits-staging.datapackaged.com/metadata/core/co2-ppm/_v/latest",
+  "descriptor": {
+    "description": "Data are sourced from the US Government's Earth System Research Laboratory, Global Monitoring Division. Two main series are provided: the Mauna Loa series (which has the longest continuous series since 1958) and a Global Average series (a global average over marine surface sites).",
+    "homepage": "http://www.esrl.noaa.gov/gmd/ccgg/trends",
+    "license": "ODC-PDDL-1.0",
+    "name": "co2-ppm",
+    "owner": "core",
+    "resources": [
+      {
+        "format": "csv",
+        "mediatype": "text/csv",
+        "name": "co2-mm-mlo",
+        "path": "data/co2-mm-mlo.csv",
+        "schema": {
+          "fields": [
+            {
+              "description": "YYYY-MM-DD",
+              "name": "Date",
+              "type": "date"
+            },
+            {
+              "description": "",
+              "name": "Decimal Date",
+              "type": "number"
+            },
+            {
+              "description": "The monthly mean CO2 mole fraction determined from daily averages. If there are missing days concentrated either early or late in the month, the monthly mean is corrected to the middle of the month using the average seasonal cycle. Missing months are denoted by -99.99.",
+              "name": "Average",
+              "type": "number"
+            },
+            {
+              "description": "Values from the average column and interpolated values where data are missing. Interpolated values are computed in two steps. First, we compute for each month the average seasonal cycle in a 7-year window around each monthly value. In this way the seasonal cycle is allowed to change slowly over time. We then determine the trend value for each month by removing the seasonal cycle; this result is shown in the trend column. Trend values are linearly interpolated for missing months. The interpolated monthly mean is then the sum of the average seasonal cycle value and the trend value for the missing month.",
+              "name": "Interpolated",
+              "type": "number"
+            },
+            {
+              "description": "Seasonally corrected.",
+              "name": "Trend",
+              "type": "number"
+            },
+            {
+              "description": "-1 denotes no data for number of daily averages in the month.",
+              "name": "Number of Days",
+              "type": "number"
+            }
+          ]
+        }
+      },
+      {
+        "format": "csv",
+        "mediatype": "text/csv",
+        "name": "co2-annmean-mlo",
+        "path": "data/co2-annmean-mlo.csv",
+        "schema": {
+          "fields": [
+            {
+              "description": "",
+              "name": "Year",
+              "type": "date"
+            },
+            {
+              "description": "",
+              "name": "Mean",
+              "type": "number"
+            },
+            {
+              "description": "The estimated uncertainty in the annual mean is the standard deviation of the differences of annual mean values determined independently by NOAA/ESRL and the Scripps Institution of Oceanography.",
+              "name": "Uncertainty",
+              "type": "number"
+            }
+          ]
+        }
+      },
+      {
+        "format": "csv",
+        "mediatype": "text/csv",
+        "name": "co2-gr-mlo",
+        "path": "data/co2-gr-mlo.csv",
+        "schema": {
+          "fields": [
+            {
+              "description": "",
+              "name": "Year",
+              "type": "date"
+            },
+            {
+              "description": "Annual CO2 mole fraction increase (ppm) from Jan 1 through Dec 31.",
+              "name": "Annual Increase",
+              "type": "number"
+            },
+            {
+              "description": "Estimated from the standard deviation of the differences between monthly mean values determined independently by the Scripps Institution of Oceanography and by NOAA/ESRL.",
+              "name": "Uncertainty",
+              "type": "number"
+            }
+          ]
+        }
+      },
+      {
+        "format": "csv",
+        "mediatype": "text/csv",
+        "name": "co2-mm-gl",
+        "path": "data/co2-mm-gl.csv",
+        "schema": {
+          "fields": [
+            {
+              "description": "YYYY-MM-DD",
+              "name": "Date",
+              "type": "date"
+            },
+            {
+              "description": "",
+              "name": "Decimal Date",
+              "type": "number"
+            },
+            {
+              "description": "",
+              "name": "Average",
+              "type": "number"
+            },
+            {
+              "description": "",
+              "name": "Trend",
+              "type": "number"
+            }
+          ]
+        }
+      },
+      {
+        "format": "csv",
+        "mediatype": "text/csv",
+        "name": "co2-annmean-gl",
+        "path": "data/co2-annmean-gl.csv",
+        "schema": {
+          "fields": [
+            {
+              "description": "",
+              "name": "Year",
+              "type": "date"
+            },
+            {
+              "description": "",
+              "name": "Mean",
+              "type": "number"
+            },
+            {
+              "description": "The uncertainty in the global annual mean is estimated using a monte carlo technique that computes 100 global annual averages, each time using a slightly different set of measurement records from the NOAA ESRL cooperative air sampling network.  The reported uncertainty is the mean of the standard deviations for each annual average using this technique. Please see Conway et al., 1994, JGR, vol. 99, no. D11. for a complete discussion.",
+              "name": "Uncertainty",
+              "type": "number"
+            }
+          ]
+        }
+      },
+      {
+        "format": "csv",
+        "mediatype": "text/csv",
+        "name": "co2-gr-gl",
+        "path": "data/co2-gr-gl.csv",
+        "schema": {
+          "fields": [
+            {
+              "description": "",
+              "name": "Year",
+              "type": "date"
+            },
+            {
+              "description": "Annual CO2 mole fraction increase (ppm) from Jan 1 through Dec 31.",
+              "name": "Annual Increase",
+              "type": "number"
+            },
+            {
+              "description": "The uncertainty in the global annual mean growth rate is estimated using a monte carlo technique that computes 100 time series of global annual growth rates, each time using measurement records from a different sampling of sites from the NOAA ESRL cooperative air sampling network. Each year has a different uncertainty. Please see Conway et al., 1994, JGR, vol. 99, no. D11. for a complete discussion. The last one or two years listed could have preliminary uncertainties set equal to the average uncertainty since 1980. Before 1980 the global growth rate has been approximated by taking the average of Mauna Loa and the South Pole, correcting for the offset between (MLO+SPO)/2 and the global Marine Boundary Layer, as described in Ballantyne et al, 2012.",
+              "name": "Uncertainty",
+              "type": "number"
+            }
+          ]
+        }
+      }
+    ],
+    "sources": [
+      {
+        "name": "Trends in Atmospheric Carbon Dioxide, Mauna Loa, Hawaii",
+        "web": "http://www.esrl.noaa.gov/gmd/ccgg/trends/index.html"
+      },
+      {
+        "name": "Trends in Atmospheric Carbon Dioxide, Global",
+        "web": "http://www.esrl.noaa.gov/gmd/ccgg/trends/global.html"
+      }
+    ],
+    "title": "CO2 PPM - Trends in Atmospheric Carbon Dioxide",
+    "version": "0.1.0",
+    "views": [
+      {
+        "id": "graph",
+        "label": "Graph",
+        "state": {
+          "graphType": "lines-and-points",
+          "group": "Date",
+          "series": [
+            "Interpolated",
+            "Trend"
+          ]
+        },
+        "type": "Graph"
+      }
+    ]
+  },
+  "id": 453,
+  "name": "co2-ppm",
+  "publisher": "core",
+  "readme": "<p>CO2 PPM - Trends in Atmospheric Carbon Dioxide. Data are sourced from the US Government's Earth System Research Laboratory, Global Monitoring Division. Two main series are provided: the Mauna Loa series (which has the longest continuous series since 1958) and a Global Average series (a global average over marine surface sites).</p>\n<h2>Data</h2>\n<h3>Description</h3>\n<blockquote>\n<p>Data are reported as a dry air mole fraction defined as the number of molecules of carbon dioxide divided by the number of all molecules in air, including CO2 itself, after water vapor has been removed. The mole fraction is expressed as parts per million (ppm). Example: 0.000400 is expressed as 400 ppm.<a href=\"http://www.esrl.noaa.gov/gmd/ccgg/trends/index.html\">*</a></p>\n</blockquote>\n<h3>Citations</h3>\n<ol>\n<li><em>Trends in Atmospheric Carbon Dioxide, Mauna Loa, Hawaii.</em> Dr. Pieter Tans, NOAA/ESRL (<a href=\"http://www.esrl.noaa.gov/gmd/ccgg/trends/\">www.esrl.noaa.gov/gmd/ccgg/trends/</a>) and Dr. Ralph Keeling, Scripps Institution of Oceanography (scrippsco2.ucsd.edu/).</li>\n<li><em>Trends in Atmospheric Carbon Dioxide, Global.</em> Ed Dlugokencky and Pieter Tans, NOAA/ESRL (<a href=\"http://www.esrl.noaa.gov/gmd/ccgg/trends/\">www.esrl.noaa.gov/gmd/ccgg/trends/</a>).</li>\n</ol>\n<h3>Sources</h3>\n<ol>\n<li></li>\n<li>Name: Trends in Atmospheric Carbon Dioxide, Mauna Loa, Hawaii</li>\n<li>Web: <a href=\"http://www.esrl.noaa.gov/gmd/ccgg/trends/index.html\">http://www.esrl.noaa.gov/gmd/ccgg/trends/index.html</a></li>\n<li></li>\n<li>Name: Trends in Atmospheric Carbon Dioxide, Global</li>\n<li>Web: <a href=\"http://www.esrl.noaa.gov/gmd/ccgg/trends/global.html\">http://www.esrl.noaa.gov/gmd/ccgg/trends/global.html</a></li>\n</ol>\n<h2>Data Preparation</h2>\n<h3>Processing</h3>\n<p>Run the following script from this directory to download and process the data:</p>\n<div class=\"highlight\"><pre><span></span>make data\n</pre></div>\n\n\n<h3>Resources</h3>\n<p>The raw data are output to <code>./tmp</code>. The processed data are output to <code>./data</code>.</p>\n<h2>License</h2>\n<h3>ODC-PDDL-1.0</h3>\n<p>This Data Package is made available under the Public Domain Dedication and License v1.0 whose full text can be found at: <a href=\"http://www.opendatacommons.org/licenses/pddl/1.0/\">http://www.opendatacommons.org/licenses/pddl/1.0/</a></p>\n<h3>Notes</h3>\n<p>The <a href=\"http://www.esrl.noaa.gov/gmd/about/disclaimer.html\">terms of use</a> of the source dataset list three specific restrictions on public use of these data:</p>\n<blockquote>\n<p>The information on government servers are in the public domain, unless specifically annotated otherwise, and may be used freely by the public so long as you do not 1) claim it is your own (e.g. by claiming copyright for NOAA information \u2013 see next paragraph), 2) use it in a manner that implies an endorsement or affiliation with NOAA, or 3) modify it in content and then present it as official government material.<a href=\"http://www.esrl.noaa.gov/gmd/about/disclaimer.html\">*</a></p>\n</blockquote>",
+  "short_readme": "CO2 PPM - Trends in Atmospheric Carbon Dioxide. Data are sourced from the US Government's Earth System Research Laboratory, Global Monitoring Division. Two main series are provided: the Mauna Loa series (which has the longest continuous series since 1958) and a Global Average series (a global average over marine surface sites). Data Description"
+}
