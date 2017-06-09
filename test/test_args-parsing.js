@@ -1,7 +1,6 @@
-const path = require('path')
 const test = require('ava')
-const { spawn } = require('cross-spawn')
 const { version } = require('../package.json')
+const { data } = require('./data.js')
 
 test('"data -v --version" prints version', async t => {
   let result = await data('-v')
@@ -103,25 +102,81 @@ test('"data config -h --help" prints help message for config command', async t =
   t.true(stdout[1].includes('data config'))
 })
 
-function data(...args) {
-  return new Promise((resolve, reject) => {
-    const command = path.resolve(__dirname, '../bin/data.js')
-    const data = spawn(command, args)
+test('"data help purge" prints help message for purge command', async t => {
+  const result = await data('help', 'purge')
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data purge'))
+})
 
-    let stdout = ''
-    data.stdout.on('data', data => {
-      stdout += data
-    })
+test('"data purge -h --help" prints help message for purge command', async t => {
+  let result = await data('purge', '-h')
 
-    data.on('error', err => {
-      reject(err)
-    })
+  t.is(result.code, 0)
+  let stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data purge'))
 
-    data.on('close', code => {
-      resolve({
-        code,
-        stdout
-      })
-    })
-  })
-}
+  result = await data('purge', '--help')
+
+  t.is(result.code, 0)
+  stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data purge'))
+})
+
+test('"data help dp" prints help message for dp command', async t => {
+  const result = await data('help', 'dp')
+
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data dp <arguments> [path]'))
+})
+
+
+test('"data dp -h --help" prints help message for dp command', async t => {
+  const result = await data('dp', '-h')
+
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data dp <arguments> [path]'))
+})
+
+test('"data dp" if wrong argument given, it prints help message for dp command', async t => {
+  const result = await data('dp', 'test')
+
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('data dp <arguments> [path]'))
+})
+
+test('"data dp normalize test/fixtures/datapackage.json" normalizes datapackage.json with given file path', async t => {
+  const result = await data('dp', 'normalize', 'test/fixtures/datapackage.json')
+
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[0].includes('Datapackage.json has been normalized'))
+})
+
+test('"data dp normalize test/fixtures/" normalizes datapackage.json inside given folder', async t => {
+  const result = await data('dp', 'normalize', 'test/fixtures/')
+
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[0].includes('Datapackage.json has been normalized'))
+})
+
+test('"data dp normalize test/fixtures" normalizes datapackage.json inside given folder', async t => {
+  const result = await data('dp', 'normalize', 'test/fixtures')
+
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[0].includes('Datapackage.json has been normalized'))
+})

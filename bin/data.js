@@ -27,8 +27,12 @@ const commands = new Set([
   defaultCommand,
   'get',
   'push',
+  'dp',
+  'purge',
   'config',
-  'configure'
+  'configure',
+  'validate',
+  'info'
 ])
 
 const aliases = new Map([
