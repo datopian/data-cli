@@ -126,7 +126,7 @@ test('"data purge -h --help" prints help message for purge command', async t => 
   t.true(stdout[1].includes('data purge'))
 })
 
-test('"data help dp" prints help message for dp command', async t => {
+test('"data help norm[alize]" prints help message for dp command', async t => {
   const result = await data('help', 'normalize')
 
   t.is(result.code, 0)
@@ -136,7 +136,7 @@ test('"data help dp" prints help message for dp command', async t => {
 })
 
 
-test('"data dp -h --help" prints help message for dp command', async t => {
+test('"data norm[alize] -h --help" prints help message for dp command', async t => {
   const result = await data('normalize', '-h')
 
   t.is(result.code, 0)
@@ -146,7 +146,7 @@ test('"data dp -h --help" prints help message for dp command', async t => {
 })
 
 
-test('"data dp normalize test/fixtures/datapackage.json" normalizes datapackage.json with given file path', async t => {
+test('"data norm[alize] test/fixtures/datapackage.json" normalizes datapackage.json with given file path', async t => {
   const result = await data('normalize', 'test/fixtures/datapackage.json')
 
   t.is(result.code, 0)
@@ -155,7 +155,7 @@ test('"data dp normalize test/fixtures/datapackage.json" normalizes datapackage.
   t.true(stdout[0].includes('Datapackage.json has been normalized'))
 })
 
-test('"data dp normalize test/fixtures/" normalizes datapackage.json inside given folder', async t => {
+test('"data norm[alize] test/fixtures/" normalizes datapackage.json inside given folder', async t => {
   const result = await data('normalize', 'test/fixtures/')
 
   t.is(result.code, 0)
@@ -164,7 +164,7 @@ test('"data dp normalize test/fixtures/" normalizes datapackage.json inside give
   t.true(stdout[0].includes('Datapackage.json has been normalized'))
 })
 
-test('"data dp normalize test/fixtures" normalizes datapackage.json inside given folder', async t => {
+test('"data norm[alize] test/fixtures" normalizes datapackage.json inside given folder', async t => {
   const result = await data('normalize', 'test/fixtures')
 
   t.is(result.code, 0)
