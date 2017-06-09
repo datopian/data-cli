@@ -127,35 +127,27 @@ test('"data purge -h --help" prints help message for purge command', async t => 
 })
 
 test('"data help dp" prints help message for dp command', async t => {
-  const result = await data('help', 'dp')
+  const result = await data('help', 'normalize')
 
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data dp <arguments> [path]'))
+  t.true(stdout[1].includes('data norm[alize] [path]'))
 })
 
 
 test('"data dp -h --help" prints help message for dp command', async t => {
-  const result = await data('dp', '-h')
+  const result = await data('normalize', '-h')
 
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data dp <arguments> [path]'))
+  t.true(stdout[1].includes('data norm[alize] [path]'))
 })
 
-test('"data dp" if wrong argument given, it prints help message for dp command', async t => {
-  const result = await data('dp', 'test')
-
-  t.is(result.code, 0)
-  const stdout = result.stdout.split('\n')
-  t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data dp <arguments> [path]'))
-})
 
 test('"data dp normalize test/fixtures/datapackage.json" normalizes datapackage.json with given file path', async t => {
-  const result = await data('dp', 'normalize', 'test/fixtures/datapackage.json')
+  const result = await data('normalize', 'test/fixtures/datapackage.json')
 
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
@@ -164,7 +156,7 @@ test('"data dp normalize test/fixtures/datapackage.json" normalizes datapackage.
 })
 
 test('"data dp normalize test/fixtures/" normalizes datapackage.json inside given folder', async t => {
-  const result = await data('dp', 'normalize', 'test/fixtures/')
+  const result = await data('normalize', 'test/fixtures/')
 
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
@@ -173,7 +165,7 @@ test('"data dp normalize test/fixtures/" normalizes datapackage.json inside give
 })
 
 test('"data dp normalize test/fixtures" normalizes datapackage.json inside given folder', async t => {
-  const result = await data('dp', 'normalize', 'test/fixtures')
+  const result = await data('normalize', 'test/fixtures')
 
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
