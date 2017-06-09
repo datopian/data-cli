@@ -28,10 +28,6 @@ let metadata = {
   }
 }
 
-let getMeta = nock('https://staging.datapackaged.com')
-      .persist()
-      .get('/api/package/publisher/package')
-      .reply(200, metadata)
 
 let getDPJson = nock('https://bits-staging.datapackaged.com')
       .persist()
@@ -48,12 +44,6 @@ let getFromSourceUrl = nock('https://example.com')
       .get('/data/second-resource.csv')
       .replyWithFile(200, './test/fixtures/sample.csv')
 
-
-test('Gets bitStoreUrl if publisher and package is fine', async t => {
-  let sUrl = utils.getServerUrl('not/config')
-  let res = get.getMetadata('publisher', 'package', sUrl)
-  t.deepEqual(await res, metadata)
-})
 
 test('checkDestIsEmpty returns true if dir exists and is empty', t => {
   let tempDirPath = tmpdir.split('/')
