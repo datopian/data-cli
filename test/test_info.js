@@ -94,6 +94,6 @@ test('"data info core/co2-ppm" command prints out readme and resource list', asy
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[4].includes('CO2 PPM'))
-  t.true(stdout[16].includes('co2-annmean-mlo'))
+  t.true(stdout[5].includes('CO2 PPM'))
+  t.true(stdout[17].includes('co2-annmean-mlo'))
 })
