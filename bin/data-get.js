@@ -3,6 +3,8 @@
 // Packages
 const minimist = require('minimist')
 const chalk = require('chalk')
+const fs = require('fs')
+const { customMarked } = require('../lib/utils/tools.js')
 
 // ours
 const { get } = require('../lib/get')
@@ -20,24 +22,9 @@ const argv = minimist(process.argv.slice(2), {
   alias: { help: 'h' }
 })
 
+var getMarkdown = fs.readFileSync('docs/get.md','utf8')
 const help = () => {
-  console.log(`
-  ${elephant} ${boldText(` data get`)} command
-
-  ${underline('Options:')}
-
-    ${boldText('-h, --help')}              ${italic('Output usage information')}
-
-  ${underline('Usage:')}
-
-    ${boldText(`$ data get <dhpkgid>`)}
-
-  ${underline('Examples:')}
-
-    ${chalk.gray('#')} Downolads the Data Package from ${dhStyle('DataHub')} ${elephant}
-    ${chalk.gray('#')} Saves to relative subdirectory {publisher}/{package}
-    ${boldText('$ data get publisher/package')}
-`)
+  console.log('\n'+ customMarked(getMarkdown))
 }
 
 if (argv.help || !argv._[0]) {
