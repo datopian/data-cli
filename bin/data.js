@@ -27,7 +27,8 @@ const commands = new Set([
   defaultCommand,
   'get',
   'push',
-  'dp',
+  'normalize',
+  'norm',
   'purge',
   'config',
   'configure',
@@ -36,7 +37,8 @@ const commands = new Set([
 ])
 
 const aliases = new Map([
-  ['configure', 'config']
+  ['configure', 'config'],
+  ['norm', 'normalize']
 ])
 
 let cmd = defaultCommand

@@ -23,14 +23,12 @@ const argv = minimist(process.argv.slice(2), {
 })
 const help = () => {
   console.log(`
-  ${elephant} ${boldText(` data dp <arguments> [path]`)} command
+  ${elephant} ${boldText(` data norm[alize] [path]`)} command
 
   ${underline('Options:')}
 
     ${boldText('-h, --help')}              ${italic('Output usage information')}
 
-  ${underline('Arguments:')}
-    ${boldText(`normalize`)}               ${italic('Normalizes datapackage.json')}
 
   ${underline('Usage:')}
 
@@ -50,18 +48,12 @@ const help = () => {
     ${boldText(`$ data normalize core/finance-vix`)}
 `)
 }
-if (argv.help || !argv._[0]) {
+if (argv.help) {
   help()
   process.exit(0)
 }
 
+let path = argv._[0]
 
-let path = process.argv[3]
-let command = argv._[0]
+normalize(path)
 
-if(command === 'normalize' || command === 'norm') {
-  normalize(path)
-}else{
-  help()
-  process.exit(0)
-}
