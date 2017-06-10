@@ -62,6 +62,7 @@
     "progress": "^2.0.0",
     "prompt": "^1.0.0",
     "request": "^2.81.0",
+    "request-promise-native": "^1.0.4",
     "tableschema": "^1.0.0-alpha.7",
     "tmp": "0.0.31",
     "url-join": "^2.0.2"
