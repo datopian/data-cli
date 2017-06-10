@@ -3,7 +3,9 @@
 // Packages
 const minimist = require('minimist')
 const chalk = require('chalk')
-
+const fs = require('fs')
+const path = require('path')
+const {customMarked} = require('../lib/utils/tools.js')
 // ours
 const { push } = require('../lib/push')
 const { box, elephant, square } = require('../lib/utils/logo')
@@ -19,24 +21,9 @@ const argv = minimist(process.argv.slice(2), {
   alias: { help: 'h' }
 })
 
+var pushMarkdown = fs.readFileSync(path.join(__dirname, '../docs/push.md'),'utf8')
 const help = () => {
-  console.log(`
-  ${elephant} ${boldText(` data push`)} command
-
-  ${underline('Options:')}
-
-    ${boldText('-h, --help')}              ${italic('Output usage information')}
-
-  ${underline('Usage:')}
-
-    ${boldText(`$ data push`)}
-
-  ${underline('Examples:')}
-
-    ${chalk.gray('#')} Uploads Data Package to ${dhStyle('DataHub')} ${elephant}
-    ${chalk.gray('#')} Data Package root directory should have datapackage.json
-    ${boldText('$ data push')}
-`)
+  console.log('\n'+ customMarked(pushMarkdown))
 }
 
 if (argv.help) {
