@@ -1,20 +1,22 @@
 
-#  **data push** command
+# Push a Data Package to DataHub
 
-
-## Options:
-```
--h, --help               Output usage information
-```
-    
 ## Usage:
+
 ```
 $ data push
 ```
-  
-## Example:
+
+## Options:
+
 ```
-# Uploads Data Package to DataHub 
-# Data Package root directory should have datapackage.json
+-h, --help               Output usage information
+```
+
+## Example:
+
+```
+# Uploads Data Package to DataHub
+# Current working directory should have datapackage.json
 $ data push
 ```

@@ -1,21 +1,23 @@
 
-#  **data purge** command
+# Purge a Data Package in DataHub
 
-
-## Options:
-```
--f, --force              Force purge (delete without dialogue)
--h, --help               Output usage information
-```
-    
 ## Usage:
+
 ```
-# Permanently deletes Data Package from DataHub
-# Run from package root directory (datapackage.json should present)
+# Permanently deletes a Data Package from DataHub
+# Run from the package root directory (datapackage.json should be presented)
 $ data purge
 ```
-  
+
+## Options:
+
+```
+-f, --force              Force purge (delete immediately)
+-h, --help               Output usage information
+```
+
 ## Example:
+
 ```
 $ data purge
 > Package Name:  finance-vix
