@@ -132,7 +132,7 @@ test('"data help norm[alize]" prints help message for dp command', async t => {
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data norm[alize] [path]'))
+  t.true(stdout[1].includes('data norm[alize] command'))
 })
 
 
@@ -142,7 +142,7 @@ test('"data norm[alize] -h --help" prints help message for dp command', async t 
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data norm[alize] [path]'))
+  t.true(stdout[1].includes('data norm[alize] command'))
 })
 
 
