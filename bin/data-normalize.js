@@ -4,6 +4,7 @@
 const minimist = require('minimist')
 const chalk = require('chalk')
 const fs = require('fs')
+const path = require('path')
 const { customMarked } = require('../lib/utils/tools.js')
 
 // ours
@@ -23,7 +24,7 @@ const argv = minimist(process.argv.slice(2), {
   }
 })
 
-var normalizeMarkdown = fs.readFileSync('docs/normalize.md','utf8')
+var normalizeMarkdown = fs.readFileSync(path.join(__dirname, '../docs/normalize.md'),'utf8')
 const help = () => {
   console.log('\n'+ customMarked(normalizeMarkdown))
 }
@@ -36,7 +37,6 @@ if (argv.help) {
   process.exit(0)
 }
 
-let path = argv._[0]
+let pathForDp = argv._[0]
 
-normalize(path)
-
+normalize(pathForDp)

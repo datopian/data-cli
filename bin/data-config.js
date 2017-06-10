@@ -4,6 +4,7 @@
 const minimist = require('minimist')
 const chalk = require('chalk')
 const fs = require('fs')
+const path = require('path')
 const { customMarked } = require('../lib/utils/tools.js')
 
 
@@ -22,7 +23,7 @@ const argv = minimist(process.argv.slice(2), {
   alias: { help: 'h' }
 })
 
-var configMarkdown = fs.readFileSync('docs/config.md','utf8')
+var configMarkdown = fs.readFileSync(path.join(__dirname, '../docs/config.md'),'utf8')
 const help = () => {
   console.log('\n'+ customMarked(configMarkdown))
 }

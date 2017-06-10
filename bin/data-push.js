@@ -4,6 +4,7 @@
 const minimist = require('minimist')
 const chalk = require('chalk')
 const fs = require('fs')
+const path = require('path')
 const {customMarked} = require('../lib/utils/tools.js')
 // ours
 const { push } = require('../lib/push')
@@ -20,7 +21,7 @@ const argv = minimist(process.argv.slice(2), {
   alias: { help: 'h' }
 })
 
-var pushMarkdown = fs.readFileSync('docs/push.md','utf8')
+var pushMarkdown = fs.readFileSync(path.join(__dirname, '../docs/push.md'),'utf8')
 const help = () => {
   console.log('\n'+ customMarked(pushMarkdown))
 }

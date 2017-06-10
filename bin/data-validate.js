@@ -4,6 +4,7 @@
 const minimist = require('minimist')
 const chalk = require('chalk')
 const fs = require('fs')
+const path = require('path')
 const {customMarked} = require('../lib/utils/tools.js')
 
 // ours
@@ -21,7 +22,7 @@ const argv = minimist(process.argv.slice(2), {
   alias: { help: 'h' }
 })
 
-var validateMarkdown = fs.readFileSync('docs/validate.md','utf8')
+var validateMarkdown = fs.readFileSync(path.join(__dirname, '../docs/validate.md'),'utf8')
 const help = () => {
   console.log('\n'+ customMarked(validateMarkdown))
 }
