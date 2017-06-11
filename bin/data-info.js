@@ -3,6 +3,9 @@
 // Packages
 const minimist = require('minimist')
 const chalk = require('chalk')
+const fs = require('fs')
+const path = require('path')
+const { customMarked } = require('../lib/utils/tools.js')
 
 // ours
 const { getInfo } = require('../lib/info')
@@ -20,24 +23,9 @@ const argv = minimist(process.argv.slice(2), {
   alias: { help: 'h' }
 })
 
+var infoMarkdown = fs.readFileSync(path.join(__dirname, '../docs/info.md'),'utf8')
 const help = () => {
-  console.log(`
-  ${elephant} ${boldText(` data info`)} command
-
-  ${underline('Options:')}
-
-    ${boldText('-h, --help')}              ${italic('Output usage information')}
-
-  ${underline('Usage:')}
-
-    ${chalk.gray('#')} Get Data Package info for given publisher and package:
-    ${boldText(`$ data info <publisher>/<package>`)}
-
-  ${underline('Example:')}
-
-    ${chalk.gray('#')} Get Data Package info for given core publisher and co2-ppm package:
-    ${boldText(`$ data info core/gdp`)}
-  `)
+  console.log('\n'+ customMarked(infoMarkdown))
 }
 
 if (argv.help || !argv._[0]) {

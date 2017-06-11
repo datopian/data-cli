@@ -93,5 +93,5 @@ test('"data help validate" prints help message', async t => {
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data validate'))
+  t.true(stdout[1].includes('Validate a descriptor'))
 })

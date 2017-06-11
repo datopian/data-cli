@@ -3,6 +3,10 @@
 // Packages
 const minimist = require('minimist')
 const chalk = require('chalk')
+const fs = require('fs')
+const path = require('path')
+const { customMarked } = require('../lib/utils/tools.js')
+
 
 // ours
 const { config, configFile } = require('../lib/config')
@@ -19,29 +23,9 @@ const argv = minimist(process.argv.slice(2), {
   alias: { help: 'h' }
 })
 
+var configMarkdown = fs.readFileSync(path.join(__dirname, '../docs/config.md'),'utf8')
 const help = () => {
-  console.log(`
-  ${elephant} ${boldText(` data config`)} command
-
-  ${underline('Options:')}
-
-    ${boldText('-h, --help')}              ${italic('Output usage information')}
-
-  ${underline('Usage:')}
-
-  ${boldText(`$ data config`)}
-  ${boldText(`$ data configure`)}
-
-  ${underline('Examples:')}
-
-    ${chalk.gray('#')} Sets Up Configurations for ${dhStyle('DataHub')} ${elephant}
-    ${chalk.gray('#')} config file is saved in ~/.datahub/config
-    ${boldText('$ data cofig')}
-
-  ${boldText('> Username: DataGeek')}
-  ${boldText('> Your secret token (input hidden): Y0uR53cr3tt0KeN')}
-  ${boldText('> Server URL: http://datapackaged.com/')}
-`)
+  console.log('\n'+ customMarked(configMarkdown))
 }
 
 if (argv.help) {

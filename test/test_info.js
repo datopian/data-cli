@@ -71,22 +71,22 @@ test('"data info [-help | -h]" prints out help message for info', async t => {
   t.is(result.code, 0)
   let stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data info command'))
+  t.true(stdout[1].includes('Preview a Data Package'))
 
   result = await data('info', '-help')
   stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data info command'))
+  t.true(stdout[1].includes('Preview a Data Package'))
 
   result = await data('info', '-h')
   stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data info command'))
+  t.true(stdout[1].includes('Preview a Data Package'))
 
   result = await data('help', 'info')
   stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data info command'))
+  t.true(stdout[1].includes('Preview a Data Package'))
 })
 
 test('"data info core/co2-ppm" command prints out readme and resource list', async t => {

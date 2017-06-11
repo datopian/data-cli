@@ -26,7 +26,7 @@ test('"data help" prints help message', async t => {
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('Welcome to the DataHub command line tool.'))
+  t.true(stdout[1].includes('Welcome to the DataHub command line tool!'))
 })
 
 test('"data help get" prints help message for get command', async t => {
@@ -35,7 +35,7 @@ test('"data help get" prints help message for get command', async t => {
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data get'))
+  t.true(stdout[1].includes('Get a Data Package from DataHub'))
 })
 
 test('"data get -h --help" prints help message for get command', async t => {
@@ -44,14 +44,14 @@ test('"data get -h --help" prints help message for get command', async t => {
   t.is(result.code, 0)
   let stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data get'))
+  t.true(stdout[1].includes('Get a Data Package from DataHub'))
 
   result = await data('get', '--help')
 
   t.is(result.code, 0)
   stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data get'))
+  t.true(stdout[1].includes('Get a Data Package from DataHub'))
 })
 
 test('"data help push" prints help message for push command', async t => {
@@ -60,7 +60,7 @@ test('"data help push" prints help message for push command', async t => {
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data push'))
+  t.true(stdout[1].includes('Push a Data Package to DataHub'))
 })
 
 test('"data push -h --help" prints help message for push command', async t => {
@@ -69,14 +69,14 @@ test('"data push -h --help" prints help message for push command', async t => {
   t.is(result.code, 0)
   let stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data push'))
+  t.true(stdout[1].includes('Push a Data Package to DataHub'))
 
   result = await data('push', '--help')
 
   t.is(result.code, 0)
   stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data push'))
+  t.true(stdout[1].includes('Push a Data Package to DataHub'))
 })
 
 test('"data help config" prints help message for config command', async t => {
@@ -85,7 +85,7 @@ test('"data help config" prints help message for config command', async t => {
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data config'))
+  t.true(stdout[1].includes('Set configurations'))
 })
 
 test('"data config -h --help" prints help message for config command', async t => {
@@ -94,14 +94,14 @@ test('"data config -h --help" prints help message for config command', async t =
   t.is(result.code, 0)
   let stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data config'))
+  t.true(stdout[1].includes('Set configurations'))
 
   result = await data('config', '--help')
 
   t.is(result.code, 0)
   stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data config'))
+  t.true(stdout[1].includes('Set configurations'))
 })
 
 test('"data help purge" prints help message for purge command', async t => {
@@ -109,7 +109,7 @@ test('"data help purge" prints help message for purge command', async t => {
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data purge'))
+  t.true(stdout[1].includes('Purge a Data Package in DataHub'))
 })
 
 test('"data purge -h --help" prints help message for purge command', async t => {
@@ -118,46 +118,38 @@ test('"data purge -h --help" prints help message for purge command', async t => 
   t.is(result.code, 0)
   let stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data purge'))
+  t.true(stdout[1].includes('Purge a Data Package in DataHub'))
 
   result = await data('purge', '--help')
 
   t.is(result.code, 0)
   stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data purge'))
+  t.true(stdout[1].includes('Purge a Data Package in DataHub'))
 })
 
-test('"data help dp" prints help message for dp command', async t => {
-  const result = await data('help', 'dp')
+test('"data help norm[alize]" prints help message for dp command', async t => {
+  const result = await data('help', 'normalize')
 
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data dp <arguments> [path]'))
+  t.true(stdout[1].includes('Normalize a descriptor (datapackage.json)'))
 })
 
 
-test('"data dp -h --help" prints help message for dp command', async t => {
-  const result = await data('dp', '-h')
+test('"data norm[alize] -h --help" prints help message for dp command', async t => {
+  const result = await data('normalize', '-h')
 
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data dp <arguments> [path]'))
+  t.true(stdout[1].includes('Normalize a descriptor (datapackage.json)'))
 })
 
-test('"data dp" if wrong argument given, it prints help message for dp command', async t => {
-  const result = await data('dp', 'test')
 
-  t.is(result.code, 0)
-  const stdout = result.stdout.split('\n')
-  t.true(stdout.length > 1)
-  t.true(stdout[1].includes('data dp <arguments> [path]'))
-})
-
-test('"data dp normalize test/fixtures/datapackage.json" normalizes datapackage.json with given file path', async t => {
-  const result = await data('dp', 'normalize', 'test/fixtures/datapackage.json')
+test('"data norm[alize] test/fixtures/datapackage.json" normalizes datapackage.json with given file path', async t => {
+  const result = await data('normalize', 'test/fixtures/datapackage.json')
 
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
@@ -165,8 +157,8 @@ test('"data dp normalize test/fixtures/datapackage.json" normalizes datapackage.
   t.true(stdout[0].includes('Datapackage.json has been normalized'))
 })
 
-test('"data dp normalize test/fixtures/" normalizes datapackage.json inside given folder', async t => {
-  const result = await data('dp', 'normalize', 'test/fixtures/')
+test('"data norm[alize] test/fixtures/" normalizes datapackage.json inside given folder', async t => {
+  const result = await data('normalize', 'test/fixtures/')
 
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
@@ -174,8 +166,8 @@ test('"data dp normalize test/fixtures/" normalizes datapackage.json inside give
   t.true(stdout[0].includes('Datapackage.json has been normalized'))
 })
 
-test('"data dp normalize test/fixtures" normalizes datapackage.json inside given folder', async t => {
-  const result = await data('dp', 'normalize', 'test/fixtures')
+test('"data norm[alize] test/fixtures" normalizes datapackage.json inside given folder', async t => {
+  const result = await data('normalize', 'test/fixtures')
 
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')

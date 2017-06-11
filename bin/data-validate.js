@@ -3,6 +3,9 @@
 // Packages
 const minimist = require('minimist')
 const chalk = require('chalk')
+const fs = require('fs')
+const path = require('path')
+const {customMarked} = require('../lib/utils/tools.js')
 
 // ours
 const { validate } = require('../lib/validate')
@@ -19,30 +22,9 @@ const argv = minimist(process.argv.slice(2), {
   alias: { help: 'h' }
 })
 
+var validateMarkdown = fs.readFileSync(path.join(__dirname, '../docs/validate.md'),'utf8')
 const help = () => {
-  console.log(`
-  ${elephant} ${boldText(` data validate`)} command
-
-  ${underline('Options:')}
-
-    ${boldText('-h, --help')}              ${italic('Output usage information')}
-
-  ${underline('Usage:')}
-
-    ${chalk.gray('#')} Validate datapackage.json in given path/URL or in cwd if not given:
-    ${boldText(`$ data validate [path | URL]`)}
-
-  ${underline('Example:')}
-
-    ${chalk.gray('#')} Validate descriptor in current working directory:
-    ${boldText(`$ data validate`)}
-
-    ${chalk.gray('#')} Validate descriptor in local path:
-    ${boldText(`$ data validate test/fixtures/datapackage.json`)}
-
-    ${chalk.gray('#')} Validate descriptor in URL:
-    ${boldText(`$ data validate https://bits-staging.datapackaged.com/metadata/core/gdp/_v/latest/datapackage.json`)}
-`)
+  console.log('\n'+ customMarked(validateMarkdown))
 }
 
 if (argv.help) {
