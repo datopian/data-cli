@@ -1,3 +1,5 @@
+require("babel-core/register")
+require("babel-polyfill")
 const test = require('ava')
 const push = require('../lib/push')
 const nock = require('nock')
