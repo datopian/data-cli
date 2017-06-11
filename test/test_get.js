@@ -1,3 +1,5 @@
+require("babel-core/register")
+require("babel-polyfill")
 const test = require('ava')
 const fs = require('fs')
 const get = require('../lib/get.js')
