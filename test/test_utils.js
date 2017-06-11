@@ -77,7 +77,7 @@ test.serial('Success log is working fine', t => {
   t.true(console.log.firstCall.args[0].includes(exp))
 })
 
-test.serial('defailt log is working fine', t => {
+test.serial('default log is working fine', t => {
   logger('Success message')
   const exp = `${chalk.bold.green('Success:')} Success message`
   t.true(console.log.calledOnce)
@@ -108,6 +108,11 @@ test('Uses default server URL if config not found', t => {
   let sUrl = utils.getServerUrl('not/config')
   let expUrl = 'https://staging.datapackaged.com'
   t.is(sUrl, expUrl)
+})
+
+test('Checks if datapackage.json exists in cwd', t => {
+  let out = utils.checkDpIsThere()
+  t.false(out)
 })
 
 test('Gets bitStoreUrl if publisher and package is fine', async t => {

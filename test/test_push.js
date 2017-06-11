@@ -11,7 +11,7 @@ let config = {
 }
 
 const dpinfo = {
-  md5: "85fb2f805ee0f6ae95b0102feb7cc1d3",
+  md5: "hfsvgF7g9q6VsBAv63zB0w==",
   name: "test/fixtures/datapackage.json",
   size: 712,
   type: "application/json",
@@ -38,21 +38,29 @@ const postAuthorize = nock(config.server, {reqheaders : {"auth-token": "t35tt0k3
         upload_url: 'https://s3-us-west-2.amazonaws.com/bits-staging.datapackaged.com'
       }}})
 
+const postFinalize = nock(config.server, {reqheaders : {"auth-token": "t35tt0k3N"}})
+       .persist()
+       .post('/api/package/upload', (body) => {
+         return body.datapackage === "https://test.com"
+       })
+       .reply(200, {'status': 'queued'})
+
+test('uploads file to BitStore', async t => {
+  const dataPackageS3Url = "https://test.com"
+  let res = await push.finalize(config, dataPackageS3Url, 't35tt0k3N')
+  t.is(res.status, 'queued')
+})
+
 test('Gets the token', async t => {
   const token = await push.getToken(config)
   const expToken = 't35tt0k3N'
   t.is(token, expToken)
 })
 
-test('Checks if datapackage.json exists in cwd', t => {
-  let out = push.checkDpIsThere()
-  t.false(out)
-})
-
 test('Gets correct file info for regular file', t => {
   const fileInfo = push.getFileInfo('test/fixtures/sample.csv')
   const exp = {
-    md5: "b0661d9566498a800fbf95365ce28747",
+    md5: "sGYdlWZJioAPv5U2XOKHRw==",
     name: "test/fixtures/sample.csv",
     size: 46,
     type: "binary/octet-stream",
@@ -65,7 +73,7 @@ test('Gets correct file info for json file', t => {
   t.deepEqual(fileInfo, dpinfo)
 })
 
-test('Gets File data (authenticate)', async t => {
+test('Gets File data (authorize)', async t => {
   const fileInfo = {
     metadata: {
         owner: config.username,
@@ -94,19 +102,19 @@ test('Gets correct file info for request', t => {
   const exp = {
     filedata: {
       "README.md": {
-        md5: "5823e20594d9b2c3bfb93778213fd7d3",
+        md5: "WCPiBZTZssO/uTd4IT/X0w==",
         name: "README.md",
         size: 1018,
         type: "binary/octet-stream",
       },
       "test/fixtures/datapackage.json": {
-        md5: "85fb2f805ee0f6ae95b0102feb7cc1d3",
+        md5: "hfsvgF7g9q6VsBAv63zB0w==",
         name: "test/fixtures/datapackage.json",
         size: 712,
         type: "application/json",
       },
       "test/fixtures/sample.csv": {
-        md5: "b0661d9566498a800fbf95365ce28747",
+        md5: "sGYdlWZJioAPv5U2XOKHRw==",
         name: "test/fixtures/sample.csv",
         size: 46,
         type: "binary/octet-stream",
