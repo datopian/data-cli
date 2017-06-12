@@ -27,6 +27,12 @@ let metadata = {
   }
 }
 
+let config = {
+  username: 'test',
+  secretToken: 'secret',
+  server: 'https://test.com'
+}
+
 test.beforeEach(t => {
   t.context.error = console.error
   t.context.log = console.log
@@ -37,6 +43,14 @@ test.beforeEach(t => {
         .persist()
         .get('/api/package/publisher/package')
         .reply(200, metadata)
+
+  let postToken = nock(config.server)
+        .persist()
+        .post('/api/auth/token', {
+          username: config.username,
+          secret: config.secretToken
+        })
+        .reply(200, { token: 't35tt0k3N' })
 })
 
 test.afterEach(t => {
@@ -121,4 +135,10 @@ test('Gets bitStoreUrl if publisher and package is fine', async t => {
   let sUrl = utils.getServerUrl('not/config')
   let res = utils.getMetadata('publisher', 'package', sUrl)
   t.deepEqual(await res, metadata)
+})
+
+test.serial('Gets the token', async t => {
+  const token = await utils.getToken(config)
+  const expToken = 't35tt0k3N'
+  t.is(token, expToken)
 })

@@ -19,14 +19,6 @@ const dpinfo = {
   type: "application/json",
 }
 
-const postToken = nock(config.server)
-      .persist()
-      .post('/api/auth/token', {
-        username: config.username,
-        secret: config.secretToken
-      })
-      .reply(200, { token: 't35tt0k3N' })
-
 const postAuthorize = nock(config.server, {reqheaders : {"auth-token": "t35tt0k3N"}})
       .persist()
       .post('/api/datastore/authorize', {
@@ -51,12 +43,6 @@ test('uploads file to BitStore', async t => {
   const dataPackageS3Url = "https://test.com"
   let res = await push.finalize(config, dataPackageS3Url, 't35tt0k3N')
   t.is(res.status, 'queued')
-})
-
-test('Gets the token', async t => {
-  const token = await push.getToken(config)
-  const expToken = 't35tt0k3N'
-  t.is(token, expToken)
 })
 
 test('Gets correct file info for regular file', t => {
