@@ -160,9 +160,7 @@ test('"data norm[alize] test/fixtures/datapackage.json" normalizes datapackage.j
 test('"data norm[alize] test/fixtures/" normalizes datapackage.json inside given folder', async t => {
   const result = await data('normalize', 'test/fixtures/')
 
-  t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
-  t.true(stdout.length > 1)
   t.true(stdout[0].includes('Datapackage.json has been normalized'))
 })
 
