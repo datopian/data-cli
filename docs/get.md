@@ -16,7 +16,7 @@ $ data get <publisher>/<package>
 ## Example:
 
 ```
-# Downolads the Data Package from DataHub
+# Downloads the Data Package from DataHub
 # Saves to relative subdirectory {publisher}/{package}
 $ data get core/gdp
 ```
