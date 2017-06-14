@@ -30,7 +30,8 @@ let metadata = {
 let config = {
   username: 'test',
   secretToken: 'secret',
-  server: 'https://test.com'
+  server: 'https://test.com',
+  bitStore: 'https://bits-test.com'
 }
 
 test.beforeEach(t => {
@@ -103,15 +104,44 @@ test.serial('default log is working fine', t => {
 
 // common
 
-test('parseDataHubIdentifier parses correctly', t => {
-  let dhpkgid = 'publisher/package/resource'
-  let res = utils.parseIdentifier(dhpkgid)
+test('parseIdentifier parses given string correctly', t => {
+  let dpId = 'publisher/package/resource'
+  let res = utils.parseIdentifier(dpId, 'datahub')
   let exp = {
-    path: "resource",
-    pkg: "package",
+    name: "package",
     publisher: "publisher",
+    path: "https://bits-staging.datapackaged.com/metadata/publisher/package/_v/latest",
+    dataPackageJsonPath: "https://bits-staging.datapackaged.com/metadata/publisher/package/_v/latestdatapackage.json",
+    resourcePath: "resource",
+    type: "datahub",
+    original: "publisher/package/resource",
+    version: "latest"
   }
   t.deepEqual(res, exp)
+})
+
+test('parseIdentifier works with non-datahub type', t => {
+  let dpId = 'http://github.com/datasets/gdp'
+  let res = utils.parseIdentifier(dpId)
+  let exp = {
+    name: "gdp",
+    url: "http://raw.githubusercontent.com/datasets/gdp/master/",
+    dataPackageJsonUrl: "http://raw.githubusercontent.com/datasets/gdp/master/datapackage.json",
+    original: "http://github.com/datasets/gdp",
+    originalType: "",
+    version: "master"
+  }
+  t.deepEqual(res, exp)
+})
+
+test('Reads bitStore URL from config', t => {
+  let bitStoreUrl = utils.getBitStoreUrl('test/fixtures/config')
+  let exp = 'https://bits-test.com'
+  t.is(bitStoreUrl, exp)
+
+  bitStoreUrl = utils.getBitStoreUrl()
+  exp = 'https://bits-staging.datapackaged.com'
+  t.is(bitStoreUrl, exp)
 })
 
 test('Reads server URL from config', t => {
