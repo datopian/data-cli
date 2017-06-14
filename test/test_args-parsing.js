@@ -1,5 +1,3 @@
-require("babel-core/register")
-require("babel-polyfill")
 const test = require('ava')
 const { version } = require('../package.json')
 const { data } = require('./data.js')

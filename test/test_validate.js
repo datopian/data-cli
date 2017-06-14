@@ -1,5 +1,3 @@
-require("babel-core/register")
-require("babel-polyfill")
 const test = require('ava')
 const validate = require('../lib/validate')
 const sinon = require('sinon')

@@ -1,5 +1,3 @@
-require("babel-core/register")
-require("babel-polyfill")
 const test = require('ava')
 const purge = require('../lib/purge')
 const nock = require('nock')

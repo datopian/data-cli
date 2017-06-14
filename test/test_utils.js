@@ -1,5 +1,3 @@
-require("babel-core/register")
-require("babel-polyfill")
 const test = require('ava')
 const chalk = require('chalk')
 const { logger } = require('../lib/utils/log-handler.js')

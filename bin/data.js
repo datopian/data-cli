@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 require("babel-core/register")
-require("babel-polyfill")
 const { version } = require('../package.json')
 // Native
 const { resolve } = require('path')
