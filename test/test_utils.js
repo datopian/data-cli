@@ -102,14 +102,14 @@ test.serial('default log is working fine', t => {
 
 // common
 
-test('parseIdentifier parses given string correctly', t => {
+test('parseIdentifier parses given datahub id string correctly', t => {
   let dpId = 'publisher/package/resource'
-  let res = utils.parseIdentifier(dpId, 'datahub')
+  let res = utils.parseIdentifier(dpId)
   let exp = {
     name: "package",
-    publisher: "publisher",
+    owner: "publisher",
     path: "https://bits-staging.datapackaged.com/metadata/publisher/package/_v/latest",
-    dataPackageJsonPath: "https://bits-staging.datapackaged.com/metadata/publisher/package/_v/latestdatapackage.json",
+    dataPackageJsonPath: "https://bits-staging.datapackaged.com/metadata/publisher/package/_v/latest/datapackage.json",
     resourcePath: "resource",
     type: "datahub",
     original: "publisher/package/resource",
@@ -118,16 +118,32 @@ test('parseIdentifier parses given string correctly', t => {
   t.deepEqual(res, exp)
 })
 
-test('parseIdentifier works with non-datahub type', t => {
+test('parseIdentifier works with github type', t => {
   let dpId = 'http://github.com/datasets/gdp'
   let res = utils.parseIdentifier(dpId)
   let exp = {
     name: "gdp",
-    url: "http://raw.githubusercontent.com/datasets/gdp/master/",
-    dataPackageJsonUrl: "http://raw.githubusercontent.com/datasets/gdp/master/datapackage.json",
-    original: "http://github.com/datasets/gdp",
-    originalType: "",
+    owner: "datasets",
+    path: "http://raw.githubusercontent.com/datasets/gdp/master/",
+    dataPackageJsonPath: "http://raw.githubusercontent.com/datasets/gdp/master/datapackage.json",
+    type: "github",
+    original: dpId,
     version: "master"
+  }
+  t.deepEqual(res, exp)
+})
+
+test('parseIdentifier works with random url', t => {
+  let dpId = 'https://bits-staging.datapackaged.com/metadata/core/s-and-p-500-companies/_v/latest'
+  let res = utils.parseIdentifier(dpId)
+  let exp = {
+    name: "latest",
+    owner: null,
+    path: "https://bits-staging.datapackaged.com/metadata/core/s-and-p-500-companies/_v/latest/",
+    dataPackageJsonPath: "https://bits-staging.datapackaged.com/metadata/core/s-and-p-500-companies/_v/latest/datapackage.json",
+    type: "url",
+    original: dpId,
+    version: ""
   }
   t.deepEqual(res, exp)
 })
