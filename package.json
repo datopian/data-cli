@@ -54,7 +54,7 @@
     "commander": "^2.9.0",
     "crypto": "0.0.3",
     "csv-parse": "^1.2.0",
-    "datapackage": "^1.0.0-alpha.4",
+    "datapackage": "^0.8.1",
     "datapackage-identifier": "^0.4.2",
     "expand-home-dir": "0.0.3",
     "form-data": "^2.1.4",

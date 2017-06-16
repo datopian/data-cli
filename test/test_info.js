@@ -8,10 +8,10 @@ const utils = require('../lib/utils/common')
 const info = require('../lib/info.js')
 
 test.before(t => {
-  const metadata = nock('https://staging.datapackaged.com')
+  const metadata = nock('https://bits-staging.datapackaged.com')
         .persist()
-        .get('/api/package/core/co2-ppm')
-        .replyWithFile(200, './test/fixtures/co2-ppm/metadata.json')
+        .get('/metadata/core/co2-ppm/_v/latest/datapackage.json')
+        .replyWithFile(200, './test/fixtures/co2-ppm/datapackage.json')
 
   const readme = nock('https://bits-staging.datapackaged.com')
         .persist()
