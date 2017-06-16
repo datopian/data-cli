@@ -148,6 +148,21 @@ test('parseIdentifier works with random url', t => {
   t.deepEqual(res, exp)
 })
 
+test('parseIdentifier works with cwd', t => {
+  let dpId = undefined
+  let res = utils.parseIdentifier(dpId)
+  let exp = {
+    name: "datahub-cli",
+    owner: null,
+    path: "/Users/anuarustayev/Desktop/atomatic/datahub-cli/",
+    dataPackageJsonPath: "/Users/anuarustayev/Desktop/atomatic/datahub-cli/datapackage.json",
+    type: "local",
+    original: './',
+    version: ""
+  }
+  t.deepEqual(res, exp)
+})
+
 test('Reads bitStore URL from config', t => {
   let bitStoreUrl = utils.getBitStoreUrl('test/fixtures/config')
   let exp = 'https://bits-test.com'
