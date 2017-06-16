@@ -3,6 +3,7 @@ const chalk = require('chalk')
 const { logger } = require('../lib/utils/log-handler.js')
 const sinon = require('sinon')
 const nock = require('nock')
+const urljoin = require('url-join')
 const utils = require('../lib/utils/common.js')
 
 let metadata = {
@@ -151,11 +152,12 @@ test('parseIdentifier works with random url', t => {
 test('parseIdentifier works with cwd', t => {
   let dpId = undefined
   let res = utils.parseIdentifier(dpId)
+  let cwd = process.cwd()
   let exp = {
     name: "datahub-cli",
     owner: null,
-    path: "/Users/anuarustayev/Desktop/atomatic/datahub-cli/",
-    dataPackageJsonPath: "/Users/anuarustayev/Desktop/atomatic/datahub-cli/datapackage.json",
+    path: cwd + '/',
+    dataPackageJsonPath: urljoin(cwd, 'datapackage.json'),
     type: "local",
     original: './',
     version: ""
