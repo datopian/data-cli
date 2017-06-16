@@ -5,16 +5,13 @@ const minimist = require('minimist')
 const chalk = require('chalk')
 const fs = require('fs')
 const path = require('path')
-const {customMarked} = require('../lib/utils/tools.js')
 
 // ours
 const { validate } = require('../lib/validate')
 const { box, elephant, square } = require('../lib/utils/logo')
+const { customMarked } = require('../lib/utils/tools')
+const { logger } = require('../lib/utils/log-handler')
 
-const dhStyle = chalk.bold.underline
-const italic = chalk.italic
-const boldText = chalk.bold
-const underline = chalk.underline
 
 const argv = minimist(process.argv.slice(2), {
   string: ['validate'],
@@ -34,4 +31,9 @@ if (argv.help) {
 
 let descriptor = argv._[0]
 
-validate(descriptor)
+validate(descriptor).then(validation => {
+  if(validation instanceof Array) {
+    logger(validation, 'error', true)
+  }
+  logger('Data Package is valid', 'success')
+})
