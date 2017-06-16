@@ -35,5 +35,5 @@ validate(descriptor).then(validation => {
   if(validation instanceof Array) {
     logger(validation, 'error', true)
   }
-  // console.log(validation)
+  logger('Data Package is valid', 'success')
 })

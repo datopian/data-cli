@@ -1,67 +1,27 @@
 const test = require('ava')
+const nock = require('nock')
+const urljoin = require('url-join')
 const { validate } = require('../lib/validate')
-const sinon = require('sinon')
 const { data } = require('./data.js')
 
-// descriptor with invalid name and missing resources property
-const invalidDp1 = {
-  "name": "Invalid Name and no resource property"
-}
-
-// descriptor with valid name and with empty resources property
-const invalidDp2 = {
-  "name": "valid-name",
-  "resources": []
-}
-
-// descriptor with valid name and resources property, but without resource name
-const invalidDp3 = {
-  "name": "valid-name",
-  "resources": [
-    {}
-  ]
-}
-
-// the simplest valid descriptor
-const validDp = {
-  "name": "valid-name",
-  "resources": [
-    {
-      "name": "valid-resource-name"
-    }
-  ]
-}
-
-test.beforeEach(t => {
-  t.context.log = console.error
-
-  console.error = sinon.spy()
+test.before(t => {
+  const mock = nock('https://bits-staging.datapackaged.com')
+        .persist()
+        .get('/metadata/core/co2-ppm/_v/latest/datapackage.json')
+        .replyWithFile(200, './test/fixtures/co2-ppm/datapackage.json')
 })
 
-test('validateDescriptor function returns array for invalid descriptors, but true for valid', async t => {
-  let result = await validate(invalidDp1)
-  t.true(result instanceof Array)
-  result = await validate(invalidDp2)
-  t.true(result)
-  result = await validate(invalidDp3)
-  t.true(result instanceof Array)
-  // now pass valid dp
-  result = await validate(validDp)
-  t.true(result instanceof Array)
+test('validate works with datahub pkg id', async t => {
+  const owner = 'core'
+  const name = 'co2-ppm'
+  const res = await validate(urljoin(owner, name))
+  t.true(res)
 })
 
-test.serial('test error messages when descriptor is invalid', async t => {
-  // invalidDp1 validation errors:
-  let validation = await validate(invalidDp1)
-  t.true(validation[0].includes('Missing required property: resources schema path'))
-
-  // invalidDp2 is valid even there is no resources:
-  validation = await validate(invalidDp2)
-  t.true(validation)
-
-  // invalidDp3 has 1 validation error:
-  validation = await validate(invalidDp3)
-  t.true(validation[0].includes('Data does not match any schemas'))
+test('validate works with github id', async t => {
+  const pkgid = 'https://github.com/datasets/gdp'
+  const res = await validate(pkgid)
+  t.true(res)
 })
 
 test('"data help validate" prints help message', async t => {
