@@ -62,17 +62,35 @@ test('gets descriptor and outputs list of resources', async t => {
   console.log.reset()
 })
 
+test('gets readme if readme exists in descriptor', async t => {
+  const descriptor = {
+    readme: 'some test readme'
+  }
+  const result = await info.getReadme(descriptor, undefined)
+
+  t.is(result, 'some test readme')
+})
+
+test('gets readme if data package is on disk', async t => {
+  const descriptor = {}
+  const result = await info.getReadme(descriptor, undefined)
+
+  t.true(result.includes('# Usage'))
+})
+
+test('gets readme if data package is remote', async t => {
+  const descriptor = {}
+  const readmeUrl = 'https://bits-staging.datapackaged.com/metadata/core/co2-ppm/_v/latest/README.md'
+  const result = await info.getReadme(descriptor, readmeUrl)
+
+  t.true(result.includes('CO2 PPM - Trends in Atmospheric Carbon Dioxide.'))
+})
+
 test('"data info [-help | -h]" prints out help message for info', async t => {
   console.log = t.context.log
 
-  let result = await data('info')
-  t.is(result.code, 0)
+  let result = await data('info', '-help')
   let stdout = result.stdout.split('\n')
-  t.true(stdout.length > 1)
-  t.true(stdout[1].includes('Preview a Data Package'))
-
-  result = await data('info', '-help')
-  stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
   t.true(stdout[1].includes('Preview a Data Package'))
 

@@ -27,7 +27,7 @@ const help = () => {
   console.log('\n'+ customMarked(infoMarkdown))
 }
 
-if (argv.help || !argv._[0]) {
+if (argv.help) {
   help()
   process.exit(0)
 }
