@@ -1,6 +1,7 @@
 const test = require('ava')
 const push = require('../lib/push')
 const nock = require('nock')
+const { data } = require('./data.js')
 
 const dpjson = require('./fixtures/datapackage.json')
 
@@ -112,4 +113,29 @@ test('Gets correct file info for request', t => {
     },
   }
   t.deepEqual(exp, res)
+})
+
+test('"data help push" prints help message for push command', async t => {
+  const result = await data('help', 'push')
+
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('Push a Data Package to DataHub'))
+})
+
+test('"data push -h --help" prints help message for push command', async t => {
+  let result = await data('push', '-h')
+
+  t.is(result.code, 0)
+  let stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('Push a Data Package to DataHub'))
+
+  result = await data('push', '--help')
+
+  t.is(result.code, 0)
+  stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[1].includes('Push a Data Package to DataHub'))
 })
