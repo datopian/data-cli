@@ -1,75 +1,107 @@
 const test = require('ava')
-const {scanDir, addResource, buildSchema} = require('../lib/init.js')
-const sinon = require('sinon')
+const {scanDir, addResource, buildSchema, addFiles} = require('../lib/init')
+const init = require('../lib/init')
 const Datapackage = require('datapackage').Datapackage
+const urljoin = require('url-join')
 const util = require('util')
 
 
-test('checks scanDir object', async t => {
+test.serial('checks scanDir function', async t => {
   const res = await scanDir('test/fixtures/readdirTest/')
   const exp = {
     files:
-     [ 'sample1.csv',
-       'sample2.json' ],
-    dirs: []
+     [ 'sample1.csv', 'sample2.json' ],
+    dirs: [ 'dir' ]
   }
   t.deepEqual(res, exp)
 })
 
 
-test('adding resources', async t => {
+test.serial('adding resources - addResource function', async t => {
   const dpObj = await new Datapackage('test/fixtures/dp-test/datapackage.json')
 
   t.true(dpObj.resources.length === 1)
-  await addResource(dpObj._basePath+'/'+'second-resource.csv', dpObj)
-  t.true(dpObj.resources.length === 2)
-  t.is(dpObj.resources[1].name, 'second-resource')
-})
-
-
-test('adding tabular data', async t => {
-  const dpObj = await new Datapackage('test/fixtures/dp-test/datapackage.json')
   await addResource('second-resource.csv', dpObj)
   t.true(dpObj.resources.length === 2)
-  //console.log(util.inspect(dpObj.resources[1].name, {showHidden: false, depth: null}))
   t.is(dpObj.resources[1].name, 'second-resource')
 })
 
 
-test('adding non tabular file', async t => {
+test.serial('adding tabular data should include schema', async t => {
   const dpObj = await new Datapackage('test/fixtures/dp-test/datapackage.json')
-  await addResource('second-resource-non-tabular.json', dpObj)
-  t.true(dpObj.resources.length === 2)
-  t.is(dpObj.resources[1].name, 'second-resource-non-tabular')
+  const expResourceDescriptor = {
+    "name": "second-resource",
+    "path": "second-resource.csv",
+    "format": "csv",
+    "schema": {
+      "fields": [
+        {
+          "description": "",
+          "format": "default",
+          "name": "a",
+          "title": "",
+          "type": "string"
+        },
+        {
+          "description": "",
+          "format": "default",
+          "name": "b",
+          "title": "",
+          "type": "date"
+        },
+        {
+          "description": "",
+          "format": "default",
+          "name": "c",
+          "title": "",
+          "type": "integer"
+        }
+      ]
+    }
+  }
+  await addResource('second-resource.csv', dpObj)
+  t.deepEqual(dpObj.resources[1].descriptor, expResourceDescriptor)
 })
 
 
-test('checks for schema', async t => {
+test.serial('adding non tabular file', async t => {
+  const dpObj = await new Datapackage('test/fixtures/dp-test/datapackage.json')
+  const expResourceDescriptor = {
+    "name": "second-resource-non-tabular",
+    "path": "second-resource-non-tabular.json",
+    "format": "json"
+  }
+  await addResource('second-resource-non-tabular.json', dpObj)
+  t.deepEqual(dpObj.resources[1].descriptor, expResourceDescriptor)
+})
+
+
+test.serial('how buildSchema works', async t => {
   const res = await buildSchema('test/fixtures/readdirTest/sample1.csv')
   const exp = {
-                fields: [
-                  {
-                    description: "",
-                    format: "default",
-                    name: "number",
-                    title: "",
-                    type: "integer"
-                  },
-                  {
-                    description: "",
-                    format: "default",
-                    name: "string",
-                    title: "",
-                    type: "string"
-                  },
-                  {
-                    description: "",
-                    format: "default",
-                    name: "boolean",
-                    title: "",
-                    type: "boolean"
-                  }
-                ]
-              }
+    fields: [
+      {
+        description: "",
+        format: "default",
+        name: "number",
+        title: "",
+        type: "integer"
+      },
+      {
+        description: "",
+        format: "default",
+        name: "string",
+        title: "",
+        type: "string"
+      },
+      {
+        description: "",
+        format: "default",
+        name: "boolean",
+        title: "",
+        type: "boolean"
+      }
+    ]
+  }
   t.deepEqual(res, exp)
 })
