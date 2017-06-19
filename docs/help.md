@@ -1,35 +1,58 @@
 
-# Welcome to the **DataHub** command line tool!
+  ❒ data [options] <command> <args>
 
-**DataHub** = 📦  + 🐘  A home for all your data, nicely packaged ❒
+  Commands:
 
-We hope this tool will bring you much joy as you work with your data and the **DataHub**.
+    DataHub:
 
-## Usage:
+      push        [path]        Push data to the DataHub
+      get         [pkg-id]      Get data from DataHub
+      purge       [owner/name]  Permanently deletes data from DataHub
 
-```
-$ data <command> [options]
-```
+    Data Package specific:
 
-## Commands:
+      info        [pkg-id]      Get info on data
+      normalize                 Normalize datapackage.json
+      validate                  Validate Data Package structure
 
-Commands | Description
---- | ---
-**config[ure]** | *Sets Up Configurations for DataHub*
-**get** | *View or Download file from DataHub*
-**help** | *Show help*
-**info** | *Get Data Package info for given publisher and package*
-**norm[alize]** | *Normalize datapackage.json*
-**purge** | *Permanently deletes Data Package from DataHub*
-**push** | *Publish on DataHub server*
-**validate** | *Validate datapackage.json in given path/URL or in cwd if not given*
+    Administrative:
 
-## Options:
+      config                    Set up configuration
+      help        [cmd]         Show help on cmd
 
-```
--h, --help              Output usage information
--v, --version           Output the version
-```
+  Options:
+
+  -h, --help              Output usage information
+  -v, --version           Output the version
+
+# Package Identifiers [pkg-id]
+
+  A package identifier is:
+
+- A url like http://www.mydatapackages.com/my-package/
+- A local path
+- A DataHub package identifier in the form `<owner>/<name>`
 
 
-*Hint: use `$ data <command> -h` to get usage information about specific command.*
+# Examples
+
+  Push a Data Package (in the current directory)
+
+      $ data push
+
+  Get a Data Package from the DataHub owned by `core` and with name `finance-vix`
+
+      $ data get core/finance-vix/
+
+  Get a Data Package on github
+
+      $ data get https://github.com/datasets/gdp
+
+
+# About the **DataHub** command line tool!
+
+  DataHub = 📦  + 🐘  A home for all your data, nicely packaged ❒
+
+  We hope this tool will bring you much joy as you work with your data and the DataHub.
+
+
