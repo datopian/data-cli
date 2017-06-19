@@ -1,6 +1,5 @@
 const test = require('ava')
 const {scanDir, addResource, buildSchema, addFiles} = require('../lib/init')
-const init = require('../lib/init')
 const Datapackage = require('datapackage').Datapackage
 const urljoin = require('url-join')
 const util = require('util')
