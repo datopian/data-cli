@@ -1,8 +1,17 @@
 const test = require('ava')
-const {scanDir, addResource, buildSchema, addFiles} = require('../lib/init')
 const Datapackage = require('datapackage').Datapackage
 const urljoin = require('url-join')
-const util = require('util')
+const path = require('path')
+const sinon = require('sinon')
+
+const { scanDir, addResource, buildSchema, addFiles, shouldWrite } = require('../lib/init')
+const prompt = require('../lib/utils/prompt')
+
+
+// stub our prompt function so we can return what we want later in tests
+test.before(t => {
+  prompt.promptFunction = sinon.stub()
+})
 
 
 test.serial('checks scanDir function', async t => {
@@ -103,4 +112,24 @@ test.serial('how buildSchema works', async t => {
     ]
   }
   t.deepEqual(res, exp)
+})
+
+test('how shouldWrite function works', async t => {
+  // test when answer is `y`
+  prompt.promptFunction.callsFake(() => {
+    return {answer: 'y'}
+  })
+  const descriptor = {
+    "test": "test"
+  }
+  const cwd = path.join(process.cwd(), 'datapackage.json')
+  const expSchemaDescription = `Going to write to ${cwd}:\n\n${JSON.stringify(descriptor, null, 2)} \n\n\nIs that OK - y/n?`
+  await shouldWrite(descriptor)
+  t.true(prompt.promptFunction.calledOnce)
+  t.deepEqual(
+    prompt.promptFunction.firstCall.args[0].properties.answer.description,
+    expSchemaDescription
+  )
+
+  prompt.promptFunction.reset()
 })
