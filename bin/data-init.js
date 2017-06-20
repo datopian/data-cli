@@ -17,7 +17,7 @@ const argv = minimist(process.argv.slice(2), {
   }
 })
 
-var initMarkdown = fs.readFileSync(path.join(__dirname, '../docs/init.md'),'utf8')
+let initMarkdown = fs.readFileSync(path.join(__dirname, '../docs/init.md'),'utf8')
 const help = () => {
   console.log('\n'+ customMarked(initMarkdown))
 }
