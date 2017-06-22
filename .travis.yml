@@ -1,27 +1,21 @@
-{
-  "language": "node_js",
-  "node_js": [
-    "6",
-    "7",
-    "8"
-  ],
-  "install": [
-    "npm install"
-  ]
-  "script": [
-  "npm test"
-  ],  
-  "before_deploy": "npm run pack",
-  "deploy": {
-    "provider": "releases",
-    "api_key": {
-      "secure": "7b5c1fb92580e3262844c126c8758a69c9038c60"
-    },
-    "file": "packed/*",
-    "skip_cleanup": true,
-    "on": {
-      "tags": true
-    }
-  }
-}
-  
+language: node_js
+
+node_js:
+  - "6"
+  - "7"
+  - "8"
+
+install:
+  - npm install
+
+script: npm test
+
+before_deploy: "npm run pack"
+deploy: 
+  provider: releases
+  api_key:
+    secure: "7b5c1fb92580e3262844c126c8758a69c9038c60"
+  file: "packed/*"
+  skip_cleanup: true
+  on: 
+    tags: true
