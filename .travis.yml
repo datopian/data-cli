@@ -9,3 +9,13 @@ install:
   - npm install
 
 script: npm test
+
+before_deploy: npm run pack
+deploy: 
+  provider: releases
+  api_key:
+    secure: "VYvNFCRURlfIKghwqSTxU0ugfZucympjdg1s3mNhyxI+FSULMWwINIjVlAsyVUiZPUTElUKkqhzwpTbdRfVZ+91JHqpBkRS/t7GdFjcEc43uKazWiTIu52jQHx4e3Hs5T43pDDPg310Hqilo4dpSnSEuJS7P2bxZiBB/mt83K8Ck2l9JSWf2wI4EayVm4BzFCCtwLBh7qGduZHO7VDL2OvCRt4Ux9wNjBqzK2yCoiVrKQ1Gg3cNsARXtmWI7nPhRbAxXxKgji7ld3ErKuSYQrrK+/2QvtZnk4xhEcoK17z3ZbJRVKsgPV9GwziL5ub0IAAyjZSir5saiySy8eTQLd6UeXAFwCyX3K/cfWBI+lbbnzXtCdKkShFerntP90CcRdbke9TK8BL3NShhQKERxj1+rcjK8jeHJ8wLCR403Rv49P2eocisFDQ43dQFBl/ojPPpAF2LuxYWHIaMGeV1cCS2tOMdW2zEcyPZr2AJ1IB8QGDpX0HiKz0hb+QbAA0rm7bK47qK+qbgcu+wZqw0QmaYO8dM3vEAQwXM0PPvfrsmPym0lME3sg3ejVIfzA6O8Gz9isL7fnaaRrxTVcLceAFfV6iXQEhj17XKhVKbRDFJmWjN1Gi4Ho71I68XzosT2j50Nb5nGwTbY+uvKVbLMEW14xwzM3SyIxgwBtNQijwQ="
+  file: "packed/*"
+  skip_cleanup: true
+  on: 
+    tags: true
