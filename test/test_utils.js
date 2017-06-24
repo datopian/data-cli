@@ -95,7 +95,7 @@ test.serial('Success log is working fine', t => {
 
 test.serial('default log is working fine', t => {
   logger('Success message')
-  const exp = `${chalk.bold.green('Success:')} Success message`
+  const exp = `Success message`
   t.true(console.log.calledOnce)
   t.true(console.log.firstCall.args[0].includes(exp))
 })
