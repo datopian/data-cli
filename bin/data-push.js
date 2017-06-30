@@ -31,5 +31,6 @@ if (argv.help) {
   process.exit(0)
 }
 
+const filePath = argv._[0]
 
-push()
+push(filePath)
