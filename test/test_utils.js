@@ -192,6 +192,11 @@ test('Checks if datapackage.json exists in cwd', t => {
   t.false(out)
 })
 
+test('Checks if datapackage.json exists in given dir', t => {
+  let out = utils.checkDpIsThere('test/fixtures')
+  t.true(out)
+})
+
 test('Gets bitStoreUrl if publisher and package is fine', async t => {
   let sUrl = utils.getServerUrl('not/config')
   let res = utils.getMetadata('publisher', 'package', sUrl)
