@@ -3,16 +3,20 @@ const Datapackage = require('datapackage').Datapackage
 const urljoin = require('url-join')
 const path = require('path')
 const sinon = require('sinon')
+const run = require('inquirer-test')
+const { ENTER } = require('inquirer-test')
 
 const { scanDir, addResource, buildSchema, addFiles, shouldWrite } = require('../lib/init')
-const prompt = require('../lib/utils/prompt')
 
+const cliPath = path.join(__dirname, '../bin/data-init.js')
 
-// stub our prompt function so we can return what we want later in tests
-test.before(t => {
-  prompt.promptFunction = sinon.stub()
+test.serial('runs init command with data input', async t => {
+  const result = await(run(cliPath, [
+    'my-datapackage', ENTER
+  ]))
+  t.true(result.includes('? Enter Data Package name (scratchpad)'))
+  t.true(result.includes('my-datapackage'))
 })
-
 
 test.serial('checks scanDir function', async t => {
   const res = await scanDir('test/fixtures/readdirTest/')
@@ -112,24 +116,4 @@ test.serial('how buildSchema works', async t => {
     ]
   }
   t.deepEqual(res, exp)
-})
-
-test('how shouldWrite function works', async t => {
-  // test when answer is `y`
-  prompt.promptFunction.callsFake(() => {
-    return {answer: 'y'}
-  })
-  const descriptor = {
-    "test": "test"
-  }
-  const cwd = path.join(process.cwd(), 'datapackage.json')
-  const expSchemaDescription = `Going to write to ${cwd}:\n\n${JSON.stringify(descriptor, null, 2)} \n\n\nIs that OK - y/n?`
-  await shouldWrite(descriptor)
-  t.true(prompt.promptFunction.calledOnce)
-  t.deepEqual(
-    prompt.promptFunction.firstCall.args[0].properties.answer.description,
-    expSchemaDescription
-  )
-
-  prompt.promptFunction.reset()
 })
