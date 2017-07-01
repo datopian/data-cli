@@ -4,6 +4,9 @@ const { version } = require('../package.json')
 // Native
 const { resolve } = require('path')
 
+// ours
+const { logger } = require('../lib/utils/log-handler.js')
+
 // Check if the current path exists and throw and error
 // if the user is trying to deploy a non-existing path!
 // This needs to be done exactly in this place, because
@@ -20,11 +23,8 @@ try {
 }
 
 
-// This command will be run if no other sub command is specified
-const defaultCommand = 'help'
-
 const commands = new Set([
-  defaultCommand,
+  'help',
   'get',
   'push',
   'normalize',
@@ -43,27 +43,27 @@ const aliases = new Map([
   ['norm', 'normalize']
 ])
 
-let cmd = defaultCommand
+
+// Parse args and dispatch to relevant command
 let args = process.argv.slice(2)
-const index = args.findIndex(a => commands.has(a))
 
 if (args[0] === '-v' || args[0] === '--version') {
   console.log(`Version: ${version}`)
   process.exit()
 }
 
+// default command
+let cmd = 'help'
+const index = args.findIndex(a => commands.has(a))
+
 if (index > -1) {
   cmd = args[index]
   args.splice(index, 1)
 
-  if (cmd === 'help') {
-    if (index < args.length && commands.has(args[index])) {
-      cmd = args[index]
-      args.splice(index, 1)
-    } else {
-      cmd = defaultCommand
-    }
-
+  // dispatch to the underlying command and help will be called there
+  if (cmd === 'help' && index < args.length && commands.has(args[index])) {
+    cmd = args[index]
+    args.splice(index, 1)
     args.unshift('--help')
   }
 
@@ -72,6 +72,16 @@ if (index > -1) {
     const parts = cmd.split(' ')
     cmd = parts.shift()
     args = [].concat(parts, args)
+  }
+} else {
+  // one final option is no command in which case show help
+  if (args.length === 0) {
+    cmd = 'help'
+  } else {
+    logger(`Command does not exist "` + args[0] + '"', 'abort')
+    console.error(`\nTo see a list of available commands run:`)
+    console.error(`\n  data help\n`)
+    process.exit(1)
   }
 }
 
