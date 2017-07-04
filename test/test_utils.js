@@ -208,3 +208,24 @@ test.serial('Gets the token', async t => {
   const expToken = 't35tt0k3N'
   t.is(token, expToken)
 })
+
+test('Tests if given path is url or not', t => {
+  let notUrl = 'not/url/path'
+  let res = utils.isUrl(notUrl)
+  t.false(res)
+  notUrl = '/not/url/path/'
+  res = utils.isUrl(notUrl)
+  t.false(res)
+  let url = 'https://test.com'
+  res = utils.isUrl(url)
+  t.true(res)
+  url = 'http://test.com'
+  res = utils.isUrl(url)
+  t.true(res)
+  url = 'HTTP://TEST.COM'
+  res = utils.isUrl(url)
+  t.true(res)
+  url = '//test.com'
+  res = utils.isUrl(url)
+  t.true(res)
+})
