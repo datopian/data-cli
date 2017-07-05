@@ -1,4 +1,5 @@
 const test = require('ava')
+const fs = require('fs')
 const chalk = require('chalk')
 const { logger } = require('../lib/utils/log-handler.js')
 const sinon = require('sinon')
@@ -252,14 +253,32 @@ test('parsePath function with remote url', t => {
   t.is(res.encoding, null)
 })
 
-test.serial('DataStream class', async t => {
+test.serial('DataStream class for "stream" method', async t => {
   const path_ = 'test/fixtures/sample.csv'
-  let dataStreamObj = new utils.DataStream(path_)
-  let res = await dataStreamObj.getRawStream()
+  let dataStreamObj = new utils.DataResource(path_)
+  let res = await dataStreamObj.stream
   t.is(res.stream.constructor.name, 'ReadStream')
 
   const url = 'https://raw.githubusercontent.com/datasets/finance-vix/master/data/vix-daily.csv'
-  dataStreamObj = new utils.DataStream(url)
-  res = await dataStreamObj.getRawStream()
+  dataStreamObj = new utils.DataResource(url)
+  res = await dataStreamObj.stream
   t.is(res.stream.constructor.name, 'IncomingMessage')
 })
+
+// test.serial('DataStream class for getObjectStreamOld', async t => {
+//   const objects = [1,2,3]
+//   const path_ = 'test/fixtures/sample.csv'
+//   let dataStreamObj = new utils.DataStream(path_)
+//   let res = await dataStreamObj.getObjectStreamOld(objects)
+//   t.is(res.constructor.name, 'Readable')
+//   t.deepEqual(res._readableState.buffer.head.data, [1,2,3])
+// })
+//
+// test('Data Stream class for getObjectStream', async t => {
+//   const path_ = 'test/fixtures/sample.csv'
+//   let data = fs.createReadStream(path_)
+//   let dataStreamObj = new utils.DataStream(path_)
+//   let res = await dataStreamObj.getObjectStream(data)
+//   t.is(res.length, 3)
+//   t.is(res.constructor.name, 'Array')
+// })
