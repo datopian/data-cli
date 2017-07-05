@@ -253,7 +253,16 @@ test('parsePath function with remote url', t => {
   t.is(res.encoding, null)
 })
 
-test.serial('DataStream class for "stream" method', async t => {
+test('DataResource class with descriptor / path', t => {
+  const path_ = 'test/fixtures/sample.csv'
+  const descriptor = {path: 'test/fixtures/sample.csv'}
+  const obj1 = new utils.DataResource(path_)
+  const obj2 = new utils.DataResource(descriptor)
+  t.is(obj1.descriptor.path, 'test/fixtures/sample.csv')
+  t.is(obj2.descriptor.path, 'test/fixtures/sample.csv')
+})
+
+test.serial('DataResource class for "stream" method', async t => {
   const path_ = 'test/fixtures/sample.csv'
   let dataStreamObj = new utils.DataResource(path_)
   let res = await dataStreamObj.stream
