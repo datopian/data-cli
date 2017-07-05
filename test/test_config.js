@@ -13,7 +13,8 @@ test.serial('runs config command with data input', async t => {
   const result = await(run(cliPath, [
     'my-username', ENTER
   ]))
-  t.true(result.includes('? Username:  my-username'))
+  t.true(result.includes('? Username:'))
+  t.true(result.includes('my-username'))
 })
 
 test('reads from config file', t => {
