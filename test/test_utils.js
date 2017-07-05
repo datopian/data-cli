@@ -251,3 +251,15 @@ test('parsePath function with remote url', t => {
   t.is(res.mediatype, 'text/csv')
   t.is(res.encoding, null)
 })
+
+test.serial('DataStream class', async t => {
+  const path_ = 'test/fixtures/sample.csv'
+  let dataStreamObj = new utils.DataStream(path_)
+  let res = await dataStreamObj.getRawStream()
+  t.is(res.stream.constructor.name, 'ReadStream')
+
+  const url = 'https://raw.githubusercontent.com/datasets/finance-vix/master/data/vix-daily.csv'
+  dataStreamObj = new utils.DataStream(url)
+  res = await dataStreamObj.getRawStream()
+  t.is(res.stream.constructor.name, 'IncomingMessage')
+})
