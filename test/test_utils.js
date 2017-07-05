@@ -229,3 +229,25 @@ test('Tests if given path is url or not', t => {
   res = utils.isUrl(url)
   t.true(res)
 })
+
+test('parsePath function with local path', t => {
+  const path_ = 'test/fixtures/sample.csv'
+  const res = utils.parsePath(path_)
+  t.is(res.path, path_)
+  t.is(res.pathType, 'local')
+  t.is(res.name, 'sample')
+  t.is(res.format, 'csv')
+  t.is(res.mediatype, 'text/csv')
+  t.is(res.encoding, 'ISO-8859-1')
+})
+
+test('parsePath function with remote url', t => {
+  const path_ = 'https://raw.githubusercontent.com/datasets/finance-vix/master/data/vix-daily.csv'
+  const res = utils.parsePath(path_)
+  t.is(res.path, path_)
+  t.is(res.pathType, 'remote')
+  t.is(res.name, 'vix-daily')
+  t.is(res.format, 'csv')
+  t.is(res.mediatype, 'text/csv')
+  t.is(res.encoding, null)
+})
