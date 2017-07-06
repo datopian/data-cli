@@ -7,29 +7,67 @@ const dpjson = require('./fixtures/datapackage.json')
 
 let config = {
   username: 'test',
-  secretToken: 'secret',
-  server: 'https://test.com'
+  server: 'https://test.com',
+  token: 't35tt0k3N'
 }
 
 const dpinfo = {
   md5: "hfsvgF7g9q6VsBAv63zB0w==",
   name: "test/fixtures/datapackage.json",
-  size: 712,
+  length: 712,
   type: "application/json",
 }
 
-const postAuthorize = nock(config.server, {reqheaders : {"auth-token": "t35tt0k3N"}})
+const apiAuthorize = nock(config.server, {reqheaders : {"Auth-Token": "t35tt0k3N"}})
       .persist()
-      .post('/api/datastore/authorize', {
+      .post('/rawstore/authorize', {
         metadata: {
             owner: config.username,
             name: 'test'
         },
         filedata: {'datapackage.json': dpinfo}
       })
-      .reply(200, { filedata: {'datapackage.json':{
-        upload_url: 'https://s3-us-west-2.amazonaws.com/bits-staging.datapackaged.com'
-      }}})
+      .reply(200, {
+        filedata: {
+          'datapackage.json': {
+            'md5-hash': "s0mEhash#",
+            'name': 'datapackage.json',
+            'type': 'application/json',
+            'upload_query': {},
+            'upload_url': 'https://s3-us-west-2.amazonaws.com/bits-staging.datapackaged.com'
+          }
+        }
+      })
+
+const apiSpecStore = nock(config.server, {
+  reqheaders: {
+    "Auth-Token": "t35tt0k3N"
+  }
+}).persist()
+  .post('/source/upload', {
+    "meta": {
+      "version": 1,
+      "owner": "test",
+      "id": "<id>"
+    },
+    "inputs": [
+      {
+        "kind": "datapackage",
+        "url": "http://test.com/hash1",
+        "parameters": {
+          "resource-mapping": {
+            "file1": "http://test.com/hash2",
+            "file2": "http://test.com/hash3"
+          }
+        }
+      }
+    ]
+  })
+  .reply(200, {
+    "success": true,
+    "id": "test",
+    "errors": []
+  })
 
 const postFinalize = nock(config.server, {reqheaders : {"auth-token": "t35tt0k3N"}})
        .persist()
@@ -44,12 +82,37 @@ test('uploads file to BitStore', async t => {
   t.is(res.status, 'queued')
 })
 
+test('uploads spec into spec store', async t => {
+  const resources = [
+    {
+      'name': 'file1'
+    },
+    {
+      'name': 'file2'
+    }
+  ]
+  const datafile = {
+    'datapackage.json': {
+      'md5': 'hash1',
+      'upload_url': 'http://test.com'
+    },
+    'file1': {
+      'md5': 'hash2'
+    },
+    'file2': {
+      'md5': 'hash3'
+    }
+  }
+  const out = await push.uploadToSpecStore(config, datafile, resources)
+  t.is(out.success, true)
+})
+
 test('Gets correct file info for regular file', t => {
   const fileInfo = push.getFileInfo('test/fixtures/sample.csv')
   const exp = {
     md5: "sGYdlWZJioAPv5U2XOKHRw==",
     name: "test/fixtures/sample.csv",
-    size: 46,
+    length: 46,
     type: "binary/octet-stream",
   }
   t.deepEqual(fileInfo, exp)
@@ -69,11 +132,15 @@ test('Gets File data (authorize)', async t => {
     filedata: {'datapackage.json': dpinfo}
   }
   const exp = {
-    "datapackage.json": {
-      upload_url: "https://s3-us-west-2.amazonaws.com/bits-staging.datapackaged.com",
-    },
+    'datapackage.json': {
+      'md5-hash': "s0mEhash#",
+      'name': 'datapackage.json',
+      'type': 'application/json',
+      'upload_query': {},
+      'upload_url': 'https://s3-us-west-2.amazonaws.com/bits-staging.datapackaged.com'
+    }
   }
-  const fileData = await push.getFileData(config, fileInfo, 't35tt0k3N')
+  const fileData = await push.getFileData(config, fileInfo)
   t.deepEqual(fileData, exp)
 })
 
@@ -91,19 +158,19 @@ test('Gets correct file info for request', t => {
       "README.md": {
         md5: "WCPiBZTZssO/uTd4IT/X0w==",
         name: "README.md",
-        size: 1018,
+        length: 1018,
         type: "binary/octet-stream",
       },
       "test/fixtures/datapackage.json": {
         md5: "hfsvgF7g9q6VsBAv63zB0w==",
         name: "test/fixtures/datapackage.json",
-        size: 712,
+        length: 712,
         type: "application/json",
       },
       "test/fixtures/sample.csv": {
         md5: "sGYdlWZJioAPv5U2XOKHRw==",
         name: "test/fixtures/sample.csv",
-        size: 46,
+        length: 46,
         type: "binary/octet-stream",
       },
     },
