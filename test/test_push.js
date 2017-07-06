@@ -8,7 +8,8 @@ const dpjson = require('./fixtures/datapackage.json')
 let config = {
   username: 'test',
   server: 'https://test.com',
-  token: 't35tt0k3N'
+  token: 't35tt0k3N',
+  api: 'https://test.com'
 }
 
 const dpinfo = {

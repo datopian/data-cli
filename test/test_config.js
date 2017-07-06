@@ -29,7 +29,7 @@ test('reads from config file', t => {
 })
 
 test('server and bitStore is set by default', t => {
-  t.is(config.defaultServer, 'https://staging.datapackaged.com')
+  t.is(config.defaultServer, 'http://testing.datapackaged.com')
   t.is(config.defaultBitStore, 'https://bits-staging.datapackaged.com')
 })
 
