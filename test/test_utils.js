@@ -5,6 +5,7 @@ const { logger } = require('../lib/utils/log-handler.js')
 const sinon = require('sinon')
 const nock = require('nock')
 const urljoin = require('url-join')
+const toArray = require('stream-to-array')
 const utils = require('../lib/utils/common.js')
 
 let metadata = {
@@ -41,17 +42,22 @@ test.beforeEach(t => {
   console.log = sinon.spy()
 
   let getMeta = nock('https://staging.datapackaged.com')
-        .persist()
-        .get('/api/package/publisher/package')
-        .reply(200, metadata)
+    .persist()
+    .get('/api/package/publisher/package')
+    .reply(200, metadata)
 
   let postToken = nock(config.server)
-        .persist()
-        .post('/api/auth/token', {
-          username: config.username,
-          secret: config.secretToken
-        })
-        .reply(200, { token: 't35tt0k3N' })
+    .persist()
+    .post('/api/auth/token', {
+      username: config.username,
+      secret: config.secretToken
+    })
+    .reply(200, { token: 't35tt0k3N' })
+
+  let github = nock('https://raw.githubusercontent.com')
+    .persist()
+    .get('/datahq/datahub-cli/master/test/fixtures/sample.csv')
+    .replyWithFile(200, __dirname + '/fixtures/sample.csv')
 })
 
 test.afterEach(t => {
@@ -264,30 +270,23 @@ test('DataResource class with descriptor / path', t => {
 
 test.serial('DataResource class for "stream" method', async t => {
   const path_ = 'test/fixtures/sample.csv'
-  let dataStreamObj = new utils.DataResource(path_)
-  let res = await dataStreamObj.stream
-  t.is(res.stream.constructor.name, 'ReadStream')
+  let res = new utils.DataResource(path_)
+  let stream = await res.stream
+  let out = await toArray(stream)
+  t.true(out.toString().includes('number,string,boolean'))
 
-  const url = 'https://raw.githubusercontent.com/datasets/finance-vix/master/data/vix-daily.csv'
-  dataStreamObj = new utils.DataResource(url)
-  res = await dataStreamObj.stream
-  t.is(res.stream.constructor.name, 'IncomingMessage')
+  const url = 'https://raw.githubusercontent.com/datahq/datahub-cli/master/test/fixtures/sample.csv'
+  res = new utils.DataResource(url)
+  stream = await res.stream
+  out = await toArray(stream)
+  t.true(out.toString().includes('number,string,boolean'))
 })
 
-// test.serial('DataStream class for getObjectStreamOld', async t => {
-//   const objects = [1,2,3]
-//   const path_ = 'test/fixtures/sample.csv'
-//   let dataStreamObj = new utils.DataStream(path_)
-//   let res = await dataStreamObj.getObjectStreamOld(objects)
-//   t.is(res.constructor.name, 'Readable')
-//   t.deepEqual(res._readableState.buffer.head.data, [1,2,3])
-// })
-//
-// test('Data Stream class for getObjectStream', async t => {
-//   const path_ = 'test/fixtures/sample.csv'
-//   let data = fs.createReadStream(path_)
-//   let dataStreamObj = new utils.DataStream(path_)
-//   let res = await dataStreamObj.getObjectStream(data)
-//   t.is(res.length, 3)
-//   t.is(res.constructor.name, 'Array')
-// })
+test.serial('DataResource class for getting "rows" method', async t => {
+  const path_ = 'test/fixtures/sample.csv'
+  let res = new utils.DataResource(path_)
+  let rowStream = res.rows
+  let out = await utils.objectStreamToArray(rowStream)
+  t.deepEqual(out[0], ['number', 'string', 'boolean'])
+  t.deepEqual(out[1], ['1', 'two', 'true'])
+})
