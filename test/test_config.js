@@ -1,7 +1,21 @@
 const test = require('ava')
 const fs = require('fs')
+const run = require('inquirer-test')
+const { ENTER } = require('inquirer-test')
+const path = require('path')
+
 const { data } = require('./data.js')
 const config = require('../lib/config.js')
+
+const cliPath = path.join(__dirname, '../bin/data-config.js')
+
+test.serial('runs config command with data input', async t => {
+  const result = await(run(cliPath, [
+    'my-username', ENTER
+  ]))
+  t.true(result.includes('? Username:'))
+  t.true(result.includes('my-username'))
+})
 
 test('reads from config file', t => {
   let res = config.readConfig('test/fixtures/config')
