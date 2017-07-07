@@ -63,6 +63,7 @@
     "inquirer": "^3.1.1",
     "marked": "^0.3.6",
     "marked-terminal": "^2.0.0",
+    "md5": "^2.2.1",
     "mime-types": "^2.1.15",
     "minimist": "^1.2.0",
     "nconf": "^0.8.4",
