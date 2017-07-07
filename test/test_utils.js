@@ -115,7 +115,7 @@ test('Reads server URL from config', t => {
 
 test('Uses default server URL if config not found', t => {
   let sUrl = utils.getServerUrl('not/config')
-  let expUrl = 'https://staging.datapackaged.com'
+  let expUrl = 'http://testing.datapackaged.com'
   t.is(sUrl, expUrl)
 })
 
@@ -127,12 +127,6 @@ test('Checks if datapackage.json exists in cwd', t => {
 test('Checks if datapackage.json exists in given dir', t => {
   let out = utils.checkDpIsThere('test/fixtures')
   t.true(out)
-})
-
-test('Gets bitStoreUrl if publisher and package is fine', async t => {
-  let sUrl = utils.getServerUrl('not/config')
-  let res = utils.getMetadata('publisher', 'package', sUrl)
-  t.deepEqual(await res, metadata)
 })
 
 test.serial('Gets the token', async t => {
