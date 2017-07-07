@@ -1,7 +1,11 @@
 const test = require('ava')
+
 const urljoin = require('url-join')
 
-const utils = require('../lib/utils/common.js')
+const utils = require('../lib/utils/identifier.js')
+
+// ====================================
+// parseIdentifier
 
 test('parseIdentifier parses given datahub id string correctly', t => {
   let dpId = 'publisher/package/resource'
@@ -64,5 +68,4 @@ test('parseIdentifier works with cwd', t => {
   }
   t.deepEqual(res, exp)
 })
-
 
