@@ -23,6 +23,14 @@ Once it is downloaded and installed run the following command to see all availab
 $ data --help
 ```
 
+## Configuration
+
+Configuration is in `~/.datahub.json`. In general, you should not need to edit this by hand. You can also override any variables in there using environment variables or on the command line by using the same name e.g.
+
+```
+data login --api https://api-testing.datahub.io
+```
+
 # For developers
 
 ## Install

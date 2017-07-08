@@ -48,18 +48,3 @@ test('Authenticates with GOOGLE using given jwt and returns user info', async (t
   t.is(res.profile.name, 'Firstname Secondname')
 })
 
-test('saves user info and token in ~/.datahub.json file', t => {
-  fs.writeFileSync = sinon.spy()
-  const userInfo = {
-    profile: {
-      email: 'email@email.com',
-      username: 'qwerty'
-    }
-  }
-  const token = '1234'
-  login._saveUserInfo(userInfo, token)
-  t.true(fs.writeFileSync.calledOnce)
-  const homeDir = process.env.HOME || process.env.USERPROFILE || process.env.HOMEPATH
-  t.is(fs.writeFileSync.firstCall.args[0], homeDir + '/.datahub.json')
-  t.is(fs.writeFileSync.firstCall.args[1], "{\"token\":\"1234\",\"email\":\"email@email.com\",\"username\":\"qwerty\"}")
-})
