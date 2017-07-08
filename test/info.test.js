@@ -6,14 +6,15 @@ const sinon = require('sinon')
 const { data } = require('./data.js')
 const utils = require('../lib/utils/common')
 const info = require('../lib/info.js')
+const { PACKAGE_STORE_URL} = require('../lib/utils/identifier.js')
 
 test.before(t => {
-  const metadata = nock('https://bits-staging.datapackaged.com')
+  const metadata = nock(PACKAGE_STORE_URL)
         .persist()
         .get('/metadata/core/co2-ppm/_v/latest/datapackage.json')
         .replyWithFile(200, './test/fixtures/co2-ppm/datapackage.json')
 
-  const readme = nock('https://bits-staging.datapackaged.com')
+  const readme = nock(PACKAGE_STORE_URL)
         .persist()
         .get('/metadata/core/co2-ppm/_v/latest/README.md')
         .replyWithFile(200, './test/fixtures/co2-ppm/README.md')

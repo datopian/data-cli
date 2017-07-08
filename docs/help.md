@@ -17,7 +17,6 @@
 
     Administrative:
 
-      config                    Set up configuration
       help        [cmd]         Show help on cmd
 
   Options:

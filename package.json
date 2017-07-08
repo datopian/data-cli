@@ -19,9 +19,9 @@
     "require": [
       "babel-core/register"
     ],
-    "failFast": true,
+    "failFast": false,
     "files": [
-      "test/test_*.js"
+      "test/*test.js"
     ]
   },
   "pkg": {

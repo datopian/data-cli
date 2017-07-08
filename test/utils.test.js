@@ -107,18 +107,6 @@ test.serial('default log is working fine', t => {
   t.true(console.log.firstCall.args[0].includes(exp))
 })
 
-test('Reads server URL from config', t => {
-  let sUrl = utils.getServerUrl('test/fixtures/config')
-  let expUrl = 'https://test.com'
-  t.is(sUrl, expUrl)
-})
-
-test('Uses default server URL if config not found', t => {
-  let sUrl = utils.getServerUrl('not/config')
-  let expUrl = 'http://testing.datapackaged.com'
-  t.is(sUrl, expUrl)
-})
-
 test('Checks if datapackage.json exists in cwd', t => {
   let out = utils.checkDpIsThere()
   t.false(out)

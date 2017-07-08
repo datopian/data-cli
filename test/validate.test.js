@@ -5,11 +5,6 @@ const { validate } = require('../lib/validate')
 const { data } = require('./data.js')
 
 test.before(t => {
-  const mock = nock('https://bits-staging.datapackaged.com')
-        .persist()
-        .get('/metadata/core/co2-ppm/_v/latest/datapackage.json')
-        .replyWithFile(200, './test/fixtures/co2-ppm/datapackage.json')
-
   const mockGitHub = nock('https://raw.githubusercontent.com')
         .persist()
         .get('/datasets/co2-ppm/master/datapackage.json')
@@ -20,13 +15,8 @@ test.after(t => {
   nock.restore()
 })
 
-test('validate works with datahub pkg id', async t => {
-  const owner = 'core'
-  const name = 'co2-ppm'
-  const res = await validate(urljoin(owner, name))
-  t.true(res)
-})
-
+// optimal would be test with local file but way identifier parsing works makes that painful
+// next best is github with mocking
 test('validate works with github id', async t => {
   const pkgid = 'https://github.com/datasets/co2-ppm'
   const res = await validate(pkgid)

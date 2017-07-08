@@ -4,7 +4,7 @@ const sinon = require('sinon')
 const fs = require('fs')
 
 const login = require('../lib/login')
-const config = require('../config')
+const config = require('../lib/utils/config')
 
 test.before(t => {
   nock(config.get('api'))

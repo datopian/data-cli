@@ -1,14 +1,12 @@
 const test = require('ava')
 
-const config = require('../config')
+const config = require('../lib/utils/config')
 
 test('gets default configs', t => {
   const api = config.get('api')
-  t.is(api, 'http://api.testing.datapackaged.com')
+  t.is(api, 'https://api.datahub.io')
   const domain = config.get('domain')
-  t.is(domain, 'http://testing.datapackaged.com')
-  const token = config.get('token')
-  t.is(token, '')
+  t.is(domain, 'https://datahub.io')
 })
 
 test('sets default configs', t => {

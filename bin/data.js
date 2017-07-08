@@ -30,11 +30,11 @@ const commands = new Set([
   'normalize',
   'norm',
   'purge',
-  'config',
   'configure',
   'validate',
   'info',
   'init',
+  'cat',
   'login'
 ])
 
