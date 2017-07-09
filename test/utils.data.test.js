@@ -39,7 +39,6 @@ test('parsePath function with local path', t => {
   t.is(res.name, 'sample')
   t.is(res.format, 'csv')
   t.is(res.mediatype, 'text/csv')
-  t.is(res.encoding, 'ISO-8859-1')
 })
 
 test('parsePath function with remote url', t => {
@@ -50,29 +49,41 @@ test('parsePath function with remote url', t => {
   t.is(res.name, 'vix-daily')
   t.is(res.format, 'csv')
   t.is(res.mediatype, 'text/csv')
-  t.is(res.encoding, 'utf-8')
 })
 
 
 // ====================================
 // Resource class
 
-test('Resource class with descriptor / path', t => {
+test('Resource class with path', t => {
+  // with path
   const path_ = 'test/fixtures/sample.csv'
-  const descriptor = {path: 'test/fixtures/sample.csv'}
   const obj1 = utils.Resource.load(path_)
-  const obj2 = new utils.Resource(descriptor)
-  t.is(obj1.descriptor.path, 'test/fixtures/sample.csv')
-  t.is(obj2.descriptor.path, 'test/fixtures/sample.csv')
+  t.is(obj1.path, 'test/fixtures/sample.csv')
+  t.is(obj1.size, 46)
+  t.is(obj1.hash, 'sGYdlWZJioAPv5U2XOKHRw==')
 })
 
-test.serial('Resource class for "stream" method', async t => {
+test('Resource class with descriptor', t => {
+  const descriptor = {path: 'test/fixtures/sample.csv'}
+  const obj2 = utils.Resource.load(descriptor)
+  t.is(obj2.path, 'test/fixtures/sample.csv')
+})
+
+test('Resource with path and basePath', t => {
+  const obj3 = utils.Resource.load('sample.csv', {basePath: 'test/fixtures'})
+  t.is(obj3.path, 'test/fixtures/sample.csv')
+  t.is(obj3.size, 46)
+})
+
+test.serial('Resource class "stream" method', async t => {
   const path_ = 'test/fixtures/sample.csv'
   let res = utils.Resource.load(path_)
   let stream = await res.stream
   let out = await toArray(stream)
   t.true(out.toString().includes('number,string,boolean'))
 
+  // TODO: mock this out
   const url = 'https://raw.githubusercontent.com/datahq/datahub-cli/master/test/fixtures/sample.csv'
   res = utils.Resource.load(url)
   stream = await res.stream
