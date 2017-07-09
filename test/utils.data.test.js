@@ -57,34 +57,35 @@ test('parsePath function with remote url', t => {
 // ====================================
 // Resource class
 
-test('DataResource class with descriptor / path', t => {
+test('Resource class with descriptor / path', t => {
   const path_ = 'test/fixtures/sample.csv'
   const descriptor = {path: 'test/fixtures/sample.csv'}
-  const obj1 = new utils.DataResource(path_)
-  const obj2 = new utils.DataResource(descriptor)
+  const obj1 = new utils.Resource(path_)
+  const obj2 = new utils.Resource(descriptor)
   t.is(obj1.descriptor.path, 'test/fixtures/sample.csv')
   t.is(obj2.descriptor.path, 'test/fixtures/sample.csv')
 })
 
-test.serial('DataResource class for "stream" method', async t => {
+test.serial('Resource class for "stream" method', async t => {
   const path_ = 'test/fixtures/sample.csv'
-  let res = new utils.DataResource(path_)
+  let res = new utils.Resource(path_)
   let stream = await res.stream
   let out = await toArray(stream)
   t.true(out.toString().includes('number,string,boolean'))
 
   const url = 'https://raw.githubusercontent.com/datahq/datahub-cli/master/test/fixtures/sample.csv'
-  res = new utils.DataResource(url)
+  res = new utils.Resource(url)
   stream = await res.stream
   out = await toArray(stream)
   t.true(out.toString().includes('number,string,boolean'))
 })
 
-test.serial('DataResource class for getting "rows" method', async t => {
+test.serial('Resource class for getting "rows" method', async t => {
   const path_ = 'test/fixtures/sample.csv'
-  let res = new utils.DataResource(path_)
+  let res = new utils.Resource(path_)
   let rowStream = res.rows
   let out = await utils.objectStreamToArray(rowStream)
   t.deepEqual(out[0], ['number', 'string', 'boolean'])
   t.deepEqual(out[1], ['1', 'two', 'true'])
 })
+
