@@ -94,7 +94,16 @@ test.serial('Resource class "stream" method', async t => {
 test.serial('Resource class for getting "rows" method', async t => {
   const path_ = 'test/fixtures/sample.csv'
   let res = utils.Resource.load(path_)
-  let rowStream = res.rows
+  let rowStream = await res.rows
+  let out = await utils.objectStreamToArray(rowStream)
+  t.deepEqual(out[0], ['number', 'string', 'boolean'])
+  t.deepEqual(out[1], ['1', 'two', 'true'])
+})
+
+test.serial('ResourceRemote "rows" method', async t => {
+  const path_ = 'https://raw.githubusercontent.com/datahq/datahub-cli/master/test/fixtures/sample.csv'
+  let res = utils.Resource.load(path_)
+  let rowStream = await res.rows
   let out = await utils.objectStreamToArray(rowStream)
   t.deepEqual(out[0], ['number', 'string', 'boolean'])
   t.deepEqual(out[1], ['1', 'two', 'true'])
