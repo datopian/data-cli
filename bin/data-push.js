@@ -1,12 +1,17 @@
 #!/usr/bin/env node
-
-// Packages
-const minimist = require('minimist')
 const fs = require('fs')
 const path = require('path')
-const {customMarked} = require('../lib/utils/tools.js')
+
+const minimist = require('minimist')
+
 // ours
-const { push } = require('../lib/push')
+const config = require('../lib/utils/config')
+const {customMarked} = require('../lib/utils/tools.js')
+const { logger } = require('../lib/utils/log-handler')
+const { spinner } = require('../lib/utils/tools')
+const { DataHub } = require('../lib/utils/datahub.js')
+const { Package } = require('../lib/utils/data.js')
+
 
 const argv = minimist(process.argv.slice(2), {
   string: ['push'],
@@ -24,6 +29,25 @@ if (argv.help) {
   process.exit(0)
 }
 
-const filePath = argv._[0]
+Promise.resolve().then(async () => {
+	try {
+		spinner.text = 'Preparing...'
+		spinner.start()
 
-push(filePath)
+		const filePath = argv._[0]
+		var pkg = new Package(filePath)
+		await pkg.load()
+
+		const datahub = new DataHub({apiUrl: config.get('api'), token: config.get('token')})
+		var out = await datahub.push(pkg)
+
+		const message = '🙌  your data is published!\n'
+		const url = '🔗  ' + urljoin(config.get('domain'), config.get('username'), pkg.descriptor.name)
+		spinner.stop()
+		console.log(message + url)
+	} catch (err) {
+		spinner.stop()
+		logger(`${err}\n${err.stack}`, 'error')
+	}
+})
+
