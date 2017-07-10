@@ -15,7 +15,7 @@ const { Package } = require('../lib/utils/data.js')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['push'],
-  boolean: ['help'],
+  boolean: ['help', 'debug'],
   alias: { help: 'h' }
 })
 
@@ -38,7 +38,7 @@ Promise.resolve().then(async () => {
 		var pkg = new Package(filePath)
 		await pkg.load()
 
-		const datahub = new DataHub({apiUrl: config.get('api'), token: config.get('token')})
+		const datahub = new DataHub({apiUrl: config.get('api'), token: config.get('token'), debug: argv.debug})
 		var out = await datahub.push(pkg)
 
 		const message = '🙌  your data is published!\n'
