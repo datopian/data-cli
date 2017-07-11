@@ -27,14 +27,8 @@ test.before(t => {
     })
 })
 
-test('extracts token', t => {
-  let url = 'http://localhost:3000/?jwt=abc'
-  let token = login._extractToken(url)
-  t.is(token, 'abc')
-})
-
 test('Authenticate function returns urls for login - GitHub and Google', async (t) => {
-  const res = await login.authenticate('') // Without jwt so we get urls for login
+  const res = await login.authenticate(config.get('api'), '') // Without jwt so we get urls for login
   t.is(res.authenticated, false)
   t.true(res.providers.github)
   t.true(res.providers.google)
@@ -42,7 +36,7 @@ test('Authenticate function returns urls for login - GitHub and Google', async (
 
 test('Authenticates with GOOGLE using given jwt and returns user info', async (t) => {
   const jwt = '1a2b3c4d'
-  const res = await login.authenticate(jwt)
+  const res = await login.authenticate(config.get('api'), jwt)
   t.is(res.authenticated, true)
   t.is(res.profile.email, 'actual_email@gmail.com')
   t.is(res.profile.name, 'Firstname Secondname')
