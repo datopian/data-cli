@@ -10,7 +10,7 @@ const path = require('path')
 const { validate } = require('../lib/validate')
 const { box, elephant, square } = require('../lib/utils/logo')
 const { customMarked } = require('../lib/utils/tools')
-const { logger } = require('../lib/utils/log-handler')
+const { error } = require('../lib/utils/error')
 
 
 const argv = minimist(process.argv.slice(2), {
@@ -33,7 +33,8 @@ let descriptor = argv._[0]
 
 validate(descriptor).then(validation => {
   if(validation instanceof Array) {
-    logger(validation, 'error', true)
+    error(validation)
+    process.exit(1)
   }
-  logger('Data Package is valid', 'success')
+  console.log('Data Package is valid')
 })
