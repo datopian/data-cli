@@ -35,33 +35,50 @@ const dpinfo = {
 
 const rawstoreUrl = 'https://s3-us-west-2.amazonaws.com/'
 
-const apiAuthorize = nock(config.api, {reqheaders : {"Auth-Token": "t35tt0k3N"}})
-      .persist()
-      .post('/rawstore/authorize', {
-        metadata: {
-          // TODO: reinstate
-            owner: null,
-            name: null
+const apiAuthorize = nock(config.api, {reqheaders : {"Auth-Token": "authz.token"}})
+  .persist()
+  .post('/rawstore/authorize', {
+    metadata: {
+      // TODO: reinstate
+        owner: null,
+        name: null
+    },
+    filedata: {'datapackage.json': dpinfo}
+  })
+  .reply(200, {
+    filedata: {
+      'datapackage.json': {
+        'md5': "s0mEhash#",
+        'name': 'datapackage.json',
+        'type': 'application/json',
+        'upload_query': {
+          'key': '...',
+          'policy': '...',
+          'x-amz-algorithm': 'AWS4-HMAC-SHA256',
+          'x-amz-credential': 'XXX',
+          'x-amz-signature': 'YYY'
         },
-        filedata: {'datapackage.json': dpinfo}
-      })
-      .reply(200, {
-        filedata: {
-          'datapackage.json': {
-            'md5': "s0mEhash#",
-            'name': 'datapackage.json',
-            'type': 'application/json',
-            'upload_query': {
-              'key': '...',
-              'policy': '...',
-              'x-amz-algorithm': 'AWS4-HMAC-SHA256',
-              'x-amz-credential': 'XXX',
-              'x-amz-signature': 'YYY'
-            },
-            'upload_url': rawstoreUrl
-          }
-        }
-      })
+        'upload_url': rawstoreUrl
+      }
+    }
+  })
+
+const authorizeForServices = nock(config.api, {reqheaders : {"Auth-Token": "t35tt0k3N"}})
+  .persist()
+  .get('/auth/authorize?service=rawstore')
+  .reply(200, {
+    "permissions": {},
+    "service": "test",
+    "token": "authz.token",
+    "userid": "testid"
+  })
+  .get('/auth/authorize?service=source')
+  .reply(200, {
+    "permissions": {},
+    "service": "test",
+    "token": "authz.token",
+    "userid": "testid"
+  })
 
 const qs = '?key=...&policy=...&x-amz-algorithm=AWS4-HMAC-SHA256&x-amz-credential=XXX&x-amz-signature=YYY'
 const rawstoreMock = nock(rawstoreUrl, {
@@ -71,7 +88,7 @@ const rawstoreMock = nock(rawstoreUrl, {
 
 const apiSpecStore = nock(config.api, {
   reqheaders: {
-    "Auth-Token": "t35tt0k3N"
+    "Auth-Token": "authz.token"
   }
   }).post('/source/upload', {
     "meta": {
@@ -104,8 +121,8 @@ test('push works with packaged dataset', async t => {
   t.is(apiAuthorize.isDone(), true)
   t.is(rawstoreMock.isDone(), true)
   t.is(apiSpecStore.isDone(), true)
+  t.is(authorizeForServices.isDone(), true)
 
   // TODO: make sure we have not altered the pkg.resources object in any way
   t.is(pkg.resources.length, 0)
 })
-
