@@ -60,7 +60,7 @@
     "datapackage": "git+https://github.com/anuveyatsu/datapackage-js-temp.git",
     "datapackage-identifier": "^0.4.2",
     "expand-home-dir": "0.0.3",
-    "form-data": "^2.1.4",
+    "form-data": "^2.2.0",
     "ini": "^1.3.4",
     "inquirer": "^3.1.1",
     "lodash": "^4.17.4",
