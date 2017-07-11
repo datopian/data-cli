@@ -30,9 +30,8 @@ if (argv.help) {
 }
 
 Promise.resolve().then(async () => {
+  const stopSpinner = wait('Preparing...')
 	try {
-    const stopSpinner = wait('Preparing...')
-
 		const filePath = argv._[0]
 		var pkg = new Package(filePath)
 		await pkg.load()
