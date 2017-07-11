@@ -10,7 +10,7 @@ const { customMarked } = require('../lib/utils/tools.js')
 // ours
 const { get } = require('../lib/get')
 const { box, elephant, square } = require('../lib/utils/logo')
-const { spinner } = require('../lib/utils/tools')
+const wait = require('../lib/utils/output/wait')
 
 const dhStyle = chalk.bold.underline
 const italic = chalk.italic
@@ -36,9 +36,9 @@ if (argv.help || !argv._[0]) {
 let dhpkgid = argv._[0]
 
 const run = async () => {
-  spinner.start()
+  const stopSpinner = wait('Loading...')
   await get(dhpkgid)
-  spinner.stop()
+  stopSpinner()
 }
 
 run()

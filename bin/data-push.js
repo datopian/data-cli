@@ -8,7 +8,7 @@ const minimist = require('minimist')
 const config = require('../lib/utils/config')
 const {customMarked} = require('../lib/utils/tools.js')
 const { logger } = require('../lib/utils/log-handler')
-const { spinner } = require('../lib/utils/tools')
+const wait = require('../lib/utils/output/wait')
 const { DataHub } = require('../lib/utils/datahub.js')
 const { Package } = require('../lib/utils/data.js')
 
@@ -31,8 +31,7 @@ if (argv.help) {
 
 Promise.resolve().then(async () => {
 	try {
-		spinner.text = 'Preparing...'
-		spinner.start()
+    const stopSpinner = wait('Preparing...')
 
 		const filePath = argv._[0]
 		var pkg = new Package(filePath)
@@ -43,11 +42,10 @@ Promise.resolve().then(async () => {
 
 		const message = '🙌  your data is published!\n'
 		const url = '🔗  ' + urljoin(config.get('domain'), config.get('username'), pkg.descriptor.name)
-		spinner.stop()
+		stopSpinner()
 		console.log(message + url)
 	} catch (err) {
-		spinner.stop()
+		stopSpinner()
 		logger(`${err}\n${err.stack}`, 'error')
 	}
 })
-
