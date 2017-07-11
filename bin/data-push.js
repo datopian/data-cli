@@ -30,24 +30,24 @@ if (argv.help) {
 }
 
 Promise.resolve().then(async () => {
-	try {
-		spinner.text = 'Preparing...'
-		spinner.start()
+  try {
+    spinner.text = 'Preparing...'
+    spinner.start()
 
-		const filePath = argv._[0]
-		var pkg = new Package(filePath)
-		await pkg.load()
+    const filePath = argv._[0]
+    var pkg = new Package(filePath)
+    await pkg.load()
 
-		const datahub = new DataHub({apiUrl: config.get('api'), token: config.get('token'), debug: argv.debug})
-		var out = await datahub.push(pkg)
+    const datahub = new DataHub({apiUrl: config.get('api'), token: config.get('token'), debug: argv.debug})
+    var out = await datahub.push(pkg)
 
-		const message = '🙌  your data is published!\n'
-		const url = '🔗  ' + urljoin(config.get('domain'), config.get('username'), pkg.descriptor.name)
-		spinner.stop()
-		console.log(message + url)
-	} catch (err) {
-		spinner.stop()
-		logger(`${err}\n${err.stack}`, 'error')
-	}
+    const message = '🙌  your data is published!\n'
+    const url = '🔗  ' + urljoin(config.get('domain'), config.get('username'), pkg.descriptor.name)
+    spinner.stop()
+    console.log(message + url)
+  } catch (err) {
+    spinner.stop()
+    logger(`${err}\n${err.stack}`, 'error')
+  }
 })
 
