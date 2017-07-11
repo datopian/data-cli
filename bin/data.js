@@ -5,7 +5,7 @@ const { version } = require('../package.json')
 const { resolve } = require('path')
 
 // ours
-const { logger } = require('../lib/utils/log-handler.js')
+const { error } = require('../lib/utils/error')
 
 // Check if the current path exists and throw and error
 // if the user is trying to deploy a non-existing path!
@@ -78,7 +78,7 @@ if (index > -1) {
   if (args.length === 0) {
     cmd = 'help'
   } else {
-    logger(`Command does not exist "` + args[0] + '"', 'abort')
+    error(`Command does not exist "` + args[0] + '"')
     console.error(`\nTo see a list of available commands run:`)
     console.error(`\n  data help\n`)
     process.exit(1)

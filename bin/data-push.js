@@ -6,8 +6,8 @@ const minimist = require('minimist')
 
 // ours
 const config = require('../lib/utils/config')
-const {customMarked} = require('../lib/utils/tools.js')
-const { logger } = require('../lib/utils/log-handler')
+const { customMarked } = require('../lib/utils/tools.js')
+const { handleError, error } = require('../lib/utils/error')
 const wait = require('../lib/utils/output/wait')
 const { DataHub } = require('../lib/utils/datahub.js')
 const { Package } = require('../lib/utils/data.js')
@@ -46,6 +46,7 @@ Promise.resolve().then(async () => {
 		console.log(message + url)
 	} catch (err) {
 		stopSpinner()
-		logger(`${err}\n${err.stack}`, 'error')
+		handleError(err)
+    process.exit(1)
 	}
 })
