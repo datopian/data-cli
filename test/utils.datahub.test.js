@@ -17,15 +17,16 @@ test('Can instantiate DataHub', t => {
 // Push stuff
 
 let config = {
-  username: 'test',
   token: 't35tt0k3N',
-  api: 'https://test.com'
+  api: 'https://test.com',
+  profile: {
+    id: 'test-userid'
+  }
 }
 
-const datahub = new DataHub({apiUrl: config.api, token: config.token})
+const datahub = new DataHub({apiUrl: config.api, token: config.token, owner: config.profile.id})
 
 const dpjson = require('./fixtures/datapackage.json')
-
 
 const dpinfo = {
   md5: 'e4G1LoZWt07QvELiaGE8uA==',
@@ -40,7 +41,7 @@ const apiAuthorize = nock(config.api, {reqheaders : {"Auth-Token": "authz.token"
   .post('/rawstore/authorize', {
     metadata: {
       // TODO: reinstate
-        owner: null,
+        owner: config.profile.id,
         name: null
     },
     filedata: {'datapackage.json': dpinfo}
@@ -93,7 +94,7 @@ const apiSpecStore = nock(config.api, {
   }).post('/source/upload', {
     "meta": {
       "version": 1,
-      "owner": undefined
+      "owner": config.profile.id
     },
     inputs: [
       {

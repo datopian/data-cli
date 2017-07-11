@@ -3,6 +3,7 @@ const fs = require('fs')
 const path = require('path')
 
 const minimist = require('minimist')
+const urljoin = require('url-join')
 
 // ours
 const config = require('../lib/utils/config')
@@ -30,18 +31,27 @@ if (argv.help) {
 }
 
 Promise.resolve().then(async () => {
-  const stopSpinner = wait('Preparing...')
+  let stopSpinner = () => {}
   try {
+    stopSpinner = wait('Loading data ...')
     const filePath = argv._[0]
     var pkg = new Package(filePath)
     await pkg.load()
 
-    const datahub = new DataHub({apiUrl: config.get('api'), token: config.get('token'), debug: argv.debug})
+    stopSpinner()
+    stopSpinner = wait('Commencing push ...')
+
+    const datahub = new DataHub({
+      apiUrl: config.get('api'),
+      token: config.get('token'),
+      debug: argv.debug,
+      owner: config.get('profile').id
+    })
     var out = await datahub.push(pkg)
 
-    const message = '🙌  your data is published!\n'
-    const url = '🔗  ' + urljoin(config.get('domain'), config.get('username'), pkg.descriptor.name)
     stopSpinner()
+    const message = '🙌  your data is published!\n'
+    const url = '🔗  ' + urljoin(config.get('domain'), config.get('profile').id, pkg.descriptor.name)
     console.log(message + url)
   } catch (err) {
     stopSpinner()
