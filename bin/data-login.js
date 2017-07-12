@@ -7,6 +7,7 @@ const path = require('path')
 const { customMarked } = require('../lib/utils/tools.js')
 
 const config = require('../lib/utils/config')
+const { handleError } = require('../lib/utils/error')
 const info  = require('../lib/utils/output/info.js')
 const { login, authenticate, logout } = require('../lib/login')
 const wait = require('../lib/utils/output/wait')
@@ -31,20 +32,32 @@ if (argv.help) {
 Promise.resolve().then(async () => {
 	let stopSpinner = wait('Logging in ...')
   let apiUrl = config.get('api'),
-    token = config.get('token')
+    token = config.get('token'),
+    out
 
-  const out = await authenticate(apiUrl, token) 
+  try {
+    out = await authenticate(apiUrl, token)
+  } catch (err) {
+    handleError(err)
+    process.exit(1)
+  }
+
 	if (out.authenticated) {
     stopSpinner()
 		info('You are already logged in.')
     process.exit(0)
-	} 
+	}
   // signup or signin
   stopSpinner()
 
   const authUrl = out.providers.google.url
   stopSpinner = wait('Opening browser and waiting for you to authenticate online')
-  let msg = await login(apiUrl, authUrl)
+  let msg
+  try {
+    msg = await login(apiUrl, authUrl)
+  } catch (err) {
+    handleError(err)
+  }
   stopSpinner()
   info(msg)
   process.exit(0)
