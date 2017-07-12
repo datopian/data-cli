@@ -76,13 +76,15 @@ test('Resource with path and basePath', t => {
   t.is(obj3.size, 46)
 })
 
-test.serial('Resource class "stream" method', async t => {
+test('Resource class "stream" method', async t => {
   const path_ = 'test/fixtures/sample.csv'
   let res = utils.Resource.load(path_)
   let stream = await res.stream
   let out = await toArray(stream)
   t.true(out.toString().includes('number,string,boolean'))
+})
 
+test.skip('Resource class stream with url', async t => {
   // TODO: mock this out
   const url = 'https://raw.githubusercontent.com/datahq/datahub-cli/master/test/fixtures/sample.csv'
   res = utils.Resource.load(url)
@@ -91,7 +93,7 @@ test.serial('Resource class "stream" method', async t => {
   t.true(out.toString().includes('number,string,boolean'))
 })
 
-test.serial('Resource class for getting "rows" method', async t => {
+test('Resource class for getting "rows" method', async t => {
   const path_ = 'test/fixtures/sample.csv'
   let res = utils.Resource.load(path_)
   let rowStream = await res.rows
@@ -100,7 +102,7 @@ test.serial('Resource class for getting "rows" method', async t => {
   t.deepEqual(out[1], ['1', 'two', 'true'])
 })
 
-test.serial('ResourceRemote "rows" method', async t => {
+test.skip('ResourceRemote "rows" method', async t => {
   const path_ = 'https://raw.githubusercontent.com/datahq/datahub-cli/master/test/fixtures/sample.csv'
   let res = utils.Resource.load(path_)
   let rowStream = await res.rows
@@ -112,8 +114,8 @@ test.serial('ResourceRemote "rows" method', async t => {
 // ====================================
 // Package class
 
-test('Package works', async t => {
-  const pkg = new utils.Package({})
+test('Package constructor works', t => {
+  const pkg = new utils.Package()
   t.deepEqual(pkg.identifier, {
     path: null,
     owner: null
@@ -121,18 +123,17 @@ test('Package works', async t => {
   t.deepEqual(pkg.descriptor, {})
   t.deepEqual(pkg.path, null)
   t.is(pkg.readme, null)
+})
 
+test('Package.load works with co2-ppm', async t => {
   let path = 'test/fixtures/co2-ppm'
-  const pkg2 = new utils.Package(path)
+  const pkg2 = await utils.Package.load(path)
   t.deepEqual(pkg2.identifier, {
     path: path,
     type: 'local'
   })
-  t.deepEqual(pkg2.descriptor, {})
   t.deepEqual(pkg2.path, path)
-  t.is(pkg2.readme, null)
 
-  await pkg2.load()
   t.is(pkg2.descriptor.name, 'co2-ppm')
   t.is(pkg2.resources.length, 6)
   t.is(pkg2.resources[0].descriptor.name, 'co2-mm-mlo')
