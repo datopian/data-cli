@@ -120,6 +120,7 @@ test('Package works', async t => {
   })
   t.deepEqual(pkg.descriptor, {})
   t.deepEqual(pkg.path, null)
+  t.is(pkg.readme, null)
 
   let path = 'test/fixtures/co2-ppm'
   const pkg2 = new utils.Package(path)
@@ -129,10 +130,12 @@ test('Package works', async t => {
   })
   t.deepEqual(pkg2.descriptor, {})
   t.deepEqual(pkg2.path, path)
+  t.is(pkg2.readme, null)
 
   await pkg2.load()
   t.is(pkg2.descriptor.name, 'co2-ppm')
   t.is(pkg2.resources.length, 6)
   t.is(pkg2.resources[0].descriptor.name, 'co2-mm-mlo')
   t.is(pkg2.resources[0].path, 'test/fixtures/co2-ppm/data/co2-mm-mlo.csv')
+  t.true(pkg2.readme.includes('CO2 PPM - Trends in Atmospheric Carbon Dioxide.'))
 })
