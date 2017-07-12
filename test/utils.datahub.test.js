@@ -117,8 +117,7 @@ const apiSpecStore = nock(config.api, {
 
 
 test('push works with packaged dataset', async t => {
-  var pkg = new Package('test/fixtures/dp-no-resources')
-  await pkg.load()
+  var pkg = await Package.load('test/fixtures/dp-no-resources')
   var out = await datahub.push(pkg)
 
   t.is(rawstoreAuthorize.isDone(), true)

@@ -35,8 +35,7 @@ Promise.resolve().then(async () => {
   try {
     stopSpinner = wait('Loading data ...')
     const filePath = argv._[0]
-    var pkg = new Package(filePath)
-    await pkg.load()
+    var pkg = await Package.load(filePath)
 
     stopSpinner()
     stopSpinner = wait('Commencing push ...')
