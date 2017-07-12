@@ -56,6 +56,9 @@ Promise.resolve().then(async () => {
   } catch (err) {
     stopSpinner()
     handleError(err)
+    if (argv.debug) {
+      console.log('> [debug]\n' + err.stack)
+    }
     process.exit(1)
   }
 })

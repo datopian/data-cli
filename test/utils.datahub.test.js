@@ -36,34 +36,6 @@ const dpinfo = {
 
 const rawstoreUrl = 'https://s3-us-west-2.amazonaws.com/'
 
-const apiAuthorize = nock(config.api, {reqheaders : {"Auth-Token": "authz.token"}})
-  .persist()
-  .post('/rawstore/authorize', {
-    metadata: {
-      // TODO: reinstate
-        owner: config.profile.id,
-        name: null
-    },
-    filedata: {'datapackage.json': dpinfo}
-  })
-  .reply(200, {
-    filedata: {
-      'datapackage.json': {
-        'md5': "s0mEhash#",
-        'name': 'datapackage.json',
-        'type': 'application/json',
-        'upload_query': {
-          'key': '...',
-          'policy': '...',
-          'x-amz-algorithm': 'AWS4-HMAC-SHA256',
-          'x-amz-credential': 'XXX',
-          'x-amz-signature': 'YYY'
-        },
-        'upload_url': rawstoreUrl
-      }
-    }
-  })
-
 const authorizeForServices = nock(config.api, {reqheaders : {"Auth-Token": "t35tt0k3N"}})
   .persist()
   .get('/auth/authorize?service=rawstore')
@@ -81,11 +53,41 @@ const authorizeForServices = nock(config.api, {reqheaders : {"Auth-Token": "t35t
     "userid": "testid"
   })
 
-const qs = '?key=...&policy=...&x-amz-algorithm=AWS4-HMAC-SHA256&x-amz-credential=XXX&x-amz-signature=YYY'
-const rawstoreMock = nock(rawstoreUrl, {
-  }).post('/' + qs,
-    "{\n  \"name\": \"dp-no-resources\",\n  \"title\": \"DP with No Resources\",\n  \"resources\": []\n}"
-  ).reply(200)
+const rawstoreAuthorize = nock(config.api, {reqheaders : {"Auth-Token": "authz.token"}})
+  .persist()
+  .post('/rawstore/authorize', {
+    metadata: {
+      // TODO: reinstate
+        owner: config.profile.id,
+        name: 'does-not-matter-what-this-is'
+    },
+    filedata: {'datapackage.json': dpinfo}
+  })
+  .reply(200, {
+    filedata: {
+      'datapackage.json': {
+        'md5': dpinfo.md5,
+        'length': 85,
+        'name': 'datapackage.json',
+        'type': 'application/json',
+        'upload_query': {
+          'key': dpinfo.md5,
+          'policy': '...',
+          'x-amz-algorithm': 'AWS4-HMAC-SHA256',
+          'x-amz-credential': 'XXX',
+          'x-amz-signature': 'YYY'
+        },
+        'upload_url': rawstoreUrl
+      }
+    }
+  })
+
+let uploadBody = "----------------------------343201334899050500716132\r\nContent-Disposition: form-data; name=\"key\"\r\n\r\n...\r\n----------------------------343201334899050500716132\r\nContent-Disposition: form-data; name=\"policy\"\r\n\r\n...\r\n----------------------------343201334899050500716132\r\nContent-Disposition: form-data; name=\"x-amz-algorithm\"\r\n\r\nAWS4-HMAC-SHA256\r\n----------------------------343201334899050500716132\r\nContent-Disposition: form-data; name=\"x-amz-credential\"\r\n\r\nXXX\r\n----------------------------343201334899050500716132\r\nContent-Disposition: form-data; name=\"x-amz-signature\"\r\n\r\nYYY\r\n----------------------------343201334899050500716132\r\nContent-Disposition: form-data; name=\"file\"; filename=\"datapackage.json\"\r\nContent-Type: application/json\r\n\r\n{\n  \"name\": \"dp-no-resources\",\n  \"title\": \"DP with No Resources\",\n  \"resources\": []\n}\r\n----------------------------343201334899050500716132--\r\n"
+const rawstoreStorageMock = nock(rawstoreUrl, {
+  }).post(
+    // TODO: get uploadBody working
+    '/', // uploadBody
+    ).reply(204)
 
 const apiSpecStore = nock(config.api, {
   reqheaders: {
@@ -99,7 +101,7 @@ const apiSpecStore = nock(config.api, {
     inputs: [
       {
         kind: 'datapackage',
-        url: 'https://s3-us-west-2.amazonaws.com/',
+        url: rawstoreUrl + '/' + dpinfo.md5,
         parameters: {
           "resource-mapping": {}
         }
@@ -119,8 +121,8 @@ test('push works with packaged dataset', async t => {
   await pkg.load()
   var out = await datahub.push(pkg)
 
-  t.is(apiAuthorize.isDone(), true)
-  t.is(rawstoreMock.isDone(), true)
+  t.is(rawstoreAuthorize.isDone(), true)
+  t.is(rawstoreStorageMock.isDone(), true)
   t.is(apiSpecStore.isDone(), true)
   t.is(authorizeForServices.isDone(), true)
 
