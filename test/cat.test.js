@@ -1,17 +1,16 @@
 const test = require('ava')
-const sinon = require('sinon')
 
 const { Resource } = require('../lib/utils/data')
 const { dumpers } = require('../lib/cat')
 
-test.beforeEach(t => {
-  t.context.log = console.log
-  console.log = sinon.spy()
+test('dumpAscii works', async t => {
+  const resource = Resource.load('test/fixtures/sample.csv')
+  const out = await dumpers['ascii'](resource)
+  t.true(out.includes('number'))
 })
 
-test('dump_ascii works', async t => {
+test('dumpCsv works', async t => {
   const resource = Resource.load('test/fixtures/sample.csv')
-  await dumpers['ascii'](resource)
-  t.true(console.log.calledOnce)
-  t.true(console.log.firstCall.args[0].includes('number'))
+  const out = await dumpers['csv'](resource)
+  t.true(out.includes('number,string,boolean'))
 })

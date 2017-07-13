@@ -16,7 +16,7 @@ const argv = minimist(process.argv.slice(2), {
   alias: { help: 'h' }
 })
 
-var getMarkdown = fs.readFileSync(path.join(__dirname, '../docs/cat.md'),'utf8')
+let getMarkdown = fs.readFileSync(path.join(__dirname, '../docs/cat.md'),'utf8')
 const help = () => {
   console.log('\n'+ customMarked(getMarkdown))
 }
@@ -26,10 +26,21 @@ if (argv.help || !argv._[0]) {
   process.exit(0)
 }
 
-var res = Resource.load(argv._[0])
-
-if (!argv._[1] || argv._[1] === 'stdout') {
-  dumpers['ascii'](res)
-} else {
-  console.log('We currently do not support this feature.')
+let res = Resource.load(argv._[0]),
+  outFileExt
+if (argv._[1]) {
+  outFileExt = path.extname(argv._[1])
 }
+
+(async () => {
+  if (!argv._[1] || argv._[1] === 'stdout') {
+    const out = await dumpers['ascii'](res)
+    console.log(out)
+  } else if (outFileExt === '.csv') {
+    const out = await dumpers['csv'](res)
+    fs.writeFileSync(argv._[1], out)
+    console.log(`Your data is saved in ${argv._[1]}`)
+  } else {
+    console.log('We currently do not support this feature.')
+  }
+})()
