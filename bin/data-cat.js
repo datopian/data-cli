@@ -40,6 +40,10 @@ if (argv._[1]) {
     const out = await dumpers['csv'](res)
     fs.writeFileSync(argv._[1], out)
     console.log(`Your data is saved in ${argv._[1]}`)
+  } else if (outFileExt === '.md') {
+    const out = await dumpers['md'](res)
+    console.log(`Your data is saved in ${argv._[1]}`)
+    fs.writeFileSync(argv._[1], out)
   } else {
     console.log('We currently do not support this feature.')
   }
