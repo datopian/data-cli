@@ -1,20 +1,14 @@
 #!/usr/bin/env node
-
-// Packages
-const minimist = require('minimist')
-const chalk = require('chalk')
 const fs = require('fs')
 const path = require('path')
+
+const minimist = require('minimist')
+const chalk = require('chalk')
 const { customMarked } = require('../lib/utils/tools.js')
 
-// ours
-const { getInfo } = require('../lib/info')
-const { box, elephant, square } = require('../lib/utils/logo')
+const data = require('../lib/utils/data.js')
+const info = require('../lib/info')
 
-const dhStyle = chalk.bold.underline
-const italic = chalk.italic
-const boldText = chalk.bold
-const underline = chalk.underline
 
 const argv = minimist(process.argv.slice(2), {
   string: ['info'],
@@ -32,7 +26,32 @@ if (argv.help) {
   process.exit(0)
 }
 
-let dhpkgid = argv._[0]
+let fileOrDatasetIdentifier = argv._[0]
 
 
-getInfo(dhpkgid)
+Promise.resolve().then(async () => {
+  const ispkg = isPackage(fileOrDatasetIdentifier)
+  if (ispkg) {
+    const pkg = await data.Package.load(fileOrDatasetIdentifier)
+    const out = info.info(pkg)
+    console.log(customMarked(out))
+  } else {
+    const resource = data.Resource.load(fileOrDatasetIdentifier)
+    resouce.info.pipe(process.stdout)
+  }
+})
+
+// is package or file
+const isPackage = (path_) => {
+  if (path_.endsWith('datapackage.json')) {
+    return true
+  }
+  if (data.isUrl(path_)) {
+    return true
+    // path_.match(/.*\.[^.]+$/)
+    // if lastPart(hasExtension) => guess file
+  } else {
+    // isDirectory() => directory
+    return true
+  }
+}

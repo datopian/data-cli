@@ -41,3 +41,13 @@ test('"data push -h --help" prints help message for push command', async t => {
   t.true(stdout[1].includes('Push a Data Package to DataHub'))
 })
 
+// TODO: reinstate this once we figure out what does not work
+test.skip('"data info core/co2-ppm" command prints out readme and resource list', async t => {
+  const result = await runcli('info', 'test/fixtures/core/co2-ppm')
+  t.is(result.code, 0)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout.length > 1)
+  t.true(stdout[5].includes('CO2 PPM'))
+  t.true(stdout[17].includes('co2-annmean-mlo'))
+})
+
