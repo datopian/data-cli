@@ -5,6 +5,7 @@ const path = require('path')
 const minimist = require('minimist')
 const urljoin = require('url-join')
 const inquirer = require('inquirer')
+const hri = require('human-readable-ids').hri
 
 // ours
 const config = require('../lib/utils/config')
@@ -66,9 +67,20 @@ Promise.resolve().then(async () => {
       const answers = await inquirer.prompt(questions)
       stopSpinner = wait('Commencing push ...')
       if (answers.headers === 'y' & answers.types === 'y') {
+        // remove path stuff
+        let dpName = filePath.replace(/^.*[\\\/]/, '')
+        const extension = path.extname(dpName)
+        // remove ext
+        dpName = dpName.replace(extension, '').replace(/\s+/g, '-').toLowerCase()
+        // add human readable id
+        dpName += '-' + hri.random()
         const metadata = {
-          name: 'test',
-          resources: [resource.descriptor]
+          name: dpName,
+          resources: [resource.descriptor],
+          path: 'datapackage.json',
+          data: {
+            name: dpName
+          }
         }
         pkg = await Package.load(metadata)
       } else {
