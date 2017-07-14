@@ -79,7 +79,8 @@
     "request-promise-native": "^1.0.4",
     "tableschema": "^1.0.0-alpha.7",
     "tmp": "0.0.31",
-    "url-join": "^2.0.2"
+    "url-join": "^2.0.2",
+    "xlsx": "^0.10.8"
   },
   "devDependencies": {
     "ava": "^0.19.1",

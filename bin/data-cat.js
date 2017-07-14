@@ -4,6 +4,7 @@ const path = require('path')
 
 const minimist = require('minimist')
 const chalk = require('chalk')
+const XLSX = require('xlsx')
 
 // ours
 const { customMarked } = require('../lib/utils/tools.js')
@@ -44,7 +45,13 @@ if (argv._[1]) {
     const out = await dumpers['md'](res)
     console.log(`Your data is saved in ${argv._[1]}`)
     fs.writeFileSync(argv._[1], out)
-  } else {
+  } else if (outFileExt === '.xls') {
+    const out = await dumpers['xls'](res)
+    const wb = { SheetNames:['sheet'], Sheets:{sheet: out} };
+    console.log(`Your data is saved in ${argv._[1]}`)
+    XLSX.writeFile(wb, argv._[1])
+  }
+  else {
     console.log('We currently do not support this feature.')
   }
 })()
