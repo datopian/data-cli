@@ -4,6 +4,7 @@ const path = require('path')
 
 const minimist = require('minimist')
 const urljoin = require('url-join')
+const inquirer = require('inquirer')
 
 // ours
 const config = require('../lib/utils/config')
@@ -11,7 +12,7 @@ const { customMarked } = require('../lib/utils/tools.js')
 const { handleError, error } = require('../lib/utils/error')
 const wait = require('../lib/utils/output/wait')
 const { DataHub } = require('../lib/utils/datahub.js')
-const { Package } = require('../lib/utils/data.js')
+const { Package, Resource } = require('../lib/utils/data.js')
 
 
 const argv = minimist(process.argv.slice(2), {
@@ -30,12 +31,52 @@ if (argv.help) {
   process.exit(0)
 }
 
+const ask = (name, data) => {
+  return {
+    type: 'input',
+    name: name,
+    message: `Are these ${name} correct for this dataset:\n[${data}]\ny/n?`,
+    default: () => {
+      return 'y'
+    },
+    validate: (value) => {
+      const pass = value.match(/^[y,n]+$/)
+      if (pass) {
+        return true
+      }
+      return `Please, provide with following responses 'y' for yes or 'n' for no`
+    }
+  }
+}
+
 Promise.resolve().then(async () => {
   let stopSpinner = () => {}
   try {
     stopSpinner = wait('Loading data ...')
     const filePath = argv._[0]
-    var pkg = await Package.load(filePath)
+    let pkg
+    if (fs.lstatSync(filePath).isFile()) {
+      const resource = Resource.load(filePath)
+      await resource.addSchema
+      const headers = resource.descriptor.schema.fields.map(field => field.name)
+      const fieldTypes = resource.descriptor.schema.fields.map(field => field.type)
+      stopSpinner()
+      // prompt user with headers and fieldTypes
+      const questions = [ask('headers', headers), ask('types', fieldTypes)]
+      const answers = await inquirer.prompt(questions)
+      stopSpinner = wait('Commencing push ...')
+      if (answers.headers === 'y' & answers.types === 'y') {
+        const metadata = {
+          name: 'test',
+          resources: [resource.descriptor]
+        }
+        pkg = await Package.load(metadata)
+      } else {
+        throw Error('Please, generate datapackage.json and push.')
+      }
+    } else {
+      pkg = await Package.load(filePath)
+    }
 
     stopSpinner()
     stopSpinner = wait('Commencing push ...')
@@ -46,7 +87,7 @@ Promise.resolve().then(async () => {
       debug: argv.debug,
       owner: config.get('profile').id
     })
-    var out = await datahub.push(pkg)
+    await datahub.push(pkg)
 
     stopSpinner()
     const message = '🙌  your data is published!\n'
