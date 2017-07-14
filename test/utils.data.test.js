@@ -55,54 +55,102 @@ test('parsePath function with remote url', t => {
 // ====================================
 // Resource class
 
-test('Resource class with path', t => {
-  // with path
-  const path_ = 'test/fixtures/sample.csv'
-  const obj1 = utils.Resource.load(path_)
-  t.is(obj1.path, 'test/fixtures/sample.csv')
-  t.is(obj1.size, 46)
-  t.is(obj1.hash, 'sGYdlWZJioAPv5U2XOKHRw==')
-})
-
-test('Resource class with descriptor', t => {
-  const descriptor = {path: 'test/fixtures/sample.csv'}
-  const obj2 = utils.Resource.load(descriptor)
-  t.is(obj2.path, 'test/fixtures/sample.csv')
-})
-
-test('Resource with path and basePath', t => {
-  const obj3 = utils.Resource.load('sample.csv', {basePath: 'test/fixtures'})
-  t.is(obj3.path, 'test/fixtures/sample.csv')
-  t.is(obj3.size, 46)
-})
-
-test('Resource class "stream" method', async t => {
-  const path_ = 'test/fixtures/sample.csv'
-  let res = utils.Resource.load(path_)
-  let stream = await res.stream
+// common method to test all the functionality which we can use for all types of resources
+const testResource = async (t, resource) => {
+  t.is(resource.path, 'test/fixtures/sample.csv')
+  t.is(resource.size, 46)
+  t.is(resource.hash, 'sGYdlWZJioAPv5U2XOKHRw==')
+  
+  // test stream
+  let stream = await resource.stream
   let out = await toArray(stream)
   t.true(out.toString().includes('number,string,boolean'))
+
+  // test rows
+  let rowStream = await resource.rows
+  let rows = await toArray(rowStream)
+  t.deepEqual(rows[0], ['number', 'string', 'boolean'])
+  t.deepEqual(rows[1], ['1', 'two', 'true'])
+}
+
+test('Resource class with path', async t => {
+  // with path
+  const path_ = 'test/fixtures/sample.csv'
+  const res = utils.Resource.load(path_)
+  await testResource(t, res)
 })
 
-test.skip('Resource class stream with url', async t => {
+test('Resource class with descriptor', async t => {
+  const descriptor = {path: 'test/fixtures/sample.csv'}
+  const obj2 = utils.Resource.load(descriptor)
+  await testResource(t, obj2)
+})
+
+test('Resource with path and basePath', async t => {
+  const obj3 = utils.Resource.load('sample.csv', {basePath: 'test/fixtures'})
+  testResource(t, obj3)
+})
+
+test('Resource with inline JS data', async t => {
+  const data = {
+    name: 'abc'
+  }
+  const resource = utils.Resource.load({data: data})
+  t.is(resource.size, 14)
+  let stream = await resource.stream
+  let out = await toArray(stream)
+  t.is(out.toString(), JSON.stringify(data))
+})
+
+test('Resource with inline text (CSV) data', async t => {
+  const data = `number,string,boolean
+1,two,true
+3,four,false
+`
+  // to make it testable with testResource we add the path but it is not needed
+  const resource = utils.Resource.load({
+    path: 'test/fixtures/sample.csv',
+    format: 'csv',
+    data: data
+  })
+  await testResource(t, resource)
+})
+
+test('Resource with inline array data', async t => {
+  const data = [
+    ['number', 'string', 'boolean'],
+    [1,'two',true],
+    [3,'four',false]
+  ]
+  // to make it testable with testResource we add the path but it is not needed
+  const resource = utils.Resource.load({
+    data: data
+  })
+  t.is(resource.size, 63)
+  let stream = await resource.stream
+  let out = await toArray(stream)
+  t.is(out.toString(), JSON.stringify(data))
+
+  let rows = await resource.rows
+  let out2 = await toArray(rows)
+  t.is(out2.length, 3)
+  t.is(out2[0][0], data[0][0])
+  // for some reason this fails with no difference
+  // t.is(out2, data)
+  // but this works ...
+  t.is(JSON.stringify(out2), JSON.stringify(data))
+})
+
+test.serial('Resource class stream with url', async t => {
   // TODO: mock this out
   const url = 'https://raw.githubusercontent.com/datahq/datahub-cli/master/test/fixtures/sample.csv'
-  res = utils.Resource.load(url)
-  stream = await res.stream
-  out = await toArray(stream)
+  const res = utils.Resource.load(url)
+  const stream = await res.stream
+  const out = await toArray(stream)
   t.true(out.toString().includes('number,string,boolean'))
 })
 
-test('Resource class for getting "rows" method', async t => {
-  const path_ = 'test/fixtures/sample.csv'
-  let res = utils.Resource.load(path_)
-  let rowStream = await res.rows
-  let out = await toArray(rowStream)
-  t.deepEqual(out[0], ['number', 'string', 'boolean'])
-  t.deepEqual(out[1], ['1', 'two', 'true'])
-})
-
-test.skip('ResourceRemote "rows" method', async t => {
+test.serial('ResourceRemote "rows" method', async t => {
   const path_ = 'https://raw.githubusercontent.com/datahq/datahub-cli/master/test/fixtures/sample.csv'
   let res = utils.Resource.load(path_)
   let rowStream = await res.rows
