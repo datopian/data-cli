@@ -91,6 +91,56 @@ test('Resource with path and basePath', async t => {
   testResource(t, obj3)
 })
 
+test('Resource with inline JS data', async t => {
+  const data = {
+    name: 'abc'
+  }
+  const resource = utils.Resource.load({data: data})
+  t.is(resource.size, 14)
+  let stream = await resource.stream
+  let out = await toArray(stream)
+  t.is(out.toString(), JSON.stringify(data))
+})
+
+test('Resource with inline text (CSV) data', async t => {
+  const data = `number,string,boolean
+1,two,true
+3,four,false
+`
+  // to make it testable with testResource we add the path but it is not needed
+  const resource = utils.Resource.load({
+    path: 'test/fixtures/sample.csv',
+    format: 'csv',
+    data: data
+  })
+  await testResource(t, resource)
+})
+
+test('Resource with inline array data', async t => {
+  const data = [
+    ['number', 'string', 'boolean'],
+    [1,'two',true],
+    [3,'four',false]
+  ]
+  // to make it testable with testResource we add the path but it is not needed
+  const resource = utils.Resource.load({
+    data: data
+  })
+  t.is(resource.size, 63)
+  let stream = await resource.stream
+  let out = await toArray(stream)
+  t.is(out.toString(), JSON.stringify(data))
+
+  let rows = await resource.rows
+  let out2 = await toArray(rows)
+  t.is(out2.length, 3)
+  t.is(out2[0][0], data[0][0])
+  // for some reason this fails with no difference
+  // t.is(out2, data)
+  // but this works ...
+  t.is(JSON.stringify(out2), JSON.stringify(data))
+})
+
 test.serial('Resource class stream with url', async t => {
   // TODO: mock this out
   const url = 'https://raw.githubusercontent.com/datahq/datahub-cli/master/test/fixtures/sample.csv'
