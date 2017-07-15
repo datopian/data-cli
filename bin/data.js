@@ -29,7 +29,6 @@ const commands = new Set([
   'push',
   'normalize',
   'norm',
-  'purge',
   'configure',
   'validate',
   'info',

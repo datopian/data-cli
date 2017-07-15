@@ -7,7 +7,6 @@
 
       push        [path]        Push data to the DataHub
       get         [pkg-id]      Get data from DataHub
-      purge       [owner/name]  Permanently deletes data from DataHub
 
     Data Package specific:
 
