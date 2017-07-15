@@ -5,34 +5,30 @@
 
     DataHub:
 
-      push        [path]        Push data to the DataHub
-      get         [pkg-id]      Get data from DataHub
+      push        [path]        Push data at `path` to the DataHub
+
+    General:
+
+      get         [url]         Retrieve data at `url` to local disk
+      info        [path/url]    Get info on data (file or dataset) at path or url
+      cat         path [out]    Read data at path and write to out (or stdout)
 
     Data Package specific:
 
-      info        [pkg-id]      Get info on data
       normalize                 Normalize datapackage.json
       validate                  Validate Data Package structure
 
     Administrative:
 
       help        [cmd]         Show help on cmd
+      login                     Login or signup to the DataHub
 
   Options:
 
   -h, --help              Output usage information
   -v, --version           Output the version
 
-# Package Identifiers [pkg-id]
-
-  A package identifier is:
-
-- A url like http://www.mydatapackages.com/my-package/
-- A local path
-- A DataHub package identifier in the form `<owner>/<name>`
-
-
-# Examples
+  **Examples**
 
   Push a Data Package (in the current directory)
 
@@ -47,9 +43,9 @@
       $ data get https://github.com/datasets/gdp
 
 
-# About the **DataHub** command line tool!
+  **About**
 
-  DataHub = 📦  + 🐘  A home for all your data, nicely packaged ❒
+  DataHub is a home for all your data, nicely packaged ❒
 
   We hope this tool will bring you much joy as you work with your data and the DataHub.
 
