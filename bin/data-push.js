@@ -32,65 +32,17 @@ if (argv.help) {
   process.exit(0)
 }
 
-const ask = (name, data) => {
-  return {
-    type: 'input',
-    name: name,
-    message: `Are these ${name} correct for this dataset:\n[${data}]\ny/n?`,
-    default: () => {
-      return 'y'
-    },
-    validate: (value) => {
-      const pass = value.match(/^[y,n]+$/)
-      if (pass) {
-        return true
-      }
-      return `Please, provide with following responses 'y' for yes or 'n' for no`
-    }
-  }
-}
-
 Promise.resolve().then(async () => {
   let stopSpinner = () => {}
   try {
-    stopSpinner = wait('Loading data ...')
     const filePath = argv._[0]
     let pkg
     if (fs.lstatSync(filePath).isFile()) {
-      const resource = Resource.load(filePath)
-      await resource.addSchema
-      const headers = resource.descriptor.schema.fields.map(field => field.name)
-      const fieldTypes = resource.descriptor.schema.fields.map(field => field.type)
-      stopSpinner()
-      // prompt user with headers and fieldTypes
-      const questions = [ask('headers', headers), ask('types', fieldTypes)]
-      const answers = await inquirer.prompt(questions)
-      stopSpinner = wait('Commencing push ...')
-      if (answers.headers === 'y' & answers.types === 'y') {
-        // remove path stuff
-        let dpName = filePath.replace(/^.*[\\\/]/, '')
-        const extension = path.extname(dpName)
-        // remove ext
-        dpName = dpName.replace(extension, '').replace(/\s+/g, '-').toLowerCase()
-        // add human readable id
-        dpName += '-' + hri.random()
-        const metadata = {
-          name: dpName,
-          resources: [resource.descriptor],
-          path: 'datapackage.json',
-          data: {
-            name: dpName
-          }
-        }
-        pkg = await Package.load(metadata)
-      } else {
-        throw Error('Please, generate datapackage.json and push.')
-      }
+      pkg = await preparePackageFromFile(filePath)
     } else {
       pkg = await Package.load(filePath)
     }
 
-    stopSpinner()
     stopSpinner = wait('Commencing push ...')
 
     const datahub = new DataHub({
@@ -114,3 +66,54 @@ Promise.resolve().then(async () => {
     process.exit(1)
   }
 })
+
+const preparePackageFromFile = async (filePath) => {
+  const resource = Resource.load(filePath)
+  await resource.addSchema
+  const headers = resource.descriptor.schema.fields.map(field => field.name)
+  const fieldTypes = resource.descriptor.schema.fields.map(field => field.type)
+  // prompt user with headers and fieldTypes
+  const questions = [ask('headers', headers), ask('types', fieldTypes)]
+  const answers = await inquirer.prompt(questions)
+  if (answers.headers === 'y' & answers.types === 'y') {
+    // remove path stuff
+    let dpName = filePath.replace(/^.*[\\\/]/, '')
+    const extension = path.extname(dpName)
+    // remove ext
+    dpName = dpName.replace(extension, '').replace(/\s+/g, '-').toLowerCase()
+    // add human readable id
+    dpName += '-' + hri.random()
+    const metadata = {
+      name: dpName,
+      resources: [resource.descriptor],
+      path: 'datapackage.json',
+      data: {
+        name: dpName
+      }
+    }
+    const pkg = await Package.load(metadata)
+    return pkg
+  } else {
+    // Maybe nicer exit - user has chosen not to proceed for now ...
+    throw Error('Please, generate datapackage.json and push.')
+  }
+}
+
+const ask = (name, data) => {
+  return {
+    type: 'input',
+    name: name,
+    message: `Are these ${name} correct for this dataset:\n[${data}]\ny/n?`,
+    default: () => {
+      return 'y'
+    },
+    validate: (value) => {
+      const pass = value.match(/^[y,n]+$/)
+      if (pass) {
+        return true
+      }
+      return `Please, provide with following responses 'y' for yes or 'n' for no`
+    }
+  }
+}
+
