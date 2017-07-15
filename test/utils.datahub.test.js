@@ -29,12 +29,11 @@ const datahub = new DataHub({apiUrl: config.api, token: config.token, owner: con
 const dpjson = require('./fixtures/datapackage.json')
 
 const dpinfo = {
-  md5: 'e4G1LoZWt07QvELiaGE8uA==',
-  name: 'datapackage',
-  length: 85
+  md5: 'm84YSonibUrw5Mg8QbCNHA==',
+  length: 72
 }
 
-const rawstoreUrl = 'https://s3-us-west-2.amazonaws.com/'
+const rawstoreUrl = 'https://s3-us-west-2.amazonaws.com'
 
 const authorizeForServices = nock(config.api, {reqheaders : {"Auth-Token": "t35tt0k3N"}})
   .persist()
@@ -84,7 +83,7 @@ const rawstoreAuthorize = nock(config.api, {reqheaders : {"Auth-Token": "authz.t
 
 let uploadBody = "----------------------------343201334899050500716132\r\nContent-Disposition: form-data; name=\"key\"\r\n\r\n...\r\n----------------------------343201334899050500716132\r\nContent-Disposition: form-data; name=\"policy\"\r\n\r\n...\r\n----------------------------343201334899050500716132\r\nContent-Disposition: form-data; name=\"x-amz-algorithm\"\r\n\r\nAWS4-HMAC-SHA256\r\n----------------------------343201334899050500716132\r\nContent-Disposition: form-data; name=\"x-amz-credential\"\r\n\r\nXXX\r\n----------------------------343201334899050500716132\r\nContent-Disposition: form-data; name=\"x-amz-signature\"\r\n\r\nYYY\r\n----------------------------343201334899050500716132\r\nContent-Disposition: form-data; name=\"file\"; filename=\"datapackage.json\"\r\nContent-Type: application/json\r\n\r\n{\n  \"name\": \"dp-no-resources\",\n  \"title\": \"DP with No Resources\",\n  \"resources\": []\n}\r\n----------------------------343201334899050500716132--\r\n"
 const rawstoreStorageMock = nock(rawstoreUrl, {
-  }).post(
+  }).persist().post(
     // TODO: get uploadBody working
     '/', // uploadBody
     ).reply(204)
@@ -93,7 +92,7 @@ const apiSpecStore = nock(config.api, {
   reqheaders: {
     "Auth-Token": "authz.token"
   }
-  }).post('/source/upload', {
+  }).persist().post('/source/upload', {
     "meta": {
       "version": 1,
       "owner": config.profile.id
@@ -115,7 +114,6 @@ const apiSpecStore = nock(config.api, {
   })
 
 
-
 test('push works with packaged dataset', async t => {
   var pkg = await Package.load('test/fixtures/dp-no-resources')
   var out = await datahub.push(pkg)
@@ -128,3 +126,22 @@ test('push works with packaged dataset', async t => {
   // TODO: make sure we have not altered the pkg.resources object in any way
   t.is(pkg.resources.length, 0)
 })
+
+test('push works with virtual package', async t => {
+  const descriptor = {
+    "name": "dp-no-resources",
+    "title": "DP with No Resources",
+    "resources": []
+  }
+  var pkg = await Package.load(descriptor)
+  var out = await datahub.push(pkg)
+
+  t.is(rawstoreAuthorize.isDone(), true)
+  t.is(rawstoreStorageMock.isDone(), true)
+  t.is(apiSpecStore.isDone(), true)
+  t.is(authorizeForServices.isDone(), true)
+
+  // TODO: make sure we have not altered the pkg.resources object in any way
+  t.is(pkg.resources.length, 0)
+})
+

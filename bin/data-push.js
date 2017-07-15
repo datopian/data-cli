@@ -68,35 +68,34 @@ Promise.resolve().then(async () => {
 })
 
 const preparePackageFromFile = async (filePath) => {
-  const resource = Resource.load(filePath)
+  const pathParts = path.parse(filePath)
+  const resource = Resource.load(pathParts.base, {basePath: pathParts.dir})
+
   await resource.addSchema
   const headers = resource.descriptor.schema.fields.map(field => field.name)
   const fieldTypes = resource.descriptor.schema.fields.map(field => field.type)
   // prompt user with headers and fieldTypes
   const questions = [ask('headers', headers), ask('types', fieldTypes)]
   const answers = await inquirer.prompt(questions)
-  if (answers.headers === 'y' & answers.types === 'y') {
-    // remove path stuff
-    let dpName = filePath.replace(/^.*[\\\/]/, '')
-    const extension = path.extname(dpName)
-    // remove ext
-    dpName = dpName.replace(extension, '').replace(/\s+/g, '-').toLowerCase()
-    // add human readable id
-    dpName += '-' + hri.random()
-    const metadata = {
-      name: dpName,
-      resources: [resource.descriptor],
-      path: 'datapackage.json',
-      data: {
-        name: dpName
-      }
-    }
-    const pkg = await Package.load(metadata)
-    return pkg
-  } else {
+
+  if (answers.headers === 'n' & answers.types === 'n') {
     // Maybe nicer exit - user has chosen not to proceed for now ...
     throw Error('Please, generate datapackage.json and push.')
   }
+
+  const dpName = pathParts.name.replace(/\s+/g, '-').toLowerCase()
+  // add human readable id so that this packge does not conflict with other
+  // packages (name is coming from the resource file name which could just be
+  // data.csv)
+  dpName += '-' + hri.random()
+  const metadata = {
+    name: dpName,
+    title: '', // TODO: generate from file name (maybe prompt user for it ...)
+    resources: []
+  }
+  const pkg = await Package.load(metadata)
+  pkg.addResource(resource)
+  return pkg
 }
 
 const ask = (name, data) => {
