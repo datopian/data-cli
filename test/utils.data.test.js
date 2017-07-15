@@ -1,6 +1,7 @@
 const test = require('ava')
 
 const toArray = require('stream-to-array')
+const lodash = require('lodash')
 
 const utils = require('../lib/utils/data.js')
 
@@ -60,7 +61,7 @@ const testResource = async (t, resource) => {
   t.is(resource.path, 'test/fixtures/sample.csv')
   t.is(resource.size, 46)
   t.is(resource.hash, 'sGYdlWZJioAPv5U2XOKHRw==')
-  
+
   // test stream
   let stream = await resource.stream
   let out = await toArray(stream)
@@ -197,4 +198,24 @@ test('Package.load works with co2-ppm', async t => {
   t.is(pkg2.resources[0].descriptor.name, 'co2-mm-mlo')
   t.is(pkg2.resources[0].path, 'test/fixtures/co2-ppm/data/co2-mm-mlo.csv')
   t.true(pkg2.readme.includes('CO2 PPM - Trends in Atmospheric Carbon Dioxide.'))
+})
+
+test('Package.addResource method works', t => {
+  const resourceAsPlainObj = {
+    name: 'sample',
+    path: 'test/fixtures/sample.csv',
+    format: 'csv'
+  }
+  const resourceAsResourceObj = utils.Resource.load(resourceAsPlainObj)
+  const pkg = new utils.Package({
+    resources: []
+  })
+  t.is(pkg.resources.length, 0)
+  t.is(pkg.descriptor.resources.length, 0)
+  pkg.addResource(resourceAsPlainObj)
+  t.is(pkg.resources.length, 1)
+  t.is(pkg.descriptor.resources.length, 1)
+  pkg.addResource(resourceAsResourceObj)
+  t.is(pkg.resources.length, 2)
+  t.is(pkg.descriptor.resources.length, 2)
 })

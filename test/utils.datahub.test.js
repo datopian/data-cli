@@ -1,5 +1,6 @@
 const test = require('ava')
 const nock = require('nock')
+const urljoin = require('url-join')
 
 const { DataHub } = require('../lib/utils/datahub.js')
 const { Package } = require('../lib/utils/data.js')
@@ -31,6 +32,18 @@ const dpjson = require('./fixtures/datapackage.json')
 const dpinfo = {
   md5: 'm84YSonibUrw5Mg8QbCNHA==',
   length: 72
+}
+
+const finVixInfo = {
+  'data/vix-daily.csv': {
+    'length': 719,
+    'md5': 'zqYInZMy1fFndkTED3QUPQ==',
+    'name': 'vix-daily'
+  },
+  'datapackage.json': {
+    'length': 739,
+    'md5': 'Sw1GeJlVHjuC+CGPAFx1rA=='
+  }
 }
 
 const rawstoreUrl = 'https://s3-us-west-2.amazonaws.com'
@@ -81,6 +94,46 @@ const rawstoreAuthorize = nock(config.api, {reqheaders : {"Auth-Token": "authz.t
     }
   })
 
+const rawstoreAuthorize2 = nock(config.api, {reqheaders : {"Auth-Token": "authz.token"}})
+  .persist()
+  .post('/rawstore/authorize', {
+    metadata: {
+      owner: config.profile.id,
+      name: 'does-not-matter-what-this-is'
+    },
+    filedata: finVixInfo
+  })
+  .reply(200, {
+    filedata: {
+      'data/vix-daily.csv': {
+        'md5': finVixInfo['data/vix-daily.csv'].md5,
+        'length': finVixInfo['data/vix-daily.csv'].length,
+        'name': finVixInfo['data/vix-daily.csv'].name,
+        'upload_query': {
+          'key': finVixInfo['data/vix-daily.csv'].md5,
+          'policy': '...',
+          'x-amz-algorithm': 'AWS4-HMAC-SHA256',
+          'x-amz-credential': 'XXX',
+          'x-amz-signature': 'YYY'
+        },
+        'upload_url': rawstoreUrl
+      },
+      'datapackage.json': {
+        'md5': finVixInfo['datapackage.json'].md5,
+        'length': finVixInfo['datapackage.json'].length,
+        'name': finVixInfo['datapackage.json'].name,
+        'upload_query': {
+          'key': finVixInfo['datapackage.json'].md5,
+          'policy': '...',
+          'x-amz-algorithm': 'AWS4-HMAC-SHA256',
+          'x-amz-credential': 'XXX',
+          'x-amz-signature': 'YYY'
+        },
+        'upload_url': rawstoreUrl
+      }
+    }
+  })
+
 let uploadBody = "----------------------------343201334899050500716132\r\nContent-Disposition: form-data; name=\"key\"\r\n\r\n...\r\n----------------------------343201334899050500716132\r\nContent-Disposition: form-data; name=\"policy\"\r\n\r\n...\r\n----------------------------343201334899050500716132\r\nContent-Disposition: form-data; name=\"x-amz-algorithm\"\r\n\r\nAWS4-HMAC-SHA256\r\n----------------------------343201334899050500716132\r\nContent-Disposition: form-data; name=\"x-amz-credential\"\r\n\r\nXXX\r\n----------------------------343201334899050500716132\r\nContent-Disposition: form-data; name=\"x-amz-signature\"\r\n\r\nYYY\r\n----------------------------343201334899050500716132\r\nContent-Disposition: form-data; name=\"file\"; filename=\"datapackage.json\"\r\nContent-Type: application/json\r\n\r\n{\n  \"name\": \"dp-no-resources\",\n  \"title\": \"DP with No Resources\",\n  \"resources\": []\n}\r\n----------------------------343201334899050500716132--\r\n"
 const rawstoreStorageMock = nock(rawstoreUrl, {
   }).persist().post(
@@ -100,9 +153,38 @@ const apiSpecStore = nock(config.api, {
     inputs: [
       {
         kind: 'datapackage',
-        url: rawstoreUrl + '/' + dpinfo.md5,
+        url: urljoin(rawstoreUrl, dpinfo.md5),
         parameters: {
           "resource-mapping": {}
+        }
+      }
+    ]
+  })
+  .reply(200, {
+    "success": true,
+    "id": "test",
+    "errors": []
+  })
+
+const apiSpecStore2 = nock(config.api, {
+  reqheaders: {
+    "Auth-Token": "authz.token"
+  }
+})
+  .persist()
+  .post('/source/upload', {
+    'meta': {
+      'version': 1,
+      'owner': config.profile.id
+    },
+    'inputs': [
+      {
+        'kind': 'datapackage',
+        'url': urljoin(rawstoreUrl, finVixInfo['datapackage.json'].md5),
+        'parameters': {
+          'resource-mapping': {
+            'data/vix-daily.csv': urljoin(rawstoreUrl, finVixInfo['data/vix-daily.csv'].md5)
+          }
         }
       }
     ]
@@ -145,3 +227,12 @@ test('push works with virtual package', async t => {
   t.is(pkg.resources.length, 0)
 })
 
+test('push works with package with resource', async t => {
+  const pkg = await Package.load('test/fixtures/finance-vix')
+  await datahub.push(pkg)
+
+  t.is(rawstoreAuthorize2.isDone(), true)
+  t.is(rawstoreStorageMock.isDone(), true)
+  t.is(apiSpecStore2.isDone(), true)
+  t.is(authorizeForServices.isDone(), true)
+})
