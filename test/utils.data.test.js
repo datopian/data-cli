@@ -162,7 +162,7 @@ test('Resource class for addSchema method', async t => {
   const path_ = 'test/fixtures/sample.csv'
   const resource = utils.Resource.load(path_)
   t.is(resource.descriptor.schema, undefined)
-  await resource.addSchema
+  await resource.addSchema()
   t.is(resource.descriptor.schema.fields[1].type, 'string')
   const headers = resource.descriptor.schema.fields.map(field => field.name)
   t.deepEqual(headers, ['number', 'string', 'boolean'])
