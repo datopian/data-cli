@@ -1,11 +1,14 @@
 #!/usr/bin/env node
-require("babel-core/register")
-const { version } = require('../package.json')
-// Native
-const { resolve } = require('path')
 
-// ours
-const { error } = require('../lib/utils/error')
+// eslint-disable-next-line import/no-unassigned-import
+require('babel-core/register')
+// Native
+const {resolve} = require('path')
+
+const {version} = require('../package.json')
+
+// Ours
+const {error} = require('../lib/utils/error')
 
 // Check if the current path exists and throw and error
 // if the user is trying to deploy a non-existing path!
@@ -21,7 +24,6 @@ try {
   }
   process.exit(1)
 }
-
 
 const commands = new Set([
   'help',
@@ -42,7 +44,6 @@ const aliases = new Map([
   ['norm', 'normalize']
 ])
 
-
 // Parse args and dispatch to relevant command
 let args = process.argv.slice(2)
 
@@ -51,7 +52,7 @@ if (args[0] === '-v' || args[0] === '--version') {
   process.exit()
 }
 
-// default command
+// Default command
 let cmd = 'help'
 const index = args.findIndex(a => commands.has(a))
 
@@ -59,7 +60,7 @@ if (index > -1) {
   cmd = args[index]
   args.splice(index, 1)
 
-  // dispatch to the underlying command and help will be called there
+  // Dispatch to the underlying command and help will be called there
   if (cmd === 'help' && index < args.length && commands.has(args[index])) {
     cmd = args[index]
     args.splice(index, 1)
@@ -72,16 +73,13 @@ if (index > -1) {
     cmd = parts.shift()
     args = [].concat(parts, args)
   }
+} else if (args.length === 0) { // One final option is no command in which case show help
+  cmd = 'help'
 } else {
-  // one final option is no command in which case show help
-  if (args.length === 0) {
-    cmd = 'help'
-  } else {
-    error(`Command does not exist "` + args[0] + '"')
-    console.error(`\nTo see a list of available commands run:`)
-    console.error(`\n  data help\n`)
-    process.exit(1)
-  }
+  error(`Command does not exist "` + args[0] + '"')
+  console.error(`\nTo see a list of available commands run:`)
+  console.error(`\n  data help\n`)
+  process.exit(1)
 }
 
 const bin = resolve(__dirname, 'data-' + cmd + '.js')

@@ -1,5 +1,5 @@
 const path = require('path')
-const { spawn } = require('cross-spawn')
+const {spawn} = require('cross-spawn')
 
 const data = (...args) => {
   return new Promise((resolve, reject) => {

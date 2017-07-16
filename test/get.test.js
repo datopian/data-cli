@@ -1,95 +1,93 @@
-const test = require('ava')
 const fs = require('fs')
-const get = require('../lib/get.js')
+const test = require('ava')
 const nock = require('nock')
 const tmp = require('tmp')
-const utils = require('../lib/utils/common')
-const { data } = require('./data.js')
 
-let tmpdir = tmp.dirSync({ template: '/tmp/tmp-XXXXXX' }).name;
-let tmpfile = tmp.fileSync({ template: '/tmp/tmp-XXXXXX.file' }).name;
+const get = require('../lib/get.js')
+const {data} = require('./data.js')
 
-let metadata = {
-  "bitstore_url": "https://bits-staging.datapackaged.com/metadata/publisher/package/_v/latest",
-  "descriptor": {
-    "name": "package",
-    "owner": "publisher",
-    "resources": [
+const tmpdir = tmp.dirSync({template: '/tmp/tmp-XXXXXX'}).name
+const tmpfile = tmp.fileSync({template: '/tmp/tmp-XXXXXX.file'}).name
+
+const metadata = {
+  // eslint-disable-next-line camelcase
+  bitstore_url: 'https://bits-staging.datapackaged.com/metadata/publisher/package/_v/latest',
+  descriptor: {
+    name: 'package',
+    owner: 'publisher',
+    resources: [
       {
-        "format": "csv",
-        "name": "firstResource",
-        "path": "test/firsts-resource.csv"
+        format: 'csv',
+        name: 'firstResource',
+        path: 'test/firsts-resource.csv'
       },
       {
-        "format": "csv",
-        "name": "secondResource",
-        "url": "https://example.com/data/second-resource.csv"
+        format: 'csv',
+        name: 'secondResource',
+        url: 'https://example.com/data/second-resource.csv'
       }
     ]
   }
 }
-
-
-let getDPJson = nock('https://bits-staging.datapackaged.com')
+// eslint-disable-next-line no-unused-vars
+const getDPJson = nock('https://bits-staging.datapackaged.com')
       .persist()
       .get('/metadata/publisher/package/_v/latest' + tmpfile)
       .reply(200, metadata.descriptor)
-
-let getFromBitstoreUrl = nock('https://bits-staging.datapackaged.com')
+// eslint-disable-next-line no-unused-vars
+const getFromBitstoreUrl = nock('https://bits-staging.datapackaged.com')
       .persist()
       .get('/metadata/publisher/package/_v/latest/test/firsts-resource.csv')
       .replyWithFile(200, './test/fixtures/sample.csv')
-
-let getFromSourceUrl = nock('https://example.com')
+// eslint-disable-next-line no-unused-vars
+const getFromSourceUrl = nock('https://example.com')
       .persist()
       .get('/data/second-resource.csv')
       .replyWithFile(200, './test/fixtures/sample.csv')
 
-
 test('checkDestIsEmpty returns true if dir exists and is empty', t => {
-  let tempDirPath = tmpdir.split('/')
-      , publisher = tempDirPath[tempDirPath.length - 2]
-      , pkg = tempDirPath[tempDirPath.length - 1]
-  let res = get.checkDestIsEmpty('/'+publisher, pkg)
+  const tempDirPath = tmpdir.split('/')
+  const publisher = tempDirPath[tempDirPath.length - 2]
+  const pkg = tempDirPath[tempDirPath.length - 1]
+  const res = get.checkDestIsEmpty('/' + publisher, pkg)
   t.true(res)
 })
 
 test('checkDestIsEmpty returns true if dir does not exist', t => {
-  let tempDirPath = tmpdir.split('/')
-      , publisher = tempDirPath[tempDirPath.length - 1]
-      , pkg = 'new'
-  let res = get.checkDestIsEmpty('/'+publisher, pkg)
+  const tempDirPath = tmpdir.split('/')
+  const publisher = tempDirPath[tempDirPath.length - 1]
+  const pkg = 'new'
+  const res = get.checkDestIsEmpty('/' + publisher, pkg)
   t.true(res)
 })
 
 test('checkDestIsEmpty returns false if dir exists and not empty', t => {
-  let tempFilePath = tmpfile.split('/')
-  let publisher = tempFilePath[tempFilePath.length - 2]
-  let res = get.checkDestIsEmpty('/' + publisher, '')
+  const tempFilePath = tmpfile.split('/')
+  const publisher = tempFilePath[tempFilePath.length - 2]
+  const res = get.checkDestIsEmpty('/' + publisher, '')
   t.false(res)
 })
 
 test('downloadFile function works', async t => {
-  let bUrl = 'https://bits-staging.datapackaged.com/metadata/publisher/package/_v/latest'+tmpfile
-  let path = tmpfile
-  let publisher = '/'+tmpdir.split('/')[1]
-  let pkg = 'package'
-  let mockBar = {tick: () => {}}
+  const bUrl = 'https://bits-staging.datapackaged.com/metadata/publisher/package/_v/latest' + tmpfile
+  const path = tmpfile
+  const publisher = '/' + tmpdir.split('/')[1]
+  const pkg = 'package'
+  const mockBar = {tick: () => {}}
   await get.downloadFile(bUrl, path, publisher, pkg, mockBar)
   t.true(fs.existsSync(publisher, pkg, path))
 })
 
-
 test('get list of download files', t => {
-  let exp = [
-    {destPath: 'datapackage.json', url: metadata.bitstore_url+'/datapackage.json'},
-    {destPath: 'README', url: metadata.bitstore_url+'/README'},
-    {destPath: 'README.md', url: metadata.bitstore_url+'/README.md'},
-    {destPath: 'README.txt', url: metadata.bitstore_url+'/README.txt'},
-    {destPath: "test/firsts-resource.csv", url: metadata.bitstore_url+'/test/firsts-resource.csv'},
-    {destPath: "data/second-resource.csv", url: 'https://example.com/data/second-resource.csv'}
+  const exp = [
+    {destPath: 'datapackage.json', url: metadata.bitstore_url + '/datapackage.json'},
+    {destPath: 'README', url: metadata.bitstore_url + '/README'},
+    {destPath: 'README.md', url: metadata.bitstore_url + '/README.md'},
+    {destPath: 'README.txt', url: metadata.bitstore_url + '/README.txt'},
+    {destPath: 'test/firsts-resource.csv', url: metadata.bitstore_url + '/test/firsts-resource.csv'},
+    {destPath: 'data/second-resource.csv', url: 'https://example.com/data/second-resource.csv'}
   ]
-  let res = get.getFilesToDownload(metadata.bitstore_url, metadata.descriptor)
+  const res = get.getFilesToDownload(metadata.bitstore_url, metadata.descriptor)
   t.deepEqual(exp, res)
 })
 
