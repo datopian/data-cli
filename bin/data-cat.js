@@ -42,13 +42,13 @@ if (argv._[1]) {
     console.log(`Your data is saved in ${argv._[1]}`)
   } else if (outFileExt === '.md') {
     const out = await dumpers.md(res)
-    console.log(`Your data is saved in ${argv._[1]}`)
     fs.writeFileSync(argv._[1], out)
-  } else if (outFileExt === '.xls') {
-    const out = await dumpers.xls(res)
-    const wb = {SheetNames: ['sheet'], Sheets: {sheet: out}}
     console.log(`Your data is saved in ${argv._[1]}`)
+  } else if (outFileExt === '.xlsx') {
+    const out = await dumpers.xlsx(res)
+    const wb = {SheetNames: ['sheet'], Sheets: {sheet: out}}
     XLSX.writeFile(wb, argv._[1])
+    console.log(`Your data is saved in ${argv._[1]}`)
   } else {
     console.log('We currently do not support this feature.')
   }

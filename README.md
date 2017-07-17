@@ -1,14 +1,5 @@
-<p align="center">
-  <a href="https://staging.datapackaged.com/">
-    <img alt="datahub" src="https://staging.datapackaged.com/static/img/data-hub-logo.png" width="546">
-  </a>
-</p>
-
-<p align="center">
-  The DataHub CLI is used to manage DataHub data packages from the command line.
-</p>
-
-[![Build Status](https://travis-ci.org/datopian/datahub-cli.svg?branch=master)](https://travis-ci.org/datopian/datahub-cli)
+[![Build Status](https://travis-ci.org/datahq/datahub-cli.svg?branch=master)](https://travis-ci.org/datahq/datahub-cli)
+[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 [![Issues](https://img.shields.io/badge/issue-tracker-orange.svg)](https://github.com/datopian/datahub-cli/issues)
 
 # Usage
@@ -28,7 +19,7 @@ $ data --help
 Configuration is in `~/.datahub.json`. In general, you should not need to edit this by hand. You can also override any variables in there using environment variables or on the command line by using the same name e.g.
 
 ```
-data login --api https://api-testing.datahub.io
+$ data login --api https://api-testing.datahub.io
 ```
 
 # For developers
@@ -51,4 +42,19 @@ To run tests in watch mode:
 
 ```
 $ [sudo] npm run watch:test
+```
+
+## Lint
+
+We use XO for checking our code for JS standard/convention/style:
+
+```bash
+# When you run tests, it first runs lint:
+$ npm test
+
+# To run lint separately:
+$ npm run lint # shows errors only
+
+# Fixing erros automatically:
+$ xo --fix
 ```
