@@ -2,7 +2,7 @@ const test = require('ava')
 const nock = require('nock')
 const urljoin = require('url-join')
 const { validate } = require('../lib/validate')
-const { data } = require('./data.js')
+
 
 test.before(t => {
   const mockGitHub = nock('https://raw.githubusercontent.com')
@@ -23,11 +23,3 @@ test('validate works with github id', async t => {
   t.true(res)
 })
 
-test('"data help validate" prints help message', async t => {
-  const result = await data('help', 'validate')
-
-  t.is(result.code, 0)
-  const stdout = result.stdout.split('\n')
-  t.true(stdout.length > 1)
-  t.true(stdout[1].includes('Validate a descriptor'))
-})
