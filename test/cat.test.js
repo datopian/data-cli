@@ -19,3 +19,10 @@ test('dumpMarkdown works', async t => {
   const out = await dumpers.md(resource)
   t.true(out.includes('| number | string | boolean |'))
 })
+
+test('dumpXlsx works', async t => {
+  // Xlsx dumper returns a sheet
+  const out = await dumpers.xlsx(resource)
+  t.is(out['!ref'], 'A1:C3')
+  t.deepEqual(out.A1, {t: 's', v: 'number'})
+})
