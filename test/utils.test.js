@@ -1,34 +1,34 @@
+const path = require('path')
 const test = require('ava')
-const fs = require('fs')
 const chalk = require('chalk')
-const { logger } = require('../lib/utils/log-handler.js')
 const sinon = require('sinon')
 const nock = require('nock')
-const urljoin = require('url-join')
 
+const {logger} = require('../lib/utils/log-handler.js')
 const utils = require('../lib/utils/common.js')
 
-let metadata = {
-  "bitstore_url": "https://bits-staging.datapackaged.com/metadata/publisher/package/_v/latest",
-  "descriptor": {
-    "name": "package",
-    "owner": "publisher",
-    "resources": [
+const metadata = {
+  // eslint-disable-next-line camelcase
+  bitstore_url: 'https://bits-staging.datapackaged.com/metadata/publisher/package/_v/latest',
+  descriptor: {
+    name: 'package',
+    owner: 'publisher',
+    resources: [
       {
-        "format": "csv",
-        "name": "firstResource",
-        "path": "test/firsts-resource.csv"
+        format: 'csv',
+        name: 'firstResource',
+        path: 'test/firsts-resource.csv'
       },
       {
-        "format": "csv",
-        "name": "secondResource",
-        "url": "https://example.com/data/second-resource.csv"
+        format: 'csv',
+        name: 'secondResource',
+        url: 'https://example.com/data/second-resource.csv'
       }
     ]
   }
 }
 
-let config = {
+const config = {
   username: 'test',
   secretToken: 'secret',
   server: 'https://test.com',
@@ -40,24 +40,24 @@ test.beforeEach(t => {
   t.context.log = console.log
   console.error = sinon.spy()
   console.log = sinon.spy()
-
-  let getMeta = nock('https://staging.datapackaged.com')
+  // eslint-disable-next-line no-unused-vars
+  const getMeta = nock('https://staging.datapackaged.com')
     .persist()
     .get('/api/package/publisher/package')
     .reply(200, metadata)
-
-  let postToken = nock(config.server)
+  // eslint-disable-next-line no-unused-vars
+  const postToken = nock(config.server)
     .persist()
     .post('/api/auth/token', {
       username: config.username,
       secret: config.secretToken
     })
-    .reply(200, { token: 't35tt0k3N' })
-
-  let github = nock('https://raw.githubusercontent.com')
+    .reply(200, {token: 't35tt0k3N'})
+  // eslint-disable-next-line no-unused-vars
+  const github = nock('https://raw.githubusercontent.com')
     .persist()
     .get('/datahq/datahub-cli/master/test/fixtures/sample.csv')
-    .replyWithFile(200, __dirname + '/fixtures/sample.csv')
+    .replyWithFile(200, path.join(__dirname, '/fixtures/sample.csv'))
 })
 
 test.afterEach(t => {
@@ -69,6 +69,7 @@ test.afterEach(t => {
 
 test.after(t => {
   nock.restore()
+  t.pass()
 })
 
 test.serial('Error log is working fine', t => {
@@ -92,7 +93,6 @@ test.serial('Aborting log is working fine', t => {
   t.true(console.error.firstCall.args[0].includes(exp))
 })
 
-
 test.serial('Success log is working fine', t => {
   logger('Success message', 'success')
   const exp = `${chalk.bold.green('Success:')} Success message`
@@ -108,12 +108,12 @@ test.serial('default log is working fine', t => {
 })
 
 test('Checks if datapackage.json exists in cwd', t => {
-  let out = utils.checkDpIsThere()
+  const out = utils.checkDpIsThere()
   t.false(out)
 })
 
 test('Checks if datapackage.json exists in given dir', t => {
-  let out = utils.checkDpIsThere('test/fixtures')
+  const out = utils.checkDpIsThere('test/fixtures')
   t.true(out)
 })
 
@@ -122,4 +122,3 @@ test.serial('Gets the token', async t => {
   const expToken = 't35tt0k3N'
   t.is(token, expToken)
 })
-

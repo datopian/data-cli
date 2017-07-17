@@ -51,7 +51,6 @@ test('parsePath function with remote url', t => {
   t.is(res.mediatype, 'text/csv')
 })
 
-
 // ====================================
 // Resource class
 
@@ -60,21 +59,21 @@ const testResource = async (t, resource) => {
   t.is(resource.path, 'test/fixtures/sample.csv')
   t.is(resource.size, 46)
   t.is(resource.hash, 'sGYdlWZJioAPv5U2XOKHRw==')
-  
-  // test stream
-  let stream = await resource.stream
-  let out = await toArray(stream)
+
+  // Test stream
+  const stream = await resource.stream
+  const out = await toArray(stream)
   t.true(out.toString().includes('number,string,boolean'))
 
-  // test rows
-  let rowStream = await resource.rows
-  let rows = await toArray(rowStream)
+  // Test rows
+  const rowStream = await resource.rows
+  const rows = await toArray(rowStream)
   t.deepEqual(rows[0], ['number', 'string', 'boolean'])
   t.deepEqual(rows[1], ['1', 'two', 'true'])
 }
 
 test('Resource class with path', async t => {
-  // with path
+  // With path
   const path_ = 'test/fixtures/sample.csv'
   const res = utils.Resource.load(path_)
   await testResource(t, res)
@@ -86,7 +85,7 @@ test('Resource class with descriptor', async t => {
   await testResource(t, obj2)
 })
 
-test('Resource with path and basePath', async t => {
+test('Resource with path and basePath', t => {
   const obj3 = utils.Resource.load('sample.csv', {basePath: 'test/fixtures'})
   testResource(t, obj3)
 })
@@ -95,10 +94,10 @@ test('Resource with inline JS data', async t => {
   const data = {
     name: 'abc'
   }
-  const resource = utils.Resource.load({data: data})
+  const resource = utils.Resource.load({data})
   t.is(resource.size, 14)
-  let stream = await resource.stream
-  let out = await toArray(stream)
+  const stream = await resource.stream
+  const out = await toArray(stream)
   t.is(out.toString(), JSON.stringify(data))
 })
 
@@ -107,11 +106,11 @@ test('Resource with inline text (CSV) data', async t => {
 1,two,true
 3,four,false
 `
-  // to make it testable with testResource we add the path but it is not needed
+  // To make it testable with testResource we add the path but it is not needed
   const resource = utils.Resource.load({
     path: 'test/fixtures/sample.csv',
     format: 'csv',
-    data: data
+    data
   })
   await testResource(t, resource)
 })
@@ -119,23 +118,23 @@ test('Resource with inline text (CSV) data', async t => {
 test('Resource with inline array data', async t => {
   const data = [
     ['number', 'string', 'boolean'],
-    [1,'two',true],
-    [3,'four',false]
+    [1, 'two', true],
+    [3, 'four', false]
   ]
-  // to make it testable with testResource we add the path but it is not needed
+  // To make it testable with testResource we add the path but it is not needed
   const resource = utils.Resource.load({
-    data: data
+    data
   })
   t.is(resource.size, 63)
-  let stream = await resource.stream
-  let out = await toArray(stream)
+  const stream = await resource.stream
+  const out = await toArray(stream)
   t.is(out.toString(), JSON.stringify(data))
 
-  let rows = await resource.rows
-  let out2 = await toArray(rows)
+  const rows = await resource.rows
+  const out2 = await toArray(rows)
   t.is(out2.length, 3)
   t.is(out2[0][0], data[0][0])
-  // for some reason this fails with no difference
+  // For some reason this fails with no difference
   // t.is(out2, data)
   // but this works ...
   t.is(JSON.stringify(out2), JSON.stringify(data))
@@ -152,9 +151,9 @@ test.serial('Resource class stream with url', async t => {
 
 test.serial('ResourceRemote "rows" method', async t => {
   const path_ = 'https://raw.githubusercontent.com/datahq/datahub-cli/master/test/fixtures/sample.csv'
-  let res = utils.Resource.load(path_)
-  let rowStream = await res.rows
-  let out = await toArray(rowStream)
+  const res = utils.Resource.load(path_)
+  const rowStream = await res.rows
+  const out = await toArray(rowStream)
   t.deepEqual(out[0], ['number', 'string', 'boolean'])
   t.deepEqual(out[1], ['1', 'two', 'true'])
 })
@@ -163,7 +162,7 @@ test('Resource class for addSchema method', async t => {
   const path_ = 'test/fixtures/sample.csv'
   const resource = utils.Resource.load(path_)
   t.is(resource.descriptor.schema, undefined)
-  await resource.addSchema
+  await resource.addSchema()
   t.is(resource.descriptor.schema.fields[1].type, 'string')
   const headers = resource.descriptor.schema.fields.map(field => field.name)
   t.deepEqual(headers, ['number', 'string', 'boolean'])
@@ -184,10 +183,10 @@ test('Package constructor works', t => {
 })
 
 test('Package.load works with co2-ppm', async t => {
-  let path = 'test/fixtures/co2-ppm'
+  const path = 'test/fixtures/co2-ppm'
   const pkg2 = await utils.Package.load(path)
   t.deepEqual(pkg2.identifier, {
-    path: path,
+    path,
     type: 'local'
   })
   t.deepEqual(pkg2.path, path)
@@ -197,4 +196,24 @@ test('Package.load works with co2-ppm', async t => {
   t.is(pkg2.resources[0].descriptor.name, 'co2-mm-mlo')
   t.is(pkg2.resources[0].path, 'test/fixtures/co2-ppm/data/co2-mm-mlo.csv')
   t.true(pkg2.readme.includes('CO2 PPM - Trends in Atmospheric Carbon Dioxide.'))
+})
+
+test('Package.addResource method works', t => {
+  const resourceAsPlainObj = {
+    name: 'sample',
+    path: 'test/fixtures/sample.csv',
+    format: 'csv'
+  }
+  const resourceAsResourceObj = utils.Resource.load(resourceAsPlainObj)
+  const pkg = new utils.Package({
+    resources: []
+  })
+  t.is(pkg.resources.length, 0)
+  t.is(pkg.descriptor.resources.length, 0)
+  pkg.addResource(resourceAsPlainObj)
+  t.is(pkg.resources.length, 1)
+  t.is(pkg.descriptor.resources.length, 1)
+  pkg.addResource(resourceAsResourceObj)
+  t.is(pkg.resources.length, 2)
+  t.is(pkg.descriptor.resources.length, 2)
 })

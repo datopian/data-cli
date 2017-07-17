@@ -1,20 +1,13 @@
 #!/usr/bin/env node
 
 // Packages
-const minimist = require('minimist')
-const chalk = require('chalk')
 const fs = require('fs')
 const path = require('path')
-const { customMarked } = require('../lib/utils/tools.js')
+const minimist = require('minimist')
+const {customMarked} = require('../lib/utils/tools.js')
 
-// ours
-const { normalize } = require('../lib/normalize')
-const { box, elephant, square } = require('../lib/utils/logo')
-
-const dhStyle = chalk.bold.underline
-const italic = chalk.italic
-const boldText = chalk.bold
-const underline = chalk.underline
+// Ours
+const {normalize} = require('../lib/normalize')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['normalize'],
@@ -24,19 +17,16 @@ const argv = minimist(process.argv.slice(2), {
   }
 })
 
-var normalizeMarkdown = fs.readFileSync(path.join(__dirname, '../docs/normalize.md'),'utf8')
+const normalizeMarkdown = fs.readFileSync(path.join(__dirname, '../docs/normalize.md'), 'utf8')
 const help = () => {
-  console.log('\n'+ customMarked(normalizeMarkdown))
+  console.log('\n' + customMarked(normalizeMarkdown))
 }
-
-
-
 
 if (argv.help) {
   help()
   process.exit(0)
 }
 
-let pathForDp = argv._[0]
+const pathForDp = argv._[0]
 
 normalize(pathForDp)

@@ -1,27 +1,25 @@
 #!/usr/bin/env node
 
-const minimist = require('minimist')
-const chalk = require('chalk')
 const fs = require('fs')
 const path = require('path')
-const { customMarked } = require('../lib/utils/tools.js')
+const minimist = require('minimist')
+const {customMarked} = require('../lib/utils/tools.js')
 
 const config = require('../lib/utils/config')
-const { handleError } = require('../lib/utils/error')
-const info  = require('../lib/utils/output/info.js')
-const { login, authenticate, logout } = require('../lib/login')
+const {handleError} = require('../lib/utils/error')
+const info = require('../lib/utils/output/info.js')
+const {login, authenticate} = require('../lib/login')
 const wait = require('../lib/utils/output/wait')
-
 
 const argv = minimist(process.argv.slice(2), {
   string: ['login'],
   boolean: ['help'],
-  alias: { help: 'h' }
+  alias: {help: 'h'}
 })
 
-var configMarkdown = fs.readFileSync(path.join(__dirname, '../docs/login.md'),'utf8')
+const configMarkdown = fs.readFileSync(path.join(__dirname, '../docs/login.md'), 'utf8')
 const help = () => {
-  console.log('\n'+ customMarked(configMarkdown))
+  console.log('\n' + customMarked(configMarkdown))
 }
 
 if (argv.help) {
@@ -30,10 +28,10 @@ if (argv.help) {
 }
 
 Promise.resolve().then(async () => {
-	let stopSpinner = wait('Logging in ...')
-  let apiUrl = config.get('api'),
-    token = config.get('token'),
-    out
+  let stopSpinner = wait('Logging in ...')
+  const apiUrl = config.get('api')
+  const token = config.get('token')
+  let out
 
   try {
     out = await authenticate(apiUrl, token)
@@ -42,12 +40,12 @@ Promise.resolve().then(async () => {
     process.exit(1)
   }
 
-	if (out.authenticated) {
+  if (out.authenticated) {
     stopSpinner()
-		info('You are already logged in.')
+    info('You are already logged in.')
     process.exit(0)
-	}
-  // signup or signin
+  }
+  // Signup or signin
   stopSpinner()
 
   const authUrl = out.providers.google.url

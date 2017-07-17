@@ -1,7 +1,5 @@
 const test = require('ava')
 const nock = require('nock')
-const sinon = require('sinon')
-const fs = require('fs')
 
 const login = require('../lib/login')
 const config = require('../lib/utils/config')
@@ -25,20 +23,20 @@ test.before(t => {
         name: 'Firstname Secondname'
       }
     })
+  t.pass()
 })
 
-test('Authenticate function returns urls for login - GitHub and Google', async (t) => {
+test('Authenticate function returns urls for login - GitHub and Google', async t => {
   const res = await login.authenticate(config.get('api'), '') // Without jwt so we get urls for login
   t.is(res.authenticated, false)
   t.true(res.providers.github)
   t.true(res.providers.google)
 })
 
-test('Authenticates with GOOGLE using given jwt and returns user info', async (t) => {
+test('Authenticates with GOOGLE using given jwt and returns user info', async t => {
   const jwt = '1a2b3c4d'
   const res = await login.authenticate(config.get('api'), jwt)
   t.is(res.authenticated, true)
   t.is(res.profile.email, 'actual_email@gmail.com')
   t.is(res.profile.name, 'Firstname Secondname')
 })
-

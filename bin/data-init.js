@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
 // Packages
-const minimist = require('minimist')
 const fs = require('fs')
 const path = require('path')
+const minimist = require('minimist')
 
-// ours
-const { init } = require('../lib/init')
-const { customMarked } = require('../lib/utils/tools.js')
+// Ours
+const {init} = require('../lib/init')
+const {customMarked} = require('../lib/utils/tools.js')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['init'],
@@ -17,11 +17,10 @@ const argv = minimist(process.argv.slice(2), {
   }
 })
 
-let initMarkdown = fs.readFileSync(path.join(__dirname, '../docs/init.md'),'utf8')
+const initMarkdown = fs.readFileSync(path.join(__dirname, '../docs/init.md'), 'utf8')
 const help = () => {
-  console.log('\n'+ customMarked(initMarkdown))
+  console.log('\n' + customMarked(initMarkdown))
 }
-
 
 if (argv.help) {
   help()

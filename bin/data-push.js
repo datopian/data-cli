@@ -7,24 +7,23 @@ const urljoin = require('url-join')
 const inquirer = require('inquirer')
 const hri = require('human-readable-ids').hri
 
-// ours
+// Ours
 const config = require('../lib/utils/config')
-const { customMarked } = require('../lib/utils/tools.js')
-const { handleError, error } = require('../lib/utils/error')
+const {customMarked} = require('../lib/utils/tools.js')
+const {handleError} = require('../lib/utils/error')
 const wait = require('../lib/utils/output/wait')
-const { DataHub } = require('../lib/utils/datahub.js')
-const { Package, Resource } = require('../lib/utils/data.js')
-
+const {DataHub} = require('../lib/utils/datahub.js')
+const {Package, Resource} = require('../lib/utils/data.js')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['push'],
   boolean: ['help', 'debug'],
-  alias: { help: 'h' }
+  alias: {help: 'h'}
 })
 
-var pushMarkdown = fs.readFileSync(path.join(__dirname, '../docs/push.md'),'utf8')
+const pushMarkdown = fs.readFileSync(path.join(__dirname, '../docs/push.md'), 'utf8')
 const help = () => {
-  console.log('\n'+ customMarked(pushMarkdown))
+  console.log('\n' + customMarked(pushMarkdown))
 }
 
 if (argv.help) {
@@ -67,24 +66,24 @@ Promise.resolve().then(async () => {
   }
 })
 
-const preparePackageFromFile = async (filePath) => {
+const preparePackageFromFile = async filePath => {
   const pathParts = path.parse(filePath)
   const resource = Resource.load(pathParts.base, {basePath: pathParts.dir})
 
   await resource.addSchema
   const headers = resource.descriptor.schema.fields.map(field => field.name)
   const fieldTypes = resource.descriptor.schema.fields.map(field => field.type)
-  // prompt user with headers and fieldTypes
+  // Prompt user with headers and fieldTypes
   const questions = [ask('headers', headers), ask('types', fieldTypes)]
   const answers = await inquirer.prompt(questions)
 
   if (answers.headers === 'n' & answers.types === 'n') {
     // Maybe nicer exit - user has chosen not to proceed for now ...
-    throw Error('Please, generate datapackage.json and push.')
+    throw new Error('Please, generate datapackage.json and push.')
   }
 
-  const dpName = pathParts.name.replace(/\s+/g, '-').toLowerCase()
-  // add human readable id so that this packge does not conflict with other
+  let dpName = pathParts.name.replace(/\s+/g, '-').toLowerCase()
+  // Add human readable id so that this packge does not conflict with other
   // packages (name is coming from the resource file name which could just be
   // data.csv)
   dpName += '-' + hri.random()
@@ -101,12 +100,12 @@ const preparePackageFromFile = async (filePath) => {
 const ask = (name, data) => {
   return {
     type: 'input',
-    name: name,
+    name,
     message: `Are these ${name} correct for this dataset:\n[${data}]\ny/n?`,
     default: () => {
       return 'y'
     },
-    validate: (value) => {
+    validate: value => {
       const pass = value.match(/^[y,n]+$/)
       if (pass) {
         return true
@@ -115,4 +114,3 @@ const ask = (name, data) => {
     }
   }
 }
-
