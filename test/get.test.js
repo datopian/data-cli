@@ -4,7 +4,6 @@ const nock = require('nock')
 const tmp = require('tmp')
 
 const get = require('../lib/get.js')
-const {data} = require('./data.js')
 
 const tmpdir = tmp.dirSync({template: '/tmp/tmp-XXXXXX'}).name
 const tmpfile = tmp.fileSync({template: '/tmp/tmp-XXXXXX.file'}).name
@@ -91,27 +90,3 @@ test('get list of download files', t => {
   t.deepEqual(exp, res)
 })
 
-test('"data help get" prints help message for get command', async t => {
-  const result = await data('help', 'get')
-
-  t.is(result.code, 0)
-  const stdout = result.stdout.split('\n')
-  t.true(stdout.length > 1)
-  t.true(stdout[1].includes('Get a Data Package from DataHub'))
-})
-
-test('"data get -h --help" prints help message for get command', async t => {
-  let result = await data('get', '-h')
-
-  t.is(result.code, 0)
-  let stdout = result.stdout.split('\n')
-  t.true(stdout.length > 1)
-  t.true(stdout[1].includes('Get a Data Package from DataHub'))
-
-  result = await data('get', '--help')
-
-  t.is(result.code, 0)
-  stdout = result.stdout.split('\n')
-  t.true(stdout.length > 1)
-  t.true(stdout[1].includes('Get a Data Package from DataHub'))
-})
