@@ -158,7 +158,7 @@ test.serial('ResourceRemote "rows" method', async t => {
   t.deepEqual(out[1], ['1', 'two', 'true'])
 })
 
-test('Resource class for addSchema method', async t => {
+test.serial('Resource class for addSchema method', async t => {
   const path_ = 'test/fixtures/sample.csv'
   const resource = utils.Resource.load(path_)
   t.is(resource.descriptor.schema, undefined)
@@ -196,6 +196,33 @@ test('Package.load works with co2-ppm', async t => {
   t.is(pkg2.resources[0].descriptor.name, 'co2-mm-mlo')
   t.is(pkg2.resources[0].path, 'test/fixtures/co2-ppm/data/co2-mm-mlo.csv')
   t.true(pkg2.readme.includes('CO2 PPM - Trends in Atmospheric Carbon Dioxide.'))
+})
+
+test('Package.load with dir/datapckage.json', async t => {
+  const path = 'test/fixtures/co2-ppm/datapackage.json'
+  const pkg = await utils.Package.load(path)
+  t.is(pkg.descriptor.name, 'co2-ppm')
+  t.is(pkg.identifier.type, 'local')
+  t.is(pkg.resources.length, 6)
+  t.true(pkg.readme.includes('CO2 PPM - Trends in Atmospheric Carbon Dioxide.'))
+})
+
+test('Package.load with url-directory', async t => {
+  const url = 'https://raw.githubusercontent.com/datasets/co2-ppm/master/'
+  const pkg = await utils.Package.load(url)
+  t.is(pkg.descriptor.name, 'co2-ppm')
+  t.is(pkg.identifier.type, 'remote')
+  t.is(pkg.resources.length, 6)
+  t.true(pkg.readme.includes('CO2 PPM - Trends in Atmospheric Carbon Dioxide.'))
+})
+
+test('Package.load with url/datapackage.json', async t => {
+  const url = 'https://raw.githubusercontent.com/datasets/co2-ppm/master/datapackage.json'
+  const pkg = await utils.Package.load(url)
+  t.is(pkg.descriptor.name, 'co2-ppm')
+  t.is(pkg.identifier.type, 'remote')
+  t.is(pkg.resources.length, 6)
+  t.true(pkg.readme.includes('CO2 PPM - Trends in Atmospheric Carbon Dioxide.'))
 })
 
 test('Package.addResource method works', t => {
