@@ -29,6 +29,36 @@ test('Tests if given path is url or not', t => {
 })
 
 // ====================================
+// isPackage
+
+test('isPackage function works', t => {
+  let pathToPkg = 'test/fixtures/co2-ppm'
+  let res = utils.isPackage(pathToPkg)
+  t.true(res)
+  pathToPkg = 'test/fixtures/co2-ppm/datapackage.json'
+  res = utils.isPackage(pathToPkg)
+  t.true(res)
+  const pathToFile = 'test/fixtures/sample.csv'
+  res = utils.isPackage(pathToFile)
+  t.false(res)
+  let urlToPkg = 'http://test.com/'
+  res = utils.isPackage(urlToPkg)
+  t.true(res)
+  urlToPkg = 'http://test.com/dir'
+  res = utils.isPackage(urlToPkg)
+  t.true(res)
+  urlToPkg = 'http://test.com/dir/datapackage.json'
+  res = utils.isPackage(urlToPkg)
+  t.true(res)
+  let urlToFile = 'http://test.com/dir/file.csv'
+  res = utils.isPackage(urlToFile)
+  t.false(res)
+  urlToFile = 'http://test.com/file.csv'
+  res = utils.isPackage(urlToFile)
+  t.false(res)
+})
+
+// ====================================
 // parsePath
 
 test('parsePath function with local path', t => {

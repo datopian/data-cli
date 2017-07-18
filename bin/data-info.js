@@ -27,27 +27,14 @@ if (argv.help) {
 const fileOrDatasetIdentifier = argv._[0]
 
 Promise.resolve().then(async () => {
-  const ispkg = isPackage(fileOrDatasetIdentifier)
+  const ispkg = data.isPackage(fileOrDatasetIdentifier)
   if (ispkg) {
     const pkg = await data.Package.load(fileOrDatasetIdentifier)
-    const out = info.info(pkg)
+    const out = info.infoPackage(pkg)
     console.log(customMarked(out))
   } else {
     const resource = data.Resource.load(fileOrDatasetIdentifier)
-    resource.info.pipe(process.stdout)
+    const out = await info.infoResource(resource)
+    console.log(out)
   }
 })
-
-// Is package or file
-const isPackage = path_ => {
-  if (path_.endsWith('datapackage.json')) {
-    return true
-  }
-  if (data.isUrl(path_)) {
-    return true
-    // Path_.match(/.*\.[^.]+$/)
-    // if lastPart(hasExtension) => guess file
-  }
-    // IsDirectory() => directory
-  return true
-}
