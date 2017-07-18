@@ -83,17 +83,26 @@ test('parsePath function with remote url', t => {
 
 // ====================================
 // Resource class
+// ====================================
 
-// common method to test all the functionality which we can use for all types of resources
+// common method to test all the functionality which we can use for all types
+// of resources
 const testResource = async (t, resource) => {
   t.is(resource.path, 'test/fixtures/sample.csv')
   t.is(resource.size, 46)
   t.is(resource.hash, 'sGYdlWZJioAPv5U2XOKHRw==')
+  await testResourceStream(t, resource)
+}
 
+const testResourceStream = async (t, resource) => {
   // Test stream
   const stream = await resource.stream
   const out = await toArray(stream)
   t.true(out.toString().includes('number,string,boolean'))
+
+  // Test buffer
+  const buffer = await resource.buffer
+  t.is(buffer.toString().slice(0,21), 'number,string,boolean')
 
   // Test rows
   const rowStream = await resource.rows
@@ -174,18 +183,7 @@ test.serial('Resource class stream with url', async t => {
   // TODO: mock this out
   const url = 'https://raw.githubusercontent.com/datahq/datahub-cli/master/test/fixtures/sample.csv'
   const res = utils.Resource.load(url)
-  const stream = await res.stream
-  const out = await toArray(stream)
-  t.true(out.toString().includes('number,string,boolean'))
-})
-
-test.serial('ResourceRemote "rows" method', async t => {
-  const path_ = 'https://raw.githubusercontent.com/datahq/datahub-cli/master/test/fixtures/sample.csv'
-  const res = utils.Resource.load(path_)
-  const rowStream = await res.rows
-  const out = await toArray(rowStream)
-  t.deepEqual(out[0], ['number', 'string', 'boolean'])
-  t.deepEqual(out[1], ['1', 'two', 'true'])
+  await testResourceStream(t, res)
 })
 
 test.serial('Resource class for addSchema method', async t => {
@@ -200,6 +198,7 @@ test.serial('Resource class for addSchema method', async t => {
 
 // ====================================
 // Package class
+// ====================================
 
 test('Package constructor works', t => {
   const pkg = new utils.Package()
