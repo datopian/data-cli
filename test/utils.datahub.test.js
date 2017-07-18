@@ -65,7 +65,6 @@ const rawstoreAuthorize = nock(config.api, {reqheaders: {'Auth-Token': 'authz.to
   .persist()
   .post('/rawstore/authorize', {
     metadata: {
-      // TODO: reinstate
       owner: config.profile.id,
       name: 'does-not-matter-what-this-is'
     },
@@ -149,7 +148,8 @@ const apiSpecStore = nock(config.api, {
 }).persist().post('/source/upload', {
   meta: {
     version: 1,
-    owner: config.profile.id
+    owner: config.profile.id,
+    dataset: 'dp-no-resources'
   },
   inputs: [
     {
@@ -176,7 +176,8 @@ const apiSpecStore2 = nock(config.api, {
   .post('/source/upload', {
     meta: {
       version: 1,
-      owner: config.profile.id
+      owner: config.profile.id,
+      dataset: 'finance-vix'
     },
     inputs: [
       {
