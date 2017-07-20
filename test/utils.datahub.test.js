@@ -39,6 +39,10 @@ const finVixInfo = {
   'datapackage.json': {
     length: 739,
     md5: 'Sw1GeJlVHjuC+CGPAFx1rA=='
+  },
+  'README.md': {
+    length: 2023,
+    md5: '9jWkdxMRFkfU9jjuIYpZiw=='
   }
 }
 
@@ -131,6 +135,21 @@ const rawstoreAuthorize2 = nock(config.api, {reqheaders: {'Auth-Token': 'authz.t
         },
         // eslint-disable-next-line camelcase
         upload_url: rawstoreUrl
+      },
+      'README.md': {
+        md5: finVixInfo['README.md'].md5,
+        length: finVixInfo['README.md'].length,
+        name: finVixInfo['README.md'].name,
+        // eslint-disable-next-line camelcase
+        upload_query: {
+          key: finVixInfo['README.md'].md5,
+          policy: '...',
+          'x-amz-algorithm': 'AWS4-HMAC-SHA256',
+          'x-amz-credential': 'XXX',
+          'x-amz-signature': 'YYY'
+        },
+        // eslint-disable-next-line camelcase
+        upload_url: rawstoreUrl
       }
     }
   })
@@ -185,7 +204,8 @@ const apiSpecStore2 = nock(config.api, {
         url: urljoin(rawstoreUrl, finVixInfo['datapackage.json'].md5),
         parameters: {
           'resource-mapping': {
-            'data/vix-daily.csv': urljoin(rawstoreUrl, finVixInfo['data/vix-daily.csv'].md5)
+            'data/vix-daily.csv': urljoin(rawstoreUrl, finVixInfo['data/vix-daily.csv'].md5),
+            'README.md': urljoin(rawstoreUrl, finVixInfo['README.md'].md5)
           }
         }
       }
