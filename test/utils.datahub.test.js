@@ -71,8 +71,7 @@ const rawstoreAuthorize = nock(config.api, {reqheaders: {'Auth-Token': 'authz.to
   .persist()
   .post('/rawstore/authorize', {
     metadata: {
-      owner: config.profile.id,
-      name: 'does-not-matter-what-this-is'
+      owner: config.profile.id
     },
     filedata: {'datapackage.json': dpinfo}
   })
@@ -101,8 +100,7 @@ const rawstoreAuthorize2 = nock(config.api, {reqheaders: {'Auth-Token': 'authz.t
   .persist()
   .post('/rawstore/authorize', {
     metadata: {
-      owner: config.profile.id,
-      name: 'does-not-matter-what-this-is'
+      owner: config.profile.id
     },
     filedata: finVixInfo
   })
