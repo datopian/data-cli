@@ -102,7 +102,7 @@ const testResourceStream = async (t, resource) => {
 
   // Test buffer
   const buffer = await resource.buffer
-  t.is(buffer.toString().slice(0,21), 'number,string,boolean')
+  t.is(buffer.toString().slice(0, 21), 'number,string,boolean')
 
   // Test rows
   const rowStream = await resource.rows
