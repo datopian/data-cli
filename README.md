@@ -22,6 +22,12 @@ Configuration is in `~/.datahub.json`. In general, you should not need to edit t
 $ data login --api https://api-testing.datahub.io
 ```
 
+NB: you can set a custom location for the `.datahub.json` config file using the `DATAHUB_JSON` environment variable e.g.:
+
+```
+export DATAHUB_JSON=~/.my-special-datahub.json
+```
+
 # For developers
 
 ## Install
