@@ -26,12 +26,47 @@ if (argv.help) {
   process.exit(0)
 }
 
-const descriptor = argv._[0]
+let path_ = argv._[0]
 
-validate(descriptor).then(validation => {
-  if (Array.isArray(validation)) {
-    error(validation)
-    process.exit(1)
+if (!path_) {
+  path_ = process.cwd()
+}
+
+// Get path to datapackage.json
+if (fs.lstatSync(path_).isDirectory()) {
+  // Read datapackage.json in this dir
+  path_ = path.join(path_, 'datapackage.json')
+} else if (path.basename(path_) !== 'datapackage.json') {
+  // Check if there is a datapackage.json in cwd, if not throw an error
+  const dpJsonPath = path.join(process.cwd(), 'datapackage.json')
+  if (fs.existsSync(dpJsonPath)) {
+    path_ = dpJsonPath
+  } else {
+    error('datapackage.json not found in cwd')
   }
-  console.log('Data Package is valid')
-})
+}
+
+// Read given path
+let content
+try {
+  content = fs.readFileSync(path_)
+} catch (err) {
+  error(err.message)
+  process.exit(1)
+}
+
+// Get JS object from file content
+const descriptor = JSON.parse(content)
+
+// Validate
+try {
+  validate(descriptor).then(result => {
+    if (result === true) {
+      console.log('Your datapackage.json is valid!')
+    } else {
+      error(result)
+    }
+  })
+} catch (err) {
+  error(err.message)
+}

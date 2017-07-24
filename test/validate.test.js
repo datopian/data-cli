@@ -1,25 +1,35 @@
 const test = require('ava')
-const nock = require('nock')
-const {validate} = require('../lib/validate')
+const {validate, validateMetadata} = require('../lib/validate')
 
-test.before(t => {
-  nock('https://raw.githubusercontent.com')
-        .persist()
-        .get('/datasets/co2-ppm/master/datapackage.json')
-        .replyWithFile(200, './test/fixtures/co2-ppm/datapackage.json')
-  t.pass()
+test('validate function', async t => {
+  // Returns true if valid
+  const descriptor = {
+    name: 'valid-descriptor',
+    resources: []
+  }
+  const valid = await validate(descriptor)
+  t.true(valid)
+
+  const invalidDescriptor = {
+    resources: []
+  }
+  const invalid = await validate(invalidDescriptor)
+  t.true(invalid[0].toString().includes('Missing required property: name'))
 })
 
-test.after(t => {
-  nock.restore()
-  t.pass()
+test('it validateMetadata function works with valid descriptor', async t => {
+  const descriptor = {
+    name: 'valid-descriptor',
+    resources: []
+  }
+  const valid = await validateMetadata(descriptor)
+  t.true(valid)
 })
 
-// Optimal would be test with local file but way identifier parsing works makes that painful
-// next best is github with mocking
-test('validate works with github id', async t => {
-  const pkgid = 'https://github.com/datasets/co2-ppm'
-  const res = await validate(pkgid)
-  t.true(res)
+test('it returns list of errors if descriptor is invalid', async t => {
+  const descriptor = {
+    resources: []
+  }
+  const error = await t.throws(validateMetadata(descriptor))
+  t.true(error[0].toString().includes('Missing required property: name'))
 })
-
