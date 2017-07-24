@@ -96,7 +96,7 @@ const testResource = async (t, resource) => {
 
 const testResourceStream = async (t, resource) => {
   // Test stream
-  const stream = await resource.stream
+  const stream = await resource.stream()
   const out = await toArray(stream)
   t.true(out.toString().includes('number,string,boolean'))
 
@@ -105,7 +105,7 @@ const testResourceStream = async (t, resource) => {
   t.is(buffer.toString().slice(0, 21), 'number,string,boolean')
 
   // Test rows
-  const rowStream = await resource.rows
+  const rowStream = await resource.rows()
   const rows = await toArray(rowStream)
   t.deepEqual(rows[0], ['number', 'string', 'boolean'])
   t.deepEqual(rows[1], ['1', 'two', 'true'])
@@ -135,7 +135,7 @@ test('Resource with inline JS data', async t => {
   }
   const resource = utils.Resource.load({data})
   t.is(resource.size, 14)
-  const stream = await resource.stream
+  const stream = await resource.stream()
   const out = await toArray(stream)
   t.is(out.toString(), JSON.stringify(data))
 })
@@ -165,11 +165,11 @@ test('Resource with inline array data', async t => {
     data
   })
   t.is(resource.size, 63)
-  const stream = await resource.stream
+  const stream = await resource.stream()
   const out = await toArray(stream)
   t.is(out.toString(), JSON.stringify(data))
 
-  const rows = await resource.rows
+  const rows = await resource.rows()
   const out2 = await toArray(rows)
   t.is(out2.length, 3)
   t.is(out2[0][0], data[0][0])
