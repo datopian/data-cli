@@ -44,31 +44,25 @@ test.serial('adding tabular data should include schema', async t => {
     schema: {
       fields: [
         {
-          description: '',
           format: 'default',
           name: 'a',
-          title: '',
           type: 'string'
         },
         {
-          description: '',
           format: 'default',
           name: 'b',
-          title: '',
           type: 'date'
         },
         {
-          description: '',
           format: 'default',
           name: 'c',
-          title: '',
           type: 'integer'
         }
       ]
     }
   }
   await addResource('second-resource.csv', dpObj)
-  t.deepEqual(dpObj.resources[1].descriptor, expResourceDescriptor)
+  t.deepEqual(dpObj.resources[1].descriptor.schema.fields, expResourceDescriptor.schema.fields)
 })
 
 test.serial('adding non tabular file', async t => {
@@ -87,27 +81,21 @@ test.serial('how buildSchema works', async t => {
   const exp = {
     fields: [
       {
-        description: '',
         format: 'default',
         name: 'number',
-        title: '',
         type: 'integer'
       },
       {
-        description: '',
         format: 'default',
         name: 'string',
-        title: '',
         type: 'string'
       },
       {
-        description: '',
         format: 'default',
         name: 'boolean',
-        title: '',
         type: 'boolean'
       }
     ]
   }
-  t.deepEqual(res, exp)
+  t.deepEqual(res.fields, exp.fields)
 })
