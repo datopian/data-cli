@@ -14,7 +14,8 @@
     "watch:test": "npm t -- --watch",
     "lint": "xo --quiet",
     "data": "node bin/data.js",
-    "pack": "pkg bin/data.js -c package.json -o packed/datahub"
+    "pack": "pkg bin/data.js -c package.json -o packed/datahub",
+    "build": "babel lib -d dist"
   },
   "xo": {
     "space": true,
@@ -67,6 +68,7 @@
   "dependencies": {
     "ansi-escapes": "^2.0.0",
     "axios": "^0.16.1",
+    "babel-cli": "^6.24.1",
     "chalk": "^1.1.3",
     "chardet": "^0.1.0",
     "cli-table": "^0.3.1",
