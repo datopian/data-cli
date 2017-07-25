@@ -1,5 +1,15 @@
+const path = require('path')
 const test = require('ava')
-const {validate, validateMetadata} = require('../lib/validate')
+const nock = require('nock')
+
+const {validate, validateMetadata, Profile} = require('../lib/validate')
+
+nock('http://example.com')
+  .persist()
+  .get('/data-package.json')
+  .replyWithFile(200, path.join(__dirname, '../lib/schema/data-package.json'))
+  .get('/profile.json')
+  .replyWithError(400)
 
 test('validate function', async t => {
   // Returns true if valid
@@ -32,4 +42,44 @@ test('it returns list of errors if descriptor is invalid', async t => {
   }
   const error = await t.throws(validateMetadata(descriptor))
   t.true(error[0].toString().includes('Missing required property: name'))
+})
+
+// ====================================
+// Profile class
+// ====================================
+
+// Constants
+
+const PROFILES = [
+  'data-package'
+]
+
+// Tests
+
+PROFILES.forEach(name => {
+  test(`Profile.load method for ${name}`, async t => {
+    const jsonschema = require(`../lib/schema/${name}.json`)
+    const profile = await Profile.load(name)
+    t.deepEqual(profile.jsonschema, jsonschema)
+  })
+})
+
+test('Prfile.load method for remote', async t => {
+  const url = 'http://example.com/data-package.json'
+  const jsonschema = require('../lib/schema/data-package.json')
+  const profile = await Profile.load(url)
+  t.deepEqual(profile.name, 'data-package')
+  t.deepEqual(profile.jsonschema, jsonschema)
+})
+
+test('throw loading bad registry profile', async t => {
+  const name = 'bad-data-package'
+  const error = await t.throws(Profile.load(name))
+  t.true(error.message.includes('profile bad-data-package'))
+})
+
+test('throw loading bad remote profile', async t => {
+  const name = 'http://example.com/profile.json'
+  const error = await t.throws(Profile.load(name))
+  t.true(error.toString().includes('Can not retrieve remote profile http://example.com/profile.json'))
 })
