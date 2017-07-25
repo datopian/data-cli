@@ -60,9 +60,9 @@ const descriptor = JSON.parse(content)
 
 // Validate
 try {
-  validate(descriptor).then(result => {
+  validate(descriptor, path.dirname(path_)).then(result => {
     if (result === true) {
-      console.log('Your datapackage.json is valid!')
+      console.log('Your Data Package is valid!')
     } else {
       error(result)
     }

@@ -2,7 +2,7 @@ const path = require('path')
 const test = require('ava')
 const nock = require('nock')
 
-const {validate, validateMetadata, Profile} = require('../lib/validate')
+const {validate, validateMetadata, validateData, Profile} = require('../lib/validate')
 
 nock('http://example.com')
   .persist()
@@ -10,6 +10,10 @@ nock('http://example.com')
   .replyWithFile(200, path.join(__dirname, '../lib/schema/data-package.json'))
   .get('/profile.json')
   .replyWithError(400)
+
+// ====================================
+// validate function
+// ====================================
 
 test('validate function', async t => {
   // Returns true if valid
@@ -26,6 +30,46 @@ test('validate function', async t => {
   const invalid = await validate(invalidDescriptor)
   t.true(invalid[0].toString().includes('Missing required property: name'))
 })
+
+test('validate function with resource', async t => {
+  const basePath = path.join(__dirname, './fixtures/finance-vix/')
+  const descriptor = require(path.join(basePath, 'datapackage.json'))
+  const out = await validate(descriptor, basePath)
+  t.true(out)
+})
+
+test('validate function with invalid resource', async t => {
+  const basePath = path.join(__dirname, './fixtures/invalid-finance-vix/')
+  const descriptor = require(path.join(basePath, 'datapackage.json'))
+  const out = await validate(descriptor, basePath)
+  t.true(out[0].toString().includes('Error: Wrong type for header: VIXOpen and value: 17.96'))
+})
+
+// ====================================
+// validateData funciton
+// ====================================
+
+test('it validateData function works with valid schema and data', async t => {
+  const basePath = path.join(__dirname, './fixtures/finance-vix/')
+  const dpjson = require(path.join(basePath, 'datapackage.json'))
+  const descriptor = dpjson.resources[0]
+  const path_ = path.join(basePath, descriptor.path)
+  const valid = await validateData(descriptor.schema, path_)
+  t.true(valid)
+})
+
+test('validateData fails if data is not valid against schema', async t => {
+  const basePath = path.join(__dirname, './fixtures/invalid-finance-vix/')
+  const dpjson = require(path.join(basePath, 'datapackage.json'))
+  const descriptor = dpjson.resources[0]
+  const path_ = path.join(basePath, descriptor.path)
+  const error = await t.throws(validateData(descriptor.schema, path_))
+  t.true(error[0].toString().includes('Error: Wrong type for header: VIXOpen and value: 17.96'))
+})
+
+// ====================================
+// validateMetadata function
+// ====================================
 
 test('it validateMetadata function works with valid descriptor', async t => {
   const descriptor = {
