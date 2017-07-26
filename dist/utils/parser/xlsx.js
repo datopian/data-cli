@@ -15,6 +15,8 @@ const Readable = require('stream').Readable;
 const XLSX = require('xlsx');
 const parse = require('csv-parse');
 
+const { getParseOptions } = require('./csv');
+
 const xlsxParser = exports.xlsxParser = (() => {
   var _ref = (0, _asyncToGenerator3.default)(function* (resource, keyed = false) {
     const buffer = yield resource.buffer;
@@ -26,8 +28,8 @@ const xlsxParser = exports.xlsxParser = (() => {
     const stream = new Readable();
     stream.push(csv);
     stream.push(null);
-    const columns = keyed ? true : null;
-    return stream.pipe(parse({ columns }));
+    const parseOptions = getParseOptions(resource.descriptor.dialect, keyed);
+    return stream.pipe(parse(parseOptions));
   });
 
   return function xlsxParser(_x) {
