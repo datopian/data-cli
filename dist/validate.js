@@ -16,7 +16,9 @@ let validate = exports.validate = (() => {
       for (let i = 0; i < descriptor.resources.length; i++) {
         // TODO what if resource is remote
         const resource = Resource.load(descriptor.resources[i], { basePath });
-        yield validateData(resource.descriptor.schema, resource.path);
+        if (resource.descriptor.format === 'csv') {
+          yield validateData(resource.descriptor.schema, resource.path);
+        }
       }
       return true;
     } catch (err) {
@@ -48,10 +50,10 @@ let validateMetadata = exports.validateMetadata = (() => {
     // Else use the latest schema
     const defaultProfile = descriptor.profile || 'data-package';
 
-    const profile = yield Profile.load(defaultProfile);
+    const profile = yield Profile.load(defaultProfile
 
     // Validate descriptor
-    return profile.validate(descriptor);
+    );return profile.validate(descriptor);
   });
 
   return function validateMetadata(_x5) {

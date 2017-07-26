@@ -1,9 +1,9 @@
 'use strict';
 
-const chalk = require('chalk');
+const chalk = require('chalk'
 
 // Prints an error message
-module.exports = msg => {
+);module.exports = msg => {
   if (msg.message) {
     msg = msg.message;
   }

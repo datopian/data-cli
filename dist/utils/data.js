@@ -9,10 +9,6 @@ var _stringify = require('babel-runtime/core-js/json/stringify');
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
-var _keys = require('babel-runtime/core-js/object/keys');
-
-var _keys2 = _interopRequireDefault(_keys);
-
 var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
@@ -34,10 +30,12 @@ const chardet = require('chardet');
 const fetch = require('node-fetch');
 const lodash = require('lodash');
 const mime = require('mime-types');
-const parse = require('csv-parse');
 const urljoin = require('url-join');
 const toArray = require('stream-to-array');
 const infer = require('tableschema').infer;
+
+const { csvParser } = require('./parser/csv');
+const { xlsxParser } = require('./parser/xlsx');
 
 const DEFAULT_ENCODING = 'utf-8';
 
@@ -60,10 +58,10 @@ class Resource {
   static load(pathOrDescriptor, { basePath } = {}) {
     let descriptor = null;
     if (lodash.isPlainObject(pathOrDescriptor)) {
-      descriptor = lodash.cloneDeep(pathOrDescriptor);
+      descriptor = lodash.cloneDeep(pathOrDescriptor
       // NB: data must come first - we could have data and path in which path
       // is not used (data comes from data)
-      if (descriptor.data) {
+      );if (descriptor.data) {
         return new ResourceInline(descriptor, { basePath });
       } else if (descriptor.path) {
         // We want properties already in our descriptor to take priority over
@@ -126,29 +124,23 @@ class Resource {
   }
 
   _rows() {
-    var _this2 = this;
-
-    return (0, _asyncToGenerator3.default)(function* () {
-      if ((0, _keys2.default)(parserDatabase).indexOf(_this2.descriptor.format) !== -1) {
-        const parser = parserDatabase[_this2.descriptor.format](_this2.descriptor);
-        const stream = yield _this2.stream();
-        return stream.pipe(parser);
-      }
-      throw new Error(`We do not have a parser for that format: ${_this2.descriptor.format}`);
-    })();
+    if (this.descriptor.format in parserDatabase) {
+      const parser = parserDatabase[this.descriptor.format];
+      return parser(this);
+    }
+    throw new Error(`We do not have a parser for that format: ${this.descriptor.format}`);
   }
 
   addSchema() {
-    var _this3 = this;
+    var _this2 = this;
 
     return (0, _asyncToGenerator3.default)(function* () {
       // Ensure resource is tabular
-      if (knownTabularFormats.indexOf(_this3.descriptor.format) === -1) {
+      if (knownTabularFormats.indexOf(_this2.descriptor.format) === -1) {
         throw new Error('Resource is not in known tabular format.');
       }
-      const rows = yield toArray((yield _this3.rows()));
-      const headers = rows.shift();
-      _this3.descriptor.schema = infer(headers, rows);
+      const rows = yield toArray((yield _this2.rows()));
+      _this2.descriptor.schema = yield infer(rows);
     })();
   }
 }
@@ -183,10 +175,10 @@ class ResourceRemote extends Resource {
   }
 
   stream() {
-    var _this4 = this;
+    var _this3 = this;
 
     return (0, _asyncToGenerator3.default)(function* () {
-      const res = yield fetch(_this4.path);
+      const res = yield fetch(_this3.path);
       return res.body;
     })();
   }
@@ -199,10 +191,10 @@ class ResourceRemote extends Resource {
 exports.ResourceRemote = ResourceRemote;
 class ResourceInline extends Resource {
   constructor(descriptor, { basePath } = {}) {
-    super(descriptor, { basePath });
+    super(descriptor, { basePath }
 
     // JSON is special case ...
-    if (lodash.isString(this.descriptor.data)) {
+    );if (lodash.isString(this.descriptor.data)) {
       this._buffer = Buffer.from(this.descriptor.data);
     } else {
       // It is json/javascript
@@ -242,26 +234,20 @@ class ResourceInline extends Resource {
   }
 }
 
-exports.ResourceInline = ResourceInline;
-const csvParser = descriptor => {
-  // Need to find out delimiter (?)
-  if (descriptor.format === 'csv') {
-    const parser = parse();
-    return parser;
-  }
-};
+exports.ResourceInline = ResourceInline; // Available parsers per file format
 
-// Available parsers per file format
 const parserDatabase = {
-  csv: csvParser
+  csv: csvParser,
+  xlsx: xlsxParser,
+  xls: xlsxParser
 
   // List of formats that are known as tabular
 };const knownTabularFormats = ['csv', 'tsv', 'dsv'];
 
 const parsePath = exports.parsePath = (path_, basePath = null) => {
-  const isItUrl = isUrl(path_) || isUrl(basePath);
+  const isItUrl = isUrl(path_) || isUrl(basePath
   // eslint-disable-next-line no-useless-escape
-  const fileName = path_.replace(/^.*[\\\/]/, '');
+  );const fileName = path_.replace(/^.*[\\\/]/, '');
   const extension = path.extname(fileName);
   return {
     path: path_,
@@ -351,37 +337,37 @@ class Package {
 
   // Bootstrap ourselves with {this.path}/datapackage.json and readme if exists
   _sync() {
-    var _this5 = this;
+    var _this4 = this;
 
     return (0, _asyncToGenerator3.default)(function* () {
-      const readmePath = _this5._path('README.md');
+      const readmePath = _this4._path('README.md'
       // eslint-disable-next-line default-case
-      switch (_this5.identifier.type) {
+      );switch (_this4.identifier.type) {
         case 'remote':
           {
-            let res = yield fetch(_this5.dataPackageJsonPath);
-            _this5._descriptor = yield res.json();
-            res = yield fetch(readmePath);
+            let res = yield fetch(_this4.dataPackageJsonPath);
+            _this4._descriptor = yield res.json();
+            res = yield fetch(readmePath
             // May not exist and that is ok!
-            if (res.status === 200) {
-              _this5._readme = yield res.text();
+            );if (res.status === 200) {
+              _this4._readme = yield res.text();
             }
             break;
           }
         case 'local':
           {
-            _this5._descriptor = JSON.parse(fs.readFileSync(_this5.dataPackageJsonPath));
+            _this4._descriptor = JSON.parse(fs.readFileSync(_this4.dataPackageJsonPath)
             // Now get README from local disk if exists
-            if (fs.existsSync(readmePath)) {
-              _this5._readme = fs.readFileSync(readmePath).toString();
+            );if (fs.existsSync(readmePath)) {
+              _this4._readme = fs.readFileSync(readmePath).toString();
             }
             break;
           }
       }
 
       // Now load each resource ...
-      _this5._resources = _this5.descriptor.resources.map(function (resource) {
-        return Resource.load(resource, { basePath: _this5.path });
+      _this4._resources = _this4.descriptor.resources.map(function (resource) {
+        return Resource.load(resource, { basePath: _this4.path });
       });
     })();
   }
