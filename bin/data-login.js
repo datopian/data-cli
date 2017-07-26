@@ -49,14 +49,13 @@ Promise.resolve().then(async () => {
   stopSpinner()
 
   const authUrl = out.providers.google.url
-  stopSpinner = wait('Opening browser and waiting for you to authenticate online')
+  info('Opening browser and waiting for you to authenticate online')
   let msg
   try {
     msg = await login(apiUrl, authUrl)
   } catch (err) {
     handleError(err)
   }
-  stopSpinner()
   info(msg)
   process.exit(0)
 })
