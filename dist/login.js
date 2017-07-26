@@ -74,9 +74,9 @@ const runServer = (() => {
       };
 
       const server = http.createServer(requestHandler);
-      server.listen(function (port, err) {
+      server.listen(port, 'localhost', function (port, err) {
         if (err) {
-          console.log('something bad happened', err);
+          console.log('something bad happened');
           reject(err);
         }
       });

@@ -29,7 +29,7 @@ if (argv.help) {
 }
 
 Promise.resolve().then(async () => {
-  let stopSpinner = wait('Logging in ...')
+  const stopSpinner = wait('Logging in ...')
   const apiUrl = config.get('api')
   const token = config.get('token')
   let out
@@ -50,14 +50,17 @@ Promise.resolve().then(async () => {
   stopSpinner()
 
   // Do choosing login method here
+  const loginChoices = Object.keys(out.providers).map(provider => {
+    return provider.charAt(0).toUpperCase() + provider.slice(1)
+  })
   const result = await inquirer.prompt([
     {
       type: 'list',
       name: 'loginProvider',
       message: 'Login with...',
-      choices: ['GitHub', 'Google'],
-      filter: function (val) {
-        return val.toLowerCase();
+      choices: loginChoices,
+      filter: val => {
+        return val.toLowerCase()
       }
     }
   ])
