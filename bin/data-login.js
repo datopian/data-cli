@@ -3,8 +3,9 @@
 const fs = require('fs')
 const path = require('path')
 const minimist = require('minimist')
-const {customMarked} = require('../lib/utils/tools.js')
+const inquirer = require('inquirer')
 
+const {customMarked} = require('../lib/utils/tools.js')
 const config = require('../lib/utils/config')
 const {handleError} = require('../lib/utils/error')
 const info = require('../lib/utils/output/info.js')
@@ -48,7 +49,19 @@ Promise.resolve().then(async () => {
   // Signup or signin
   stopSpinner()
 
-  const authUrl = out.providers.google.url
+  // Do choosing login method here
+  const result = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'loginProvider',
+      message: 'Login with...',
+      choices: ['GitHub', 'Google'],
+      filter: function (val) {
+        return val.toLowerCase();
+      }
+    }
+  ])
+  const authUrl = out.providers[result.loginProvider].url
   info('Opening browser and waiting for you to authenticate online')
   let msg
   try {
