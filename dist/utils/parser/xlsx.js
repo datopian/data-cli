@@ -16,7 +16,7 @@ const XLSX = require('xlsx');
 const parse = require('csv-parse');
 
 const xlsxParser = exports.xlsxParser = (() => {
-  var _ref = (0, _asyncToGenerator3.default)(function* (resource) {
+  var _ref = (0, _asyncToGenerator3.default)(function* (resource, keyed = false) {
     const buffer = yield resource.buffer;
     const workbook = XLSX.read(buffer, { type: 'buffer' }
     // For now we handle only first sheet
@@ -26,7 +26,8 @@ const xlsxParser = exports.xlsxParser = (() => {
     const stream = new Readable();
     stream.push(csv);
     stream.push(null);
-    return stream.pipe(parse());
+    const columns = keyed ? true : null;
+    return stream.pipe(parse({ columns }));
   });
 
   return function xlsxParser(_x) {

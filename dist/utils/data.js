@@ -119,14 +119,14 @@ class Resource {
   * Get rows
   * @returns Promise with parsed JS objects (depends on file format)
   */
-  rows() {
-    return this._rows();
+  rows({ keyed } = {}) {
+    return this._rows({ keyed });
   }
 
-  _rows() {
+  _rows({ keyed } = {}) {
     if (this.descriptor.format in parserDatabase) {
       const parser = parserDatabase[this.descriptor.format];
-      return parser(this);
+      return parser(this, keyed);
     }
     throw new Error(`We do not have a parser for that format: ${this.descriptor.format}`);
   }
@@ -221,7 +221,7 @@ class ResourceInline extends Resource {
     return bufferStream;
   }
 
-  rows() {
+  rows({ keyed } = {}) {
     if (lodash.isArray(this.descriptor.data)) {
       const rowStream = new stream.PassThrough({ objectMode: true });
       this.descriptor.data.forEach(row => {
@@ -230,7 +230,7 @@ class ResourceInline extends Resource {
       rowStream.end();
       return rowStream;
     }
-    return this._rows();
+    return this._rows({ keyed });
   }
 }
 

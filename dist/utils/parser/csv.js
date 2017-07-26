@@ -14,9 +14,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const parse = require('csv-parse');
 
 const csvParser = exports.csvParser = (() => {
-  var _ref = (0, _asyncToGenerator3.default)(function* (resource) {
+  var _ref = (0, _asyncToGenerator3.default)(function* (resource, keyed = false) {
     const stream = yield resource.stream();
-    return stream.pipe(parse());
+    const columns = keyed ? true : null;
+    return stream.pipe(parse({ columns }));
   });
 
   return function csvParser(_x) {

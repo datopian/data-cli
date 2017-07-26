@@ -109,6 +109,12 @@ const testResourceStream = async (t, resource) => {
   const rows = await toArray(rowStream)
   t.deepEqual(rows[0], ['number', 'string', 'boolean'])
   t.deepEqual(rows[1], ['1', 'two', 'true'])
+
+  // Test rows with keyed option (rows as objects)
+  const rowStreamKeyed = await resource.rows({keyed: true})
+  const rowsAsObjects = await toArray(rowStreamKeyed)
+  t.deepEqual(rowsAsObjects[0], {number: '1', string: 'two', boolean: 'true'})
+  t.deepEqual(rowsAsObjects[1], {number: '3', string: 'four', boolean: 'false'})
 }
 
 test('Resource class with path', async t => {

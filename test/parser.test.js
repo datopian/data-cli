@@ -17,3 +17,11 @@ test('xlsxParser works with XLS files', async t => {
   const rows = await toArray(await xlsxParser(resource))
   t.deepEqual(rows[0], ['number', 'string', 'boolean'])
 })
+
+test('xlsxParser works with keyed option', async t => {
+  const path_ = 'test/fixtures/sample.xls'
+  const resource = await Resource.load(path_)
+  const keyed = true
+  const rows = await toArray(await xlsxParser(resource, keyed))
+  t.deepEqual(rows[0], {number: '1', string: 'two', boolean: 'TRUE'})
+})
