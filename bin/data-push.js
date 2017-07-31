@@ -34,7 +34,7 @@ if (argv.help) {
 Promise.resolve().then(async () => {
   let stopSpinner = () => {}
   try {
-    const filePath = argv._[0]
+    const filePath = argv._[0] || process.cwd()
     let pkg
     if (fs.lstatSync(filePath).isFile()) {
       pkg = await preparePackageFromFile(filePath)
