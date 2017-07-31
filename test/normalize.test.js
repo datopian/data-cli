@@ -222,7 +222,7 @@ test('checks normalized all properties', t => {
   t.deepEqual(res, exp)
 })
 
-test('"data norm[alize] test/fixtures/datapackage.json" normalizes datapackage.json with given file path', async t => {
+test.skip('"data norm[alize] test/fixtures/datapackage.json" normalizes datapackage.json with given file path', async t => {
   const result = await runcli('normalize', 'test/fixtures/datapackage.json')
 
   t.is(result.code, 0)
@@ -231,7 +231,7 @@ test('"data norm[alize] test/fixtures/datapackage.json" normalizes datapackage.j
   t.true(stdout[0].includes('Datapackage.json has been normalized'))
 })
 
-test('"data norm[alize] test/fixtures" normalizes datapackage.json inside given folder', async t => {
+test.skip('"data norm[alize] test/fixtures" normalizes datapackage.json inside given folder', async t => {
   const result = await runcli('normalize', 'test/fixtures')
 
   t.is(result.code, 0)

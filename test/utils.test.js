@@ -4,7 +4,6 @@ const chalk = require('chalk')
 const sinon = require('sinon')
 const nock = require('nock')
 
-const {logger} = require('../lib/utils/log-handler.js')
 const utils = require('../lib/utils/common.js')
 
 const metadata = {
@@ -70,41 +69,6 @@ test.afterEach(t => {
 test.after(t => {
   nock.restore()
   t.pass()
-})
-
-test.serial('Error log is working fine', t => {
-  logger('error message', 'error')
-  const exp = `${chalk.bold.red('Error:')} error message`
-  t.true(console.error.calledOnce)
-  t.true(console.error.firstCall.args[0].includes(exp))
-})
-
-test.serial('Warning log is working fine', t => {
-  logger('warning message', 'warning')
-  const exp = `${chalk.bold.yellow('Warning:')} warning message`
-  t.true(console.log.calledOnce)
-  t.true(console.log.firstCall.args[0].includes(exp))
-})
-
-test.serial('Aborting log is working fine', t => {
-  logger('aborting message', 'abort')
-  const exp = `${chalk.bold.yellow('Aborting:')} aborting message`
-  t.true(console.error.calledOnce)
-  t.true(console.error.firstCall.args[0].includes(exp))
-})
-
-test.serial('Success log is working fine', t => {
-  logger('Success message', 'success')
-  const exp = `${chalk.bold.green('Success:')} Success message`
-  t.true(console.log.calledOnce)
-  t.true(console.log.firstCall.args[0].includes(exp))
-})
-
-test.serial('default log is working fine', t => {
-  logger('Success message')
-  const exp = `Success message`
-  t.true(console.log.calledOnce)
-  t.true(console.log.firstCall.args[0].includes(exp))
 })
 
 test('Checks if datapackage.json exists in cwd', t => {
