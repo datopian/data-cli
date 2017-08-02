@@ -4,24 +4,24 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 const urljoin = require('url-join');
-const identifier = require('datapackage-identifier'
+const identifier = require('datapackage-identifier');
 
 // TODO: 2017-07-08 set this in config and use from there
-);const PACKAGE_STORE_URL = exports.PACKAGE_STORE_URL = 'https://pkg.datahub.io';
+const PACKAGE_STORE_URL = exports.PACKAGE_STORE_URL = 'https://pkg.datahub.io';
 
 const parseIdentifier = exports.parseIdentifier = dpId => {
   if (dpId && dpId !== '.' && dpId.indexOf('http') === -1) {
-    const dpIdArray = dpId.split('/'
+    const dpIdArray = dpId.split('/');
     // Remove `/` in the beginning and in the end
     // eslint-disable-next-line no-unused-expressions
-    );dpId[0] === '/' ? dpIdArray.shift() : undefined;
+    dpId[0] === '/' ? dpIdArray.shift() : undefined;
     // eslint-disable-next-line no-unused-expressions
     dpId[dpId.length - 1] === '/' ? dpIdArray.pop() : undefined;
     // Get owner, name and resourcePath
     const [owner, name] = dpIdArray;
-    const resourcePath = dpIdArray.slice(2).join('/'
+    const resourcePath = dpIdArray.slice(2).join('/');
     // For now assuming version is always 'latest'
-    );const version = 'latest';
+    const version = 'latest';
     const path = urljoin(PACKAGE_STORE_URL, 'metadata', owner, name, '_v', version);
     return {
       owner,
@@ -44,9 +44,9 @@ const parseIdentifier = exports.parseIdentifier = dpId => {
     idObject.dataPackageJsonUrl = urljoin(idObject.path, 'datapackage.json');
   } else {
     idObject = identifier.parse(dpId);
-    const dpIdArray = dpId.split('/'
+    const dpIdArray = dpId.split('/');
     // Add 'owner' attr that is github user (for github) and null for random url
-    );if (dpIdArray[2] === 'github.com') {
+    if (dpIdArray[2] === 'github.com') {
       idObject.owner = dpIdArray[3];
       idObject.type = 'github';
     } else {

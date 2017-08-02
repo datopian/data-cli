@@ -2,9 +2,9 @@
 
 // Markdown
 const marked = require('marked');
-const TerminalRenderer = require('marked-terminal'
+const TerminalRenderer = require('marked-terminal');
 // ProgressBar
-);const ProgressBar = require('progress');
+const ProgressBar = require('progress');
 
 const { elephant } = require('./logo');
 

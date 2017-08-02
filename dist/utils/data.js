@@ -58,10 +58,10 @@ class Resource {
   static load(pathOrDescriptor, { basePath } = {}) {
     let descriptor = null;
     if (lodash.isPlainObject(pathOrDescriptor)) {
-      descriptor = lodash.cloneDeep(pathOrDescriptor
+      descriptor = lodash.cloneDeep(pathOrDescriptor);
       // NB: data must come first - we could have data and path in which path
       // is not used (data comes from data)
-      );if (descriptor.data) {
+      if (descriptor.data) {
         return new ResourceInline(descriptor, { basePath });
       } else if (descriptor.path) {
         // We want properties already in our descriptor to take priority over
@@ -191,10 +191,10 @@ class ResourceRemote extends Resource {
 exports.ResourceRemote = ResourceRemote;
 class ResourceInline extends Resource {
   constructor(descriptor, { basePath } = {}) {
-    super(descriptor, { basePath }
+    super(descriptor, { basePath });
 
     // JSON is special case ...
-    );if (lodash.isString(this.descriptor.data)) {
+    if (lodash.isString(this.descriptor.data)) {
       this._buffer = Buffer.from(this.descriptor.data);
     } else {
       // It is json/javascript
@@ -245,9 +245,9 @@ const parserDatabase = {
 };const knownTabularFormats = ['csv', 'tsv', 'dsv'];
 
 const parsePath = exports.parsePath = (path_, basePath = null) => {
-  const isItUrl = isUrl(path_) || isUrl(basePath
+  const isItUrl = isUrl(path_) || isUrl(basePath);
   // eslint-disable-next-line no-useless-escape
-  );const fileName = path_.replace(/^.*[\\\/]/, '');
+  const fileName = path_.replace(/^.*[\\\/]/, '');
   const extension = path.extname(fileName);
   return {
     path: path_,
@@ -340,25 +340,25 @@ class Package {
     var _this4 = this;
 
     return (0, _asyncToGenerator3.default)(function* () {
-      const readmePath = _this4._path('README.md'
+      const readmePath = _this4._path('README.md');
       // eslint-disable-next-line default-case
-      );switch (_this4.identifier.type) {
+      switch (_this4.identifier.type) {
         case 'remote':
           {
             let res = yield fetch(_this4.dataPackageJsonPath);
             _this4._descriptor = yield res.json();
-            res = yield fetch(readmePath
+            res = yield fetch(readmePath);
             // May not exist and that is ok!
-            );if (res.status === 200) {
+            if (res.status === 200) {
               _this4._readme = yield res.text();
             }
             break;
           }
         case 'local':
           {
-            _this4._descriptor = JSON.parse(fs.readFileSync(_this4.dataPackageJsonPath)
+            _this4._descriptor = JSON.parse(fs.readFileSync(_this4.dataPackageJsonPath));
             // Now get README from local disk if exists
-            );if (fs.existsSync(readmePath)) {
+            if (fs.existsSync(readmePath)) {
               _this4._readme = fs.readFileSync(readmePath).toString();
             }
             break;
