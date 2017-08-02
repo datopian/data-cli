@@ -247,7 +247,8 @@ test('checks normalized all properties', t => {
     ],
     sources: [
       {
-        title: 'source-name'
+        title: 'source-name',
+        name: 'source-name'
       }
     ]
   }
