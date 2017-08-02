@@ -12,7 +12,6 @@ const dp = {
   },
   resources: [
     {
-      name: 'PPP-Gdp',
       path: 'dp/ppp-gdp.csv',
       format: 'csv',
       mediatype: 'text/csv',
@@ -34,7 +33,13 @@ const dp = {
             description: 'Relevant year'
           }
         ]}
-    }]
+    }
+  ],
+  sources: [
+    {
+      name: 'source-name'
+    }
+  ]
 }
 
 test('checks normalized schema', t => {
@@ -47,7 +52,6 @@ test('checks normalized schema', t => {
     }],
     resources: [
       {
-        name: 'PPP-Gdp',
         path: 'dp/ppp-gdp.csv',
         format: 'csv',
         mediatype: 'text/csv',
@@ -69,7 +73,13 @@ test('checks normalized schema', t => {
               description: 'Relevant year'
             }
           ]}
-      }]
+      }
+    ],
+    sources: [
+      {
+        name: 'source-name'
+      }
+    ]
   }
   t.deepEqual(res, exp)
 })
@@ -84,7 +94,6 @@ test('checks normalized types', t => {
     }],
     resources: [
       {
-        name: 'PPP-Gdp',
         path: 'dp/ppp-gdp.csv',
         format: 'csv',
         mediatype: 'text/csv',
@@ -106,7 +115,13 @@ test('checks normalized types', t => {
               description: 'Relevant year'
             }
           ]}
-      }]
+      }
+    ],
+    sources: [
+      {
+        name: 'source-name'
+      }
+    ]
   }
   t.deepEqual(res, exp)
 })
@@ -121,7 +136,6 @@ test('checks normalized date format', t => {
     }],
     resources: [
       {
-        name: 'PPP-Gdp',
         path: 'dp/ppp-gdp.csv',
         format: 'csv',
         mediatype: 'text/csv',
@@ -143,7 +157,13 @@ test('checks normalized date format', t => {
               description: 'Relevant year'
             }
           ]}
-      }]
+      }
+    ],
+    sources: [
+      {
+        name: 'source-name'
+      }
+    ]
   }
   t.deepEqual(res, exp)
 })
@@ -180,7 +200,13 @@ test('checks normalized resourse name', t => {
               description: 'Relevant year'
             }
           ]}
-      }]
+      }
+    ],
+    sources: [
+      {
+        name: 'source-name'
+      }
+    ]
   }
   t.deepEqual(res, exp)
 })
@@ -190,7 +216,7 @@ test('checks normalized all properties', t => {
   const exp = {
     name: 'example',
     licenses: [{
-      name: 'example license',
+      name: 'example_license',
       url: 'https://example/license.com'
     }],
     resources: [
@@ -217,7 +243,13 @@ test('checks normalized all properties', t => {
               description: 'Relevant year'
             }
           ]}
-      }]
+      }
+    ],
+    sources: [
+      {
+        title: 'source-name'
+      }
+    ]
   }
   t.deepEqual(res, exp)
 })
