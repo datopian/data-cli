@@ -20,23 +20,16 @@ const mkdirp = require('mkdirp');
 const urljoin = require('url-join');
 const utils = require('./utils/common');
 const { bar } = require('./utils/tools');
-const { logger } = require('./utils/log-handler.js');
 
 module.exports.get = (() => {
   var _ref = (0, _asyncToGenerator3.default)(function* (pkgid) {
     const start = new Date();
     const idObj = utils.parseIdentifier(pkgid);
     let dpObj;
-    try {
-      dpObj = yield new Datapackage(idObj.dataPackageJsonPath);
-    } catch (err) {
-      logger(err.message, 'error', true);
-    }
+    dpObj = yield new Datapackage(idObj.dataPackageJsonPath);
 
     const dist = checkDestIsEmpty(idObj.owner, idObj.name);
-    if (!dist) {
-      logger(`${idObj.owner}/${idObj.name} is not empty!`, 'error', true);
-    }
+    throw new Error(`${idObj.owner}/${idObj.name} is not empty!`);
 
     const filesToDownload = getFilesToDownload(idObj.path, dpObj.descriptor);
     const len = filesToDownload.length;
@@ -102,12 +95,12 @@ const downloadFile = (() => {
         if (dest.includes('README')) {
           return;
         }
-        logger(`Data Not Found For ${dest}`, 'error', true);
+        console.error(`Data Not Found For ${dest}`);
       } else if (err.code === 'ECONNREFUSED') {
-        logger(`Not able to connect to the server`, 'error', true);
+        console.error(`Not able to connect to the server`);
       } else {
-        logger(`Failed to retrieve ${dest}`, 'error');
-        logger(err.message, 'error', true);
+        console.error(`Failed to retrieve ${dest}`);
+        console.error(err.message);
       }
     });
     if (!res) {

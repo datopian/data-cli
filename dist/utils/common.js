@@ -15,8 +15,6 @@ const fs = require('fs');
 const urljoin = require('url-join');
 const axios = require('axios');
 
-const { logger } = require('./log-handler');
-
 const checkDpIsThere = (path_ = process.cwd()) => {
   const files = fs.readdirSync(path_);
   return files.indexOf('datapackage.json') > -1;
@@ -47,13 +45,13 @@ const getToken = (() => {
       secret: config.secretToken
     }).catch(function (err) {
       if (err.code === 'ECONNREFUSED' || err.code === 'ENOTFOUND') {
-        logger(`Not able to connect to ${config.server}`, 'error', true);
+        // logger(`Not able to connect to ${config.server}`, 'error', true)
       }
       const statusCodes = [400, 404, 403, 500];
-      if (err.response && statusCodes.indexOf(err.response.status) > -1) {
-        logger(err.response.data.message, 'error', true);
-      }
-      logger(err.message, 'error', true);
+      if (err.response && statusCodes.indexOf(err.response.status) > -1) {}
+      // logger(err.response.data.message, 'error', true)
+
+      // logger(err.message, 'error', true)
     });
     return res.data.token;
   });

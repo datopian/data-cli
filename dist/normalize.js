@@ -6,36 +6,8 @@ var _stringify2 = _interopRequireDefault(_stringify);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/*
-This script is used to fix commmon issues for datapackage.json, like changing yet
-unsupported date formats for fields with type date, or unsupported types for
-numeric fields.
-Script also fixes commonly made mistake while creating datapackage.json. According
-to Frictionless dp spec metadata describing data should not directly be objects,
-but elements of the list Eg:
-
-## Bad
-{
-  "name": "example",
-  "licenses": {
-    "name": "example license",
-    "url": "https://example/license.com"
-  }
-}
-## Good
-{
-  "name": "example",
-  "licenses": [
-    {
-    "name": "example license",
-    "url": "https://example/license.com"
-    }
-  ]
-}
-*/
 const fs = require('fs');
-const { join } = require('path');
-const { logger } = require('./utils/log-handler');
+const { join, parse } = require('path');
 
 const normalizeSchema = dp => {
   for (const propertyName in dp) {
@@ -74,10 +46,32 @@ const normalizeType = dp => {
 };
 
 const normalizeNames = dp => {
-  for (const resourceName in dp.resources) {
-    dp.resources[resourceName].name = dp.resources[resourceName].name.toLowerCase().replace(' ', '-');
+  for (const idx in dp.resources) {
+    if (dp.resources[idx].name) {
+      dp.resources[idx].name = dp.resources[idx].name.toLowerCase().replace(' ', '-');
+    } else {
+      const pathParts = parse(dp.resources[idx].path);
+      dp.resources[idx].name = pathParts.name;
+    }
   }
   dp.name = dp.name.toLowerCase().replace(' ', '-');
+  return dp;
+};
+
+const normalizeLicenseName = dp => {
+  for (const idx in dp.licenses) {
+    if (dp.licenses[idx].name) {
+      dp.licenses[idx].name = dp.licenses[idx].name.toLowerCase().replace(/\s/g, '_');
+    }
+  }
+  return dp;
+};
+
+const normalizeSources = dp => {
+  for (const idx in dp.sources) {
+    dp.sources[idx].title = dp.sources[idx].name;
+    delete dp.sources[idx].name;
+  }
   return dp;
 };
 
@@ -86,6 +80,8 @@ const normalizeAll = dp => {
   dp = nomralizeDateFormat(dp);
   dp = normalizeType(dp);
   dp = normalizeNames(dp);
+  dp = normalizeLicenseName(dp);
+  dp = normalizeSources(dp);
   return dp;
 };
 
@@ -96,16 +92,12 @@ const normalize = path => {
         console.error(err.message);
         return;
       }
-      logger('Datapackage.json has been normalized');
+      console.log('Datapackage.json has been normalized');
     });
   };
 
   const readDatapackage = path => {
-    try {
-      return JSON.parse(fs.readFileSync(path, 'utf8'));
-    } catch (err) {
-      logger('datapackage.json not found', 'error', true);
-    }
+    return JSON.parse(fs.readFileSync(path, 'utf8'));
   };
 
   if (!path) {
@@ -114,19 +106,15 @@ const normalize = path => {
     normalizeAll(dp);
     writeDatapackage(dp);
   } else {
-    try {
-      if (fs.lstatSync(path).isFile()) {
-        const dp = readDatapackage(path);
-        normalizeAll(dp);
-        writeDatapackage(dp);
-      } else {
-        path = join(path, 'datapackage.json');
-        const dp = readDatapackage(path);
-        normalizeAll(dp);
-        writeDatapackage(dp);
-      }
-    } catch (err) {
-      logger('Invalid path', 'error', true);
+    if (fs.lstatSync(path).isFile()) {
+      const dp = readDatapackage(path);
+      normalizeAll(dp);
+      writeDatapackage(dp);
+    } else {
+      path = join(path, 'datapackage.json');
+      const dp = readDatapackage(path);
+      normalizeAll(dp);
+      writeDatapackage(dp);
     }
   }
 };
@@ -136,4 +124,6 @@ module.exports.normalizeAll = normalizeAll;
 module.exports.nomralizeDateFormat = nomralizeDateFormat;
 module.exports.normalizeNames = normalizeNames;
 module.exports.normalizeSchema = normalizeSchema;
+module.exports.normalizeLicenseName = normalizeLicenseName;
+module.exports.normalizeSources = normalizeSources;
 module.exports.normalizeType = normalizeType;

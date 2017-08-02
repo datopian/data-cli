@@ -22,7 +22,6 @@ const infer = require('tableschema').infer;
 const urljoin = require('url-join');
 const inquirer = require('inquirer');
 
-const { logger } = require('./utils/log-handler');
 const checkDpIsThere = require('./utils/common').checkDpIsThere;
 
 /*
@@ -135,7 +134,7 @@ const shouldAddFiles = (() => {
         if (result.answer === 'y') {
           const pathForResource = path.join(currentPath, files[i]);
           yield addResource(pathForResource, dpObj);
-          logger(`${files[i]} is just added to resources`, 'success');
+          console.log(`${files[i]} is just added to resources`);
         } else {
           console.log(`Skipped ${files[i]}`);
         }
@@ -213,7 +212,7 @@ const shouldWrite = (() => {
     }];
     const result = yield inquirer.prompt(questions);
     if (result.answer === 'n') {
-      logger(`Process canceled\n`, 'abort', true);
+      throw new Error(`Process cancelled`);
     }
   });
 
@@ -233,10 +232,10 @@ const writeDp = (() => {
     const content = (0, _stringify2.default)(dpObj._descriptor, null, 2);
     fs.writeFile('./datapackage.json', content, 'utf8', function (err) {
       if (err) {
-        return logger(err);
+        throw new Error(err);
       }
       if (log) {
-        logger(`datapackage.json file is saved in ${cwd}`);
+        console.log(`datapackage.json file is saved in ${cwd}`);
       }
     });
   });
@@ -279,7 +278,7 @@ const updateDp = (() => {
       yield shouldWrite(dpObj._descriptor);
       yield writeDp(dpObj);
     } else {
-      logger(`Process canceled\n`, 'abort', true);
+      console.log(`Process canceled\n`);
     }
   });
 
