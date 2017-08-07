@@ -31,7 +31,6 @@ const commands = new Set([
   'push',
   'normalize',
   'norm',
-  'configure',
   'validate',
   'info',
   'init',
@@ -40,7 +39,6 @@ const commands = new Set([
 ])
 
 const aliases = new Map([
-  ['configure', 'config'],
   ['norm', 'normalize']
 ])
 
