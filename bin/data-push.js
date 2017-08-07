@@ -48,7 +48,8 @@ Promise.resolve().then(async () => {
       apiUrl: config.get('api'),
       token: config.get('token'),
       debug: argv.debug,
-      owner: config.get('profile').id
+      ownerid: config.get('profile').id,
+      owner: config.get('profile').username
     })
     await datahub.push(pkg)
 

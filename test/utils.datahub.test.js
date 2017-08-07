@@ -19,11 +19,12 @@ const config = {
   token: 't35tt0k3N',
   api: 'https://test.com',
   profile: {
-    id: 'test-userid'
+    id: 'test-userid',
+    username: 'test-username'
   }
 }
 
-const datahub = new DataHub({apiUrl: config.api, token: config.token, owner: config.profile.id})
+const datahub = new DataHub({apiUrl: config.api, token: config.token, ownerid: config.profile.id, owner: config.profile.username})
 
 const dpinfo = {
   md5: 'm84YSonibUrw5Mg8QbCNHA==',
@@ -147,7 +148,8 @@ const apiSpecStore = nock(config.api, {
 }).persist().post('/source/upload', {
   meta: {
     version: 1,
-    owner: config.profile.id,
+    ownerid: config.profile.id,
+    owner: config.profile.username,
     dataset: 'dp-no-resources'
   },
   inputs: [
@@ -175,7 +177,8 @@ const apiSpecStore2 = nock(config.api, {
   .post('/source/upload', {
     meta: {
       version: 1,
-      owner: config.profile.id,
+      ownerid: config.profile.id,
+      owner: config.profile.username,
       dataset: 'finance-vix'
     },
     inputs: [
