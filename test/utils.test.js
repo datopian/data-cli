@@ -81,8 +81,3 @@ test('Checks if datapackage.json exists in given dir', t => {
   t.true(out)
 })
 
-test.serial('Gets the token', async t => {
-  const token = await utils.getToken(config)
-  const expToken = 't35tt0k3N'
-  t.is(token, expToken)
-})
