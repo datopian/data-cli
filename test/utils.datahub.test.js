@@ -37,8 +37,8 @@ const finVixInfo = {
     name: 'vix-daily'
   },
   'datapackage.json': {
-    length: 2829,
-    md5: 'n8wyvknmG6EjV8Yl2hJfhQ==',
+    length: 2830,
+    md5: 's6Ex9JHrfrGSkEF7Gin8jg==',
     name: 'datapackage.json'
   }
 }
