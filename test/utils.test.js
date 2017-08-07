@@ -1,6 +1,5 @@
 const path = require('path')
 const test = require('ava')
-const chalk = require('chalk')
 const sinon = require('sinon')
 const nock = require('nock')
 

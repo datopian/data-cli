@@ -19,10 +19,10 @@ const XLSX = require('xlsx');
 
 const dumpAscii = exports.dumpAscii = (() => {
   var _ref = (0, _asyncToGenerator3.default)(function* (resource) {
-    const rows = yield toArray((yield resource.rows()
+    const rows = yield toArray((yield resource.rows()));
 
     // Process.stdout.columns not defined when piping so we assume 100
-    ));const termwidth = process.stdout.columns || 100;
+    const termwidth = process.stdout.columns || 100;
     const numrows = rows[0].length;
     // Algorithm: termwidth - (1 each for each column edge + 1 extra)
     const eachColWidth = Math.floor(Math.max(5, (termwidth - numrows - 1) / numrows));

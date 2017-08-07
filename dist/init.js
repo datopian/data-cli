@@ -22,7 +22,6 @@ const infer = require('tableschema').infer;
 const urljoin = require('url-join');
 const inquirer = require('inquirer');
 
-const { logger } = require('./utils/log-handler');
 const checkDpIsThere = require('./utils/common').checkDpIsThere;
 
 /*
@@ -64,13 +63,13 @@ const addResource = (() => {
   var _ref = (0, _asyncToGenerator3.default)(function* (path_, dpObj) {
     // Take file name
     // eslint-disable-next-line no-useless-escape
-    const fileName = path_.replace(/^.*[\\\/]/, ''
+    const fileName = path_.replace(/^.*[\\\/]/, '');
     // Get file extension and get resource name by removing extension
-    );const extension = path.extname(fileName);
+    const extension = path.extname(fileName);
     const resourceName = fileName.replace(extension, '');
-    const format = extension.slice(1
+    const format = extension.slice(1);
     // Build schema for tabluar resources
-    );if (extension === '.csv') {
+    if (extension === '.csv') {
       const schema = yield buildSchema(path.join(dpObj._basePath, path_));
       dpObj.addResource({ path: path_, name: resourceName, format, schema });
     } else {
@@ -135,7 +134,7 @@ const shouldAddFiles = (() => {
         if (result.answer === 'y') {
           const pathForResource = path.join(currentPath, files[i]);
           yield addResource(pathForResource, dpObj);
-          logger(`${files[i]} is just added to resources`, 'success');
+          console.log(`${files[i]} is just added to resources`);
         } else {
           console.log(`Skipped ${files[i]}`);
         }
@@ -175,11 +174,11 @@ const shouldScanDir = (() => {
 
       if (result.answer === 'y') {
         const nextPath = path.join(currentPath, dirs[j]);
-        const filesAndDirs = yield scanDir(nextPath
+        const filesAndDirs = yield scanDir(nextPath);
         // Add resources if needed:
-        );yield shouldAddFiles(filesAndDirs.files, dpObj, nextPath
+        yield shouldAddFiles(filesAndDirs.files, dpObj, nextPath);
         // If there are dirs in this dir then recurse:
-        );if (filesAndDirs.dirs.length > 0) {
+        if (filesAndDirs.dirs.length > 0) {
           yield shouldScanDir(filesAndDirs.dirs, dpObj, nextPath);
         }
       }
@@ -213,7 +212,7 @@ const shouldWrite = (() => {
     }];
     const result = yield inquirer.prompt(questions);
     if (result.answer === 'n') {
-      logger(`Process canceled\n`, 'abort', true);
+      throw new Error(`Process cancelled`);
     }
   });
 
@@ -233,10 +232,10 @@ const writeDp = (() => {
     const content = (0, _stringify2.default)(dpObj._descriptor, null, 2);
     fs.writeFile('./datapackage.json', content, 'utf8', function (err) {
       if (err) {
-        return logger(err);
+        throw new Error(err);
       }
       if (log) {
-        logger(`datapackage.json file is saved in ${cwd}`);
+        console.log(`datapackage.json file is saved in ${cwd}`);
       }
     });
   });
@@ -279,7 +278,7 @@ const updateDp = (() => {
       yield shouldWrite(dpObj._descriptor);
       yield writeDp(dpObj);
     } else {
-      logger(`Process canceled\n`, 'abort', true);
+      console.log(`Process canceled\n`);
     }
   });
 

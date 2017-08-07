@@ -19,7 +19,12 @@ test('validate function', async t => {
   // Returns true if valid
   const descriptor = {
     name: 'valid-descriptor',
-    resources: []
+    resources: [
+      {
+        name: 'name',
+        path: 'path'
+      }
+    ]
   }
   const valid = await validate(descriptor)
   t.true(valid)
@@ -28,7 +33,7 @@ test('validate function', async t => {
     resources: []
   }
   const invalid = await validate(invalidDescriptor)
-  t.true(invalid[0].toString().includes('Missing required property: name'))
+  t.true(invalid[0].toString().includes('Array is too short (0), minimum 1'))
 })
 
 test('validate function with resource', async t => {
@@ -74,7 +79,12 @@ test('validateData fails if data is not valid against schema', async t => {
 test('it validateMetadata function works with valid descriptor', async t => {
   const descriptor = {
     name: 'valid-descriptor',
-    resources: []
+    resources: [
+      {
+        name: 'name',
+        path: 'path'
+      }
+    ]
   }
   const valid = await validateMetadata(descriptor)
   t.true(valid)
@@ -85,7 +95,7 @@ test('it returns list of errors if descriptor is invalid', async t => {
     resources: []
   }
   const error = await t.throws(validateMetadata(descriptor))
-  t.true(error[0].toString().includes('Missing required property: name'))
+  t.true(error[0].toString().includes('Array is too short (0), minimum 1'))
 })
 
 // ====================================

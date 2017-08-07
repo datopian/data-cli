@@ -1,8 +1,8 @@
 'use strict';
 
-const chalk = require('chalk'
+const chalk = require('chalk');
 
 // Prints an informational message
-);module.exports = msg => {
+module.exports = msg => {
   console.log(`${chalk.gray('>')} ${msg}`);
 };
