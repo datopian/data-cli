@@ -55,7 +55,7 @@ Promise.resolve().then(async () => {
 
     stopSpinner()
     const message = '🙌  your data is published!\n'
-    const url = '🔗  ' + urljoin(config.get('domain'), config.get('profile').id, pkg.descriptor.name)
+    const url = '🔗  ' + urljoin(config.get('domain'), config.get('profile').username, pkg.descriptor.name)
     console.log(message + url)
   } catch (err) {
     stopSpinner()
