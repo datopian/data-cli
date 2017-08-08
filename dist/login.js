@@ -26,9 +26,9 @@ const port = 3000;
 
 const login = exports.login = (() => {
   var _ref = (0, _asyncToGenerator3.default)(function* (apiUrl, authUrl) {
-    opn(authUrl, { wait: false });
+    opn(authUrl, { wait: false }
     // Now enter a wait loop
-    const urlWithToken = yield runServer();
+    );const urlWithToken = yield runServer();
     const token = urlWithToken.match(/jwt=(.*)/)[1];
     const userInfo = yield module.exports.authenticate(apiUrl, token);
     const info = {

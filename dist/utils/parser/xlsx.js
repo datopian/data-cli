@@ -20,9 +20,9 @@ const { getParseOptions } = require('./csv');
 const xlsxParser = exports.xlsxParser = (() => {
   var _ref = (0, _asyncToGenerator3.default)(function* (resource, keyed = false) {
     const buffer = yield resource.buffer;
-    const workbook = XLSX.read(buffer, { type: 'buffer' });
+    const workbook = XLSX.read(buffer, { type: 'buffer' }
     // For now we handle only first sheet
-    const firstSheetName = workbook.SheetNames[0];
+    );const firstSheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[firstSheetName];
     const csv = XLSX.utils.sheet_to_csv(sheet);
     const stream = new Readable();

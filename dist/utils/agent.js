@@ -14,10 +14,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Native
 const { parse } = require('url');
 const http = require('http');
-const https = require('https');
+const https = require('https'
 
 // Packages
-const fetch = require('node-fetch');
+);const fetch = require('node-fetch'
 
 /**
  * Returns a `fetch` version with a similar
@@ -30,7 +30,7 @@ const fetch = require('node-fetch');
  * @return {Function} fetch
  */
 
-class Agent {
+);class Agent {
   constructor(url, { tls = true, debug } = {}) {
     this._url = url;
     const parsed = parse(url);

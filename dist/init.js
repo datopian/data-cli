@@ -63,13 +63,13 @@ const addResource = (() => {
   var _ref = (0, _asyncToGenerator3.default)(function* (path_, dpObj) {
     // Take file name
     // eslint-disable-next-line no-useless-escape
-    const fileName = path_.replace(/^.*[\\\/]/, '');
+    const fileName = path_.replace(/^.*[\\\/]/, ''
     // Get file extension and get resource name by removing extension
-    const extension = path.extname(fileName);
+    );const extension = path.extname(fileName);
     const resourceName = fileName.replace(extension, '');
-    const format = extension.slice(1);
+    const format = extension.slice(1
     // Build schema for tabluar resources
-    if (extension === '.csv') {
+    );if (extension === '.csv') {
       const schema = yield buildSchema(path.join(dpObj._basePath, path_));
       dpObj.addResource({ path: path_, name: resourceName, format, schema });
     } else {
@@ -174,11 +174,11 @@ const shouldScanDir = (() => {
 
       if (result.answer === 'y') {
         const nextPath = path.join(currentPath, dirs[j]);
-        const filesAndDirs = yield scanDir(nextPath);
+        const filesAndDirs = yield scanDir(nextPath
         // Add resources if needed:
-        yield shouldAddFiles(filesAndDirs.files, dpObj, nextPath);
+        );yield shouldAddFiles(filesAndDirs.files, dpObj, nextPath
         // If there are dirs in this dir then recurse:
-        if (filesAndDirs.dirs.length > 0) {
+        );if (filesAndDirs.dirs.length > 0) {
           yield shouldScanDir(filesAndDirs.dirs, dpObj, nextPath);
         }
       }

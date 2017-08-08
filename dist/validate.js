@@ -50,10 +50,10 @@ let validateMetadata = exports.validateMetadata = (() => {
     // Else use the latest schema
     const defaultProfile = descriptor.profile || 'data-package';
 
-    const profile = yield Profile.load(defaultProfile);
+    const profile = yield Profile.load(defaultProfile
 
     // Validate descriptor
-    return profile.validate(descriptor);
+    );return profile.validate(descriptor);
   });
 
   return function validateMetadata(_x5) {
