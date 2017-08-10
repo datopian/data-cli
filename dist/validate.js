@@ -1,21 +1,16 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Profile = exports.validateMetadata = exports.validateData = exports.validate = undefined;
-
 var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
-let validate = exports.validate = (() => {
+let validate = (() => {
   var _ref = (0, _asyncToGenerator3.default)(function* (descriptor, basePath) {
     try {
       yield validateMetadata(descriptor);
       for (let i = 0; i < descriptor.resources.length; i++) {
         // TODO what if resource is remote
-        const resource = Resource.load(descriptor.resources[i], { basePath });
+        const resource = File.load(descriptor.resources[i], { basePath });
         if (resource.descriptor.format === 'csv') {
           yield validateData(resource.descriptor.schema, resource.path);
         }
@@ -31,7 +26,7 @@ let validate = exports.validate = (() => {
   };
 })();
 
-let validateData = exports.validateData = (() => {
+let validateData = (() => {
   var _ref2 = (0, _asyncToGenerator3.default)(function* (schema, absPath) {
     // TODO: handle inlined data resources
     const table = yield Table.load(absPath, { schema });
@@ -44,16 +39,16 @@ let validateData = exports.validateData = (() => {
   };
 })();
 
-let validateMetadata = exports.validateMetadata = (() => {
+let validateMetadata = (() => {
   var _ref3 = (0, _asyncToGenerator3.default)(function* (descriptor) {
     // If descriptor has a profile property then use it
     // Else use the latest schema
     const defaultProfile = descriptor.profile || 'data-package';
 
-    const profile = yield Profile.load(defaultProfile
+    const profile = yield Profile.load(defaultProfile);
 
     // Validate descriptor
-    );return profile.validate(descriptor);
+    return profile.validate(descriptor);
   });
 
   return function validateMetadata(_x5) {
@@ -70,7 +65,7 @@ const tv4 = require('tv4');
 const fetch = require('node-fetch');
 const { Table } = require('tableschema');
 
-const { Resource, isUrl } = require('./utils/data');
+const { File, isUrl } = require('./utils/data');
 
 class Profile {
 
@@ -141,6 +136,13 @@ class Profile {
 
 }
 
-exports.Profile = Profile; // Internal
+// Internal
 
 const _cache = {};
+
+module.exports = {
+  validate,
+  validateData,
+  validateMetadata,
+  Profile
+};

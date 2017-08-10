@@ -1,9 +1,9 @@
 const test = require('ava')
 
-const {Resource} = require('../lib/utils/data')
+const {File} = require('../lib/utils/data')
 const {dumpers} = require('../lib/cat')
 
-const resource = Resource.load('test/fixtures/sample.csv')
+const resource = File.load('test/fixtures/sample.csv')
 
 test('dumpAscii works', async t => {
   const out = await dumpers.ascii(resource)

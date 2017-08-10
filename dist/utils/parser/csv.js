@@ -1,10 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.getParseOptions = exports.csvParser = undefined;
-
 var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
@@ -13,7 +8,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const parse = require('csv-parse');
 
-const csvParser = exports.csvParser = (() => {
+const csvParser = (() => {
   var _ref = (0, _asyncToGenerator3.default)(function* (resource, keyed = false) {
     const stream = yield resource.stream();
     const parseOptions = getParseOptions(resource.descriptor.dialect, keyed);
@@ -25,7 +20,7 @@ const csvParser = exports.csvParser = (() => {
   };
 })();
 
-const getParseOptions = exports.getParseOptions = (dialect, keyed) => {
+const getParseOptions = (dialect, keyed) => {
   const parseOptions = {
     columns: keyed ? true : null,
     ltrim: true
@@ -40,4 +35,9 @@ const getParseOptions = exports.getParseOptions = (dialect, keyed) => {
   }
 
   return parseOptions;
+};
+
+module.exports = {
+  csvParser,
+  getParseOptions
 };

@@ -1,10 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DataHub = undefined;
-
 var _stringify = require('babel-runtime/core-js/json/stringify');
 
 var _stringify2 = _interopRequireDefault(_stringify);
@@ -57,7 +52,7 @@ const FormData = require('form-data');
 const lodash = require('lodash');
 
 const { Agent } = require('./agent');
-const { Resource } = require('./data'
+const { File } = require('./data');
 
 // TODO
 // debug logging - and use to output what we are sending to APIs
@@ -65,7 +60,7 @@ const { Resource } = require('./data'
 // get dedicated auth token for the rawstore
 // common error handling for fetch stuff ... (?)
 
-);class DataHub extends EventEmitter {
+class DataHub extends EventEmitter {
   constructor({ apiUrl, token, ownerid, owner, debug = false }) {
     super();
     this.apiUrl = apiUrl;
@@ -81,14 +76,14 @@ const { Resource } = require('./data'
 
     return (0, _asyncToGenerator3.default)(function* () {
       // TODO: exclude remote Resources
-      const resources = lodash.clone(pkg.resources
-      // Get Package itself (datapackage.json) as an (Inline) Resource
-      );const _descriptor = lodash.cloneDeep(pkg.descriptor
+      const resources = lodash.clone(pkg.resources);
+      // Get Package itself (datapackage.json) as an (Inline) File
+      const _descriptor = lodash.cloneDeep(pkg.descriptor);
       // Add the readme - if it exists
-      );if (pkg.readme) {
+      if (pkg.readme) {
         _descriptor.readme = pkg.readme;
       }
-      const dpJsonResource = Resource.load({
+      const dpJsonResource = File.load({
         path: 'datapackage.json',
         name: 'datapackage.json',
         data: _descriptor
@@ -100,28 +95,28 @@ const { Resource } = require('./data'
       const rawstoreUploadCreds = yield _this.rawstoreAuthorize(resources);
 
       _this._debugMsg('Uploading to rawstore with creds ...');
-      _this._debugMsg(rawstoreUploadCreds
+      _this._debugMsg(rawstoreUploadCreds);
 
       // Upload - we do them in parallel
-      );const uploads = resources.map((() => {
+      const uploads = resources.map((() => {
         var _ref = (0, _asyncToGenerator3.default)(function* (resource) {
           // TODO: annoying that the serves parses the s3 url so we have to unparse it!
           const creds = rawstoreUploadCreds[resource.descriptor.name];
           const formData = new FormData();
           lodash.forEach(creds.upload_query, function (v, k) {
             formData.append(k, v);
-          }
+          });
           // We need to compute content length for S3 and don't want form-data to re-read entire stream to get length
           // so we explicitly add it
           // See https://github.com/alexindigo/form-data/blob/655b95988ef2ed3399f8796b29b2a8673c1df11c/lib/form_data.js#L82
-          );formData.append('file', resource.stream(), {
+          formData.append('file', resource.stream(), {
             knownLength: resource.size,
             contentType: creds.upload_query['Content-Type']
           });
-          const totalLength = formData.getLengthSync
+          const totalLength = formData.getLengthSync();
 
           // Use straight fetch as not interacting with API but with external object store
-          ();const res = yield fetch(creds.upload_url, {
+          const res = yield fetch(creds.upload_url, {
             method: 'POST',
             body: formData,
             headers: {
@@ -146,10 +141,10 @@ const { Resource } = require('./data'
 
       _this._debugMsg('Uploads to rawstore: Complete');
 
-      _this._debugMsg('Uploading to source spec store'
+      _this._debugMsg('Uploading to source spec store');
 
       // Upload to SpecStore
-      );const spec = makeSourceSpec(rawstoreUploadCreds, _this._ownerid, _this._owner, pkg.descriptor.name);
+      const spec = makeSourceSpec(rawstoreUploadCreds, _this._ownerid, _this._owner, pkg.descriptor.name);
 
       _this._debugMsg('Calling source upload with spec');
       _this._debugMsg(spec);
@@ -244,7 +239,6 @@ const { Resource } = require('./data'
   }
 }
 
-exports.DataHub = DataHub;
 const makeSourceSpec = (rawstoreResponse, ownerid, owner, dataset) => {
   const resourceMapping = {};
   lodash.forEach(rawstoreResponse, (uploadInfo, resourceName) => {
@@ -269,4 +263,8 @@ const makeSourceSpec = (rawstoreResponse, ownerid, owner, dataset) => {
       }
     }]
   };
+};
+
+module.exports = {
+  DataHub
 };
