@@ -87,7 +87,7 @@ test('parsePath function with remote url', t => {
 
 // common method to test all the functionality which we can use for all types
 // of resources
-const testResource = async (t, resource) => {
+const testFile = async (t, resource) => {
   t.is(resource.path, 'test/fixtures/sample.csv')
   t.is(resource.size, 46)
   t.is(resource.hash, 'sGYdlWZJioAPv5U2XOKHRw==')
@@ -121,18 +121,18 @@ test('File class with path', async t => {
   // With path
   const path_ = 'test/fixtures/sample.csv'
   const res = utils.File.load(path_)
-  await testResource(t, res)
+  await testFile(t, res)
 })
 
 test('File class with descriptor', async t => {
   const descriptor = {path: 'test/fixtures/sample.csv'}
   const obj2 = utils.File.load(descriptor)
-  await testResource(t, obj2)
+  await testFile(t, obj2)
 })
 
 test('File with path and basePath', t => {
   const obj3 = utils.File.load('sample.csv', {basePath: 'test/fixtures'})
-  testResource(t, obj3)
+  testFile(t, obj3)
 })
 
 test('File with inline JS data', async t => {
@@ -151,13 +151,13 @@ test('File with inline text (CSV) data', async t => {
 1,two,true
 3,four,false
 `
-  // To make it testable with testResource we add the path but it is not needed
+  // To make it testable with testFile we add the path but it is not needed
   const resource = utils.File.load({
     path: 'test/fixtures/sample.csv',
     format: 'csv',
     data
   })
-  await testResource(t, resource)
+  await testFile(t, resource)
 })
 
 test('File with inline array data', async t => {
@@ -166,7 +166,7 @@ test('File with inline array data', async t => {
     [1, 'two', true],
     [3, 'four', false]
   ]
-  // To make it testable with testResource we add the path but it is not needed
+  // To make it testable with testFile we add the path but it is not needed
   const resource = utils.File.load({
     data
   })
