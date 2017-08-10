@@ -1,10 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.infoResource = exports.infoPackage = undefined;
-
 var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
@@ -13,7 +8,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const { dumpers } = require('./cat');
 
-const infoPackage = exports.infoPackage = pkg => {
+const infoPackage = pkg => {
   let firstParagraphReadme;
   const readme = pkg.readme || 'No readme is provided';
 
@@ -46,7 +41,7 @@ ${readme}
   return out;
 };
 
-const infoResource = exports.infoResource = (() => {
+const infoResource = (() => {
   var _ref = (0, _asyncToGenerator3.default)(function* (resource) {
     const out = yield dumpers.ascii(resource);
     return out;
@@ -56,3 +51,8 @@ const infoResource = exports.infoResource = (() => {
     return _ref.apply(this, arguments);
   };
 })();
+
+module.exports = {
+  infoPackage,
+  infoResource
+};

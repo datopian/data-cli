@@ -13,7 +13,7 @@ const {customMarked} = require('../lib/utils/tools.js')
 const {handleError} = require('../lib/utils/error')
 const wait = require('../lib/utils/output/wait')
 const {DataHub} = require('../lib/utils/datahub.js')
-const {Package, Resource} = require('../lib/utils/data.js')
+const {Dataset, File} = require('../lib/utils/data.js')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['push'],
@@ -39,7 +39,7 @@ Promise.resolve().then(async () => {
     if (fs.lstatSync(filePath).isFile()) {
       pkg = await preparePackageFromFile(filePath)
     } else {
-      pkg = await Package.load(filePath)
+      pkg = await Dataset.load(filePath)
     }
 
     stopSpinner = wait('Commencing push ...')
@@ -69,7 +69,7 @@ Promise.resolve().then(async () => {
 
 const preparePackageFromFile = async filePath => {
   const pathParts = path.parse(filePath)
-  const resource = Resource.load(pathParts.base, {basePath: pathParts.dir})
+  const resource = File.load(pathParts.base, {basePath: pathParts.dir})
 
   await resource.addSchema
   const headers = resource.descriptor.schema.fields.map(field => field.name)
@@ -93,7 +93,7 @@ const preparePackageFromFile = async filePath => {
     title: '', // TODO: generate from file name (maybe prompt user for it ...)
     resources: []
   }
-  const pkg = await Package.load(metadata)
+  const pkg = await Dataset.load(metadata)
   pkg.addResource(resource)
   return pkg
 }

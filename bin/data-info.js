@@ -29,11 +29,11 @@ const fileOrDatasetIdentifier = argv._[0]
 Promise.resolve().then(async () => {
   const ispkg = data.isPackage(fileOrDatasetIdentifier)
   if (ispkg) {
-    const pkg = await data.Package.load(fileOrDatasetIdentifier)
+    const pkg = await data.Dataset.load(fileOrDatasetIdentifier)
     const out = info.infoPackage(pkg)
     console.log(customMarked(out))
   } else {
-    const resource = data.Resource.load(fileOrDatasetIdentifier)
+    const resource = data.File.load(fileOrDatasetIdentifier)
     const out = await info.infoResource(resource)
     console.log(out)
   }
