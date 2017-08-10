@@ -1,10 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.authenticate = exports.login = undefined;
-
 var _promise = require('babel-runtime/core-js/promise');
 
 var _promise2 = _interopRequireDefault(_promise);
@@ -24,11 +19,11 @@ const config = require('./utils/config');
 
 const port = 3000;
 
-const login = exports.login = (() => {
+const login = (() => {
   var _ref = (0, _asyncToGenerator3.default)(function* (apiUrl, authUrl) {
-    opn(authUrl, { wait: false }
+    opn(authUrl, { wait: false });
     // Now enter a wait loop
-    );const urlWithToken = yield runServer();
+    const urlWithToken = yield runServer();
     const token = urlWithToken.match(/jwt=(.*)/)[1];
     const userInfo = yield module.exports.authenticate(apiUrl, token);
     const info = {
@@ -45,7 +40,7 @@ const login = exports.login = (() => {
 })();
 
 // Do authentication here: if authenticated returns userInfo, if not returns login providers
-const authenticate = exports.authenticate = (() => {
+const authenticate = (() => {
   var _ref2 = (0, _asyncToGenerator3.default)(function* (apiUrl, token) {
     const url = `${apiUrl}/auth/check?jwt=${token}&next=http://localhost:${port}`;
     const res = yield fetch(url);
@@ -87,3 +82,8 @@ const runServer = (() => {
     return _ref3.apply(this, arguments);
   };
 })();
+
+module.exports = {
+  login,
+  authenticate
+};

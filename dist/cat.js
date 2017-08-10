@@ -1,10 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.dumpers = exports.dumpXlsx = exports.dumpMarkdown = exports.dumpCsv = exports.dumpAscii = undefined;
-
 var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
@@ -17,12 +12,12 @@ const mdTable = require('markdown-table');
 const CSV = require('csv-string');
 const XLSX = require('xlsx');
 
-const dumpAscii = exports.dumpAscii = (() => {
+const dumpAscii = (() => {
   var _ref = (0, _asyncToGenerator3.default)(function* (resource) {
-    const rows = yield toArray((yield resource.rows()
+    const rows = yield toArray((yield resource.rows()));
 
     // Process.stdout.columns not defined when piping so we assume 100
-    ));const termwidth = process.stdout.columns || 100;
+    const termwidth = process.stdout.columns || 100;
     const numrows = rows[0].length;
     // Algorithm: termwidth - (1 each for each column edge + 1 extra)
     const eachColWidth = Math.floor(Math.max(5, (termwidth - numrows - 1) / numrows));
@@ -45,7 +40,7 @@ const dumpAscii = exports.dumpAscii = (() => {
   };
 })();
 
-const dumpCsv = exports.dumpCsv = (() => {
+const dumpCsv = (() => {
   var _ref2 = (0, _asyncToGenerator3.default)(function* (resource) {
     const rows = yield toArray((yield resource.rows()));
     return CSV.stringify(rows);
@@ -56,7 +51,7 @@ const dumpCsv = exports.dumpCsv = (() => {
   };
 })();
 
-const dumpMarkdown = exports.dumpMarkdown = (() => {
+const dumpMarkdown = (() => {
   var _ref3 = (0, _asyncToGenerator3.default)(function* (resource) {
     const rows = yield toArray((yield resource.rows()));
     return mdTable(rows);
@@ -67,7 +62,7 @@ const dumpMarkdown = exports.dumpMarkdown = (() => {
   };
 })();
 
-const dumpXlsx = exports.dumpXlsx = (() => {
+const dumpXlsx = (() => {
   var _ref4 = (0, _asyncToGenerator3.default)(function* (resource) {
     const rows = yield toArray((yield resource.rows()));
     return XLSX.utils.aoa_to_sheet(rows);
@@ -78,9 +73,17 @@ const dumpXlsx = exports.dumpXlsx = (() => {
   };
 })();
 
-const dumpers = exports.dumpers = {
+const dumpers = {
   ascii: dumpAscii,
   csv: dumpCsv,
   md: dumpMarkdown,
   xlsx: dumpXlsx
+};
+
+module.exports = {
+  dumpAscii,
+  dumpCsv,
+  dumpMarkdown,
+  dumpXlsx,
+  dumpers
 };

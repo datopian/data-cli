@@ -20,10 +20,10 @@ const file = process.env.DATAHUB_JSON ? path.resolve(process.env.DATAHUB_JSON) :
 
 nconf.argv().env().file({
   file
-}
+});
 
 // This is the object that you want to override in your own local config
-);nconf.defaults({
+nconf.defaults({
   api: 'https://api.datahub.io',
   domain: 'https://datahub.io',
   token: '',

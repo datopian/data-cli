@@ -7,7 +7,7 @@ const XLSX = require('xlsx')
 
 // Ours
 const {customMarked} = require('../lib/utils/tools.js')
-const {Resource} = require('../lib/utils/data.js')
+const {File} = require('../lib/utils/data.js')
 const {dumpers} = require('../lib/cat')
 
 const argv = minimist(process.argv.slice(2), {
@@ -26,7 +26,7 @@ if (argv.help || !argv._[0]) {
   process.exit(0)
 }
 
-const res = Resource.load(argv._[0])
+const res = File.load(argv._[0])
 let outFileExt
 if (argv._[1]) {
   outFileExt = path.extname(argv._[1])

@@ -1,10 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Agent = undefined;
-
 var _stringify = require('babel-runtime/core-js/json/stringify');
 
 var _stringify2 = _interopRequireDefault(_stringify);
@@ -14,10 +9,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Native
 const { parse } = require('url');
 const http = require('http');
-const https = require('https'
+const https = require('https');
 
 // Packages
-);const fetch = require('node-fetch'
+const fetch = require('node-fetch');
 
 /**
  * Returns a `fetch` version with a similar
@@ -30,7 +25,7 @@ const https = require('https'
  * @return {Function} fetch
  */
 
-);class Agent {
+class Agent {
   constructor(url, { tls = true, debug } = {}) {
     this._url = url;
     const parsed = parse(url);
@@ -94,4 +89,7 @@ const https = require('https'
     }
   }
 }
-exports.Agent = Agent;
+
+module.exports = {
+  Agent
+};

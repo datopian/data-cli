@@ -1,10 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Package = exports.isPackage = exports.isUrl = exports.parsePackageIdentifier = exports.parsePath = exports.ResourceInline = exports.ResourceRemote = exports.ResourceLocal = exports.Resource = undefined;
-
 var _stringify = require('babel-runtime/core-js/json/stringify');
 
 var _stringify2 = _interopRequireDefault(_stringify);
@@ -19,7 +14,7 @@ var _assign2 = _interopRequireDefault(_assign);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// Data Resource (files) and Data Package objects (datasets)
+// Data File (files) and Data Dataset objects (datasets)
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
@@ -53,15 +48,15 @@ const DEFAULT_ENCODING = 'utf-8';
  * size and hash are direct properties as they are lazily evaluated (if not already specified)
  */
 // TODO: support initializing with data
-class Resource {
+class File {
 
   static load(pathOrDescriptor, { basePath } = {}) {
     let descriptor = null;
     if (lodash.isPlainObject(pathOrDescriptor)) {
-      descriptor = lodash.cloneDeep(pathOrDescriptor
+      descriptor = lodash.cloneDeep(pathOrDescriptor);
       // NB: data must come first - we could have data and path in which path
       // is not used (data comes from data)
-      );if (descriptor.data) {
+      if (descriptor.data) {
         return new ResourceInline(descriptor, { basePath });
       } else if (descriptor.path) {
         // We want properties already in our descriptor to take priority over
@@ -71,7 +66,7 @@ class Resource {
     } else if (lodash.isString(pathOrDescriptor)) {
       descriptor = parsePath(pathOrDescriptor, basePath);
     } else {
-      throw new TypeError(`Cannot create Resource with ${pathOrDescriptor}`);
+      throw new TypeError(`Cannot create File with ${pathOrDescriptor}`);
     }
 
     const isRemote = descriptor.pathType === 'remote' || isUrl(basePath);
@@ -137,7 +132,7 @@ class Resource {
     return (0, _asyncToGenerator3.default)(function* () {
       // Ensure resource is tabular
       if (knownTabularFormats.indexOf(_this2.descriptor.format) === -1) {
-        throw new Error('Resource is not in known tabular format.');
+        throw new Error('File is not in known tabular format.');
       }
       const rows = yield toArray((yield _this2.rows()));
       _this2.descriptor.schema = yield infer(rows);
@@ -145,8 +140,7 @@ class Resource {
   }
 }
 
-exports.Resource = Resource;
-class ResourceLocal extends Resource {
+class ResourceLocal extends File {
   get path() {
     return this._basePath ? path.join(this._basePath, this.descriptor.path) : this.descriptor.path;
   }
@@ -168,8 +162,7 @@ class ResourceLocal extends Resource {
   }
 }
 
-exports.ResourceLocal = ResourceLocal;
-class ResourceRemote extends Resource {
+class ResourceRemote extends File {
   get path() {
     return this._basePath ? urljoin(this._basePath, this.descriptor.path) : this.descriptor.path;
   }
@@ -188,13 +181,12 @@ class ResourceRemote extends Resource {
   }
 }
 
-exports.ResourceRemote = ResourceRemote;
-class ResourceInline extends Resource {
+class ResourceInline extends File {
   constructor(descriptor, { basePath } = {}) {
-    super(descriptor, { basePath }
+    super(descriptor, { basePath });
 
     // JSON is special case ...
-    );if (lodash.isString(this.descriptor.data)) {
+    if (lodash.isString(this.descriptor.data)) {
       this._buffer = Buffer.from(this.descriptor.data);
     } else {
       // It is json/javascript
@@ -234,8 +226,7 @@ class ResourceInline extends Resource {
   }
 }
 
-exports.ResourceInline = ResourceInline; // Available parsers per file format
-
+// Available parsers per file format
 const parserDatabase = {
   csv: csvParser,
   xlsx: xlsxParser,
@@ -244,10 +235,10 @@ const parserDatabase = {
   // List of formats that are known as tabular
 };const knownTabularFormats = ['csv', 'tsv', 'dsv'];
 
-const parsePath = exports.parsePath = (path_, basePath = null) => {
-  const isItUrl = isUrl(path_) || isUrl(basePath
+const parsePath = (path_, basePath = null) => {
+  const isItUrl = isUrl(path_) || isUrl(basePath);
   // eslint-disable-next-line no-useless-escape
-  );const fileName = path_.replace(/^.*[\\\/]/, '');
+  const fileName = path_.replace(/^.*[\\\/]/, '');
   const extension = path.extname(fileName);
   return {
     path: path_,
@@ -258,20 +249,20 @@ const parsePath = exports.parsePath = (path_, basePath = null) => {
   };
 };
 
-const parsePackageIdentifier = exports.parsePackageIdentifier = path_ => {
+const parsePackageIdentifier = path_ => {
   return {
     path: path_,
     type: isUrl(path_) ? 'remote' : 'local'
   };
 };
 
-const isUrl = exports.isUrl = path_ => {
+const isUrl = path_ => {
   const r = new RegExp('^(?:[a-z]+:)?//', 'i');
   return r.test(path_);
 };
 
-const isPackage = exports.isPackage = path_ => {
-  // If it is a path to file we assume it is not a Package
+const isPackage = path_ => {
+  // If it is a path to file we assume it is not a Dataset
   // Only exception is 'datapackage.json':
   if (path_.endsWith('datapackage.json')) {
     return true;
@@ -295,18 +286,18 @@ const isPackage = exports.isPackage = path_ => {
 };
 
 // ========================================================
-// Package
+// Dataset
 
 /**
  * A collection of data resources
  *
  * Under the hood it stores metadata in data package format.
  */
-class Package {
+class Dataset {
   // TODO: handle owner
   constructor(descriptor = {}, identifier = { path: null, owner: null }) {
     if (!lodash.isPlainObject(descriptor)) {
-      throw new TypeError(`To create a new Package please use Package.load`);
+      throw new TypeError(`To create a new Dataset please use Dataset.load`);
     }
 
     this._descriptor = descriptor;
@@ -319,7 +310,7 @@ class Package {
   static load(pathOrDescriptor, { path = null, owner = null } = {}) {
     return (0, _asyncToGenerator3.default)(function* () {
       if (!(lodash.isString(pathOrDescriptor) || lodash.isPlainObject(pathOrDescriptor))) {
-        throw new TypeError('Package needs to be created with descriptor Object or identifier string');
+        throw new TypeError('Dataset needs to be created with descriptor Object or identifier string');
       }
 
       const descriptor = lodash.isPlainObject(pathOrDescriptor) ? pathOrDescriptor : {};
@@ -329,7 +320,7 @@ class Package {
         owner
         // TODO: owner if provided should override anything parsed from path
 
-      };const pkg = new Package(descriptor, identifier);
+      };const pkg = new Dataset(descriptor, identifier);
       yield pkg._sync();
       return pkg;
     })();
@@ -340,25 +331,25 @@ class Package {
     var _this4 = this;
 
     return (0, _asyncToGenerator3.default)(function* () {
-      const readmePath = _this4._path('README.md'
+      const readmePath = _this4._path('README.md');
       // eslint-disable-next-line default-case
-      );switch (_this4.identifier.type) {
+      switch (_this4.identifier.type) {
         case 'remote':
           {
             let res = yield fetch(_this4.dataPackageJsonPath);
             _this4._descriptor = yield res.json();
-            res = yield fetch(readmePath
+            res = yield fetch(readmePath);
             // May not exist and that is ok!
-            );if (res.status === 200) {
+            if (res.status === 200) {
               _this4._readme = yield res.text();
             }
             break;
           }
         case 'local':
           {
-            _this4._descriptor = JSON.parse(fs.readFileSync(_this4.dataPackageJsonPath)
+            _this4._descriptor = JSON.parse(fs.readFileSync(_this4.dataPackageJsonPath));
             // Now get README from local disk if exists
-            );if (fs.existsSync(readmePath)) {
+            if (fs.existsSync(readmePath)) {
               _this4._readme = fs.readFileSync(readmePath).toString();
             }
             break;
@@ -367,7 +358,7 @@ class Package {
 
       // Now load each resource ...
       _this4._resources = _this4.descriptor.resources.map(function (resource) {
-        return Resource.load(resource, { basePath: _this4.path });
+        return File.load(resource, { basePath: _this4.path });
       });
     })();
   }
@@ -392,7 +383,7 @@ class Package {
     return this._readme;
   }
 
-  // Array of Resource objects
+  // Array of File objects
   get resources() {
     return this._resources;
   }
@@ -400,7 +391,7 @@ class Package {
   addResource(resource) {
     if (lodash.isPlainObject(resource)) {
       this.descriptor.resources.push(resource);
-      this.resources.push(Resource.load(resource));
+      this.resources.push(File.load(resource));
     } else if (lodash.isObject(resource)) {
       // It is already a resource object!
       this.descriptor.resources.push(resource.descriptor);
@@ -426,4 +417,15 @@ class Package {
     }
   }
 }
-exports.Package = Package;
+
+module.exports = {
+  File,
+  ResourceLocal,
+  ResourceRemote,
+  ResourceInline,
+  parsePath,
+  parsePackageIdentifier,
+  isUrl,
+  isPackage,
+  Dataset
+};
