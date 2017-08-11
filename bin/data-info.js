@@ -24,7 +24,7 @@ if (argv.help) {
   process.exit(0)
 }
 
-const fileOrDatasetIdentifier = argv._[0]
+const fileOrDatasetIdentifier = argv._[0] ? argv._[0] : './'
 
 Promise.resolve().then(async () => {
   const ispkg = data.isPackage(fileOrDatasetIdentifier)

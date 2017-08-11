@@ -1,11 +1,11 @@
 
-# Preview a Data Package
+# Preview a Dataset
 
 ## Usage:
 
 ```
-# Get information about Data Package for given publisher and package:
-$ data info <publisher>/<package>
+# Get information about Dataset:
+$ data info [path]
 ```
 
 ## Options:
@@ -17,6 +17,15 @@ $ data info <publisher>/<package>
 ## Example:
 
 ```
-# Get Data Package information about core publisher and co2-ppm package:
-$ data info core/co2-ppm
-```
+# Get information about Dataset in current working directory:
+$ data info
+
+# Get information about Dataset providing local path:
+$ data info dir/finance-vix
+
+# Or you can get info about remote dataset:
+$ data info https://raw.githubusercontent.com/datasets/gdp/master/datapackage.json
+
+# Additionally, you can preview local or remote tabular data file:
+$ data info https://raw.githubusercontent.com/datahq/core-datasets-tools/master/examples.csv
+
