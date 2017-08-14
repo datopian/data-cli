@@ -5,7 +5,7 @@ const path = require('path')
 const minimist = require('minimist')
 const {customMarked} = require('../lib/utils/tools.js')
 
-const data = require('../lib/utils/data.js')
+const data = require('data.js')
 const info = require('../lib/info')
 
 const argv = minimist(process.argv.slice(2), {
@@ -24,7 +24,7 @@ if (argv.help) {
   process.exit(0)
 }
 
-const fileOrDatasetIdentifier = argv._[0]
+const fileOrDatasetIdentifier = argv._[0] ? argv._[0] : './'
 
 Promise.resolve().then(async () => {
   const ispkg = data.isPackage(fileOrDatasetIdentifier)

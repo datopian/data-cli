@@ -13,7 +13,7 @@ const {customMarked} = require('../lib/utils/tools.js')
 const {handleError} = require('../lib/utils/error')
 const wait = require('../lib/utils/output/wait')
 const {DataHub} = require('../lib/utils/datahub.js')
-const {Dataset, File} = require('../lib/utils/data.js')
+const {Dataset, File} = require('data.js')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['push'],

@@ -52,7 +52,7 @@ const FormData = require('form-data');
 const lodash = require('lodash');
 
 const { Agent } = require('./agent');
-const { File } = require('./data');
+const { File } = require('data.js');
 
 // TODO
 // debug logging - and use to output what we are sending to APIs
@@ -77,7 +77,7 @@ class DataHub extends EventEmitter {
     return (0, _asyncToGenerator3.default)(function* () {
       // TODO: exclude remote Resources
       const resources = lodash.clone(pkg.resources);
-      // Get Package itself (datapackage.json) as an (Inline) File
+      // Get Dataset itself (datapackage.json) as an (Inline) File
       const _descriptor = lodash.cloneDeep(pkg.descriptor);
       // Add the readme - if it exists
       if (pkg.readme) {

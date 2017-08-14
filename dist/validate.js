@@ -65,7 +65,7 @@ const tv4 = require('tv4');
 const fetch = require('node-fetch');
 const { Table } = require('tableschema');
 
-const { File, isUrl } = require('./utils/data');
+const { File, isUrl } = require('data.js');
 
 class Profile {
 
