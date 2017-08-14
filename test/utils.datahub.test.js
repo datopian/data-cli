@@ -3,7 +3,7 @@ const nock = require('nock')
 const urljoin = require('url-join')
 
 const {DataHub} = require('../lib/utils/datahub.js')
-const {Dataset} = require('../lib/utils/data.js')
+const {Dataset} = require('data.js')
 
 test('Can instantiate DataHub', t => {
   const apiUrl = 'https://apifix.datahub.io'

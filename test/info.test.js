@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const data = require('../lib/utils/data.js')
+const data = require('data.js')
 const info = require('../lib/info.js')
 
 test('infoPackage works', async t => {

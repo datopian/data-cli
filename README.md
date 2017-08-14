@@ -64,15 +64,3 @@ $ npm run lint # shows errors only
 # Fixing erros automatically:
 $ xo --fix
 ```
-
-## How to add a new parser
-
-1. Create a module in `/lib/utils/parser/` with relevant name, e.g., `csv.js` for csv parser. It should export parser function that will be used later in step 2. The function should take a resource object as an argument.
-2. Import the parser function in `/lib/utils/data.js` and include it in parserDatabase:
-
-```javascript
-// Available parsers per file format
-const parserDatabase = {
-  csv: csvParser
-}
-```

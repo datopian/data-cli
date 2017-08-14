@@ -7,7 +7,7 @@ const XLSX = require('xlsx')
 
 // Ours
 const {customMarked} = require('../lib/utils/tools.js')
-const {File} = require('../lib/utils/data.js')
+const {File} = require('data.js')
 const {dumpers} = require('../lib/cat')
 
 const argv = minimist(process.argv.slice(2), {
