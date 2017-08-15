@@ -6,7 +6,7 @@ const {spawn} = require('cross-spawn')
 
 const {version} = require('../package.json')
 
-export const runcli = (...args) => {
+const runcli = (...args) => {
   return new Promise((resolve, reject) => {
     const command = path.resolve(__dirname, '../bin/data.js')
     const data = spawn(command, args)
