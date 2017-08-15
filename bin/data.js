@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 // Native
 const {resolve} = require('path')
 
