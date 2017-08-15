@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-
-// eslint-disable-next-line import/no-unassigned-import
 // Native
 const {resolve} = require('path')
 

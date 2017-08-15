@@ -33,8 +33,6 @@
     ]
   },
   "ava": {
-    "require": [
-    ],
     "failFast": false,
     "files": [
       "test/*test.js"

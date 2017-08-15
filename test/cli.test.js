@@ -80,3 +80,7 @@ test.skip('"data info core/co2-ppm" command prints out readme and resource list'
   t.true(stdout[5].includes('CO2 PPM'))
   t.true(stdout[17].includes('co2-annmean-mlo'))
 })
+
+module.exports = {
+  runcli
+}
