@@ -15,7 +15,6 @@
     "lint": "xo --quiet",
     "data": "node bin/data.js",
     "pack": "pkg bin/data.js -c package.json -o packed/datahub",
-    "build": "babel lib -d dist",
     "precommit": "npm run lint && npm run build"
   },
   "xo": {
@@ -34,9 +33,6 @@
     ]
   },
   "ava": {
-    "require": [
-      "babel-core/register"
-    ],
     "failFast": false,
     "files": [
       "test/*test.js"
@@ -107,11 +103,6 @@
   },
   "devDependencies": {
     "ava": "^0.19.1",
-    "babel-cli": "^6.24.1",
-    "babel-core": "^6.25.0",
-    "babel-plugin-transform-async-to-generator": "^6.24.1",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-node6": "^11.0.0",
     "cross-spawn": "^5.1.0",
     "inquirer-test": "^1.0.5",
     "mocha": "^3.4.1",

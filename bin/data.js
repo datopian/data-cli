@@ -1,7 +1,4 @@
 #!/usr/bin/env node
-
-// eslint-disable-next-line import/no-unassigned-import
-require('babel-core/register')
 // Native
 const {resolve} = require('path')
 

@@ -27,7 +27,7 @@ if (argv.help) {
 const fileOrDatasetIdentifier = argv._[0] ? argv._[0] : './'
 
 Promise.resolve().then(async () => {
-  const ispkg = data.isPackage(fileOrDatasetIdentifier)
+  const ispkg = data.isDataset(fileOrDatasetIdentifier)
   if (ispkg) {
     const pkg = await data.Dataset.load(fileOrDatasetIdentifier)
     const out = info.infoPackage(pkg)

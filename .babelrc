@@ -1,9 +1,0 @@
-{
-  "plugins": [
-    "transform-async-to-generator",
-    "transform-runtime"
-  ],
-  "presets": [
-    "node6"
-  ]
-}
