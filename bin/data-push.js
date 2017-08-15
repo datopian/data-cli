@@ -35,11 +35,11 @@ Promise.resolve().then(async () => {
   let stopSpinner = () => {}
   try {
     const filePath = argv._[0] || process.cwd()
-    let pkg
+    let dataset
     if (fs.lstatSync(filePath).isFile()) {
-      pkg = await preparePackageFromFile(filePath)
+      dataset = await prepareDatasetFromFile(filePath)
     } else {
-      pkg = await Dataset.load(filePath)
+      dataset = await Dataset.load(filePath)
     }
 
     stopSpinner = wait('Commencing push ...')
@@ -51,11 +51,11 @@ Promise.resolve().then(async () => {
       ownerid: config.get('profile').id,
       owner: config.get('profile').username
     })
-    await datahub.push(pkg)
+    await datahub.push(dataset)
 
     stopSpinner()
     const message = '🙌  your data is published!\n'
-    const url = '🔗  ' + urljoin(config.get('domain'), config.get('profile').username, pkg.descriptor.name)
+    const url = '🔗  ' + urljoin(config.get('domain'), config.get('profile').username, dataset.descriptor.name)
     console.log(message + url)
   } catch (err) {
     stopSpinner()
@@ -67,13 +67,13 @@ Promise.resolve().then(async () => {
   }
 })
 
-const preparePackageFromFile = async filePath => {
+const prepareDatasetFromFile = async filePath => {
   const pathParts = path.parse(filePath)
-  const resource = File.load(pathParts.base, {basePath: pathParts.dir})
+  const file = File.load(pathParts.base, {basePath: pathParts.dir})
 
-  await resource.addSchema
-  const headers = resource.descriptor.schema.fields.map(field => field.name)
-  const fieldTypes = resource.descriptor.schema.fields.map(field => field.type)
+  await file.addSchema
+  const headers = file.descriptor.schema.fields.map(field => field.name)
+  const fieldTypes = file.descriptor.schema.fields.map(field => field.type)
   // Prompt user with headers and fieldTypes
   const questions = [ask('headers', headers), ask('types', fieldTypes)]
   const answers = await inquirer.prompt(questions)
@@ -85,7 +85,7 @@ const preparePackageFromFile = async filePath => {
 
   let dpName = pathParts.name.replace(/\s+/g, '-').toLowerCase()
   // Add human readable id so that this packge does not conflict with other
-  // packages (name is coming from the resource file name which could just be
+  // packages (name is coming from the file name which could just be
   // data.csv)
   dpName += '-' + hri.random()
   const metadata = {
@@ -93,9 +93,9 @@ const preparePackageFromFile = async filePath => {
     title: '', // TODO: generate from file name (maybe prompt user for it ...)
     resources: []
   }
-  const pkg = await Dataset.load(metadata)
-  pkg.addResource(resource)
-  return pkg
+  const dataset = await Dataset.load(metadata)
+  dataset.addResource(file)
+  return dataset
 }
 
 const ask = (name, data) => {

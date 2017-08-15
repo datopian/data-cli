@@ -76,7 +76,7 @@
     "crypto": "0.0.3",
     "csv-parse": "^1.2.0",
     "csv-string": "^2.3.2",
-    "data.js": "^0.9.0",
+    "data.js": "^0.9.1",
     "datapackage": "git+https://github.com/anuveyatsu/datapackage-js-temp.git",
     "datapackage-identifier": "^0.4.2",
     "expand-home-dir": "0.0.3",

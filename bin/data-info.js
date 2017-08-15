@@ -27,14 +27,14 @@ if (argv.help) {
 const fileOrDatasetIdentifier = argv._[0] ? argv._[0] : './'
 
 Promise.resolve().then(async () => {
-  const ispkg = data.isPackage(fileOrDatasetIdentifier)
-  if (ispkg) {
-    const pkg = await data.Dataset.load(fileOrDatasetIdentifier)
-    const out = info.infoPackage(pkg)
+  const isdataset = data.isDataset(fileOrDatasetIdentifier)
+  if (isdataset) {
+    const dataset = await data.Dataset.load(fileOrDatasetIdentifier)
+    const out = info.infoPackage(dataset)
     console.log(customMarked(out))
   } else {
-    const resource = data.File.load(fileOrDatasetIdentifier)
-    const out = await info.infoResource(resource)
+    const file = data.File.load(fileOrDatasetIdentifier)
+    const out = await info.infoResource(file)
     console.log(out)
   }
 })

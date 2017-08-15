@@ -47,16 +47,16 @@ const getFromSourceUrl = nock('https://example.com')
 test('checkDestIsEmpty returns true if dir exists and is empty', t => {
   const tempDirPath = tmpdir.split('/')
   const publisher = tempDirPath[tempDirPath.length - 2]
-  const pkg = tempDirPath[tempDirPath.length - 1]
-  const res = get.checkDestIsEmpty('/' + publisher, pkg)
+  const dataset = tempDirPath[tempDirPath.length - 1]
+  const res = get.checkDestIsEmpty('/' + publisher, dataset)
   t.true(res)
 })
 
 test('checkDestIsEmpty returns true if dir does not exist', t => {
   const tempDirPath = tmpdir.split('/')
   const publisher = tempDirPath[tempDirPath.length - 1]
-  const pkg = 'new'
-  const res = get.checkDestIsEmpty('/' + publisher, pkg)
+  const dataset = 'new'
+  const res = get.checkDestIsEmpty('/' + publisher, dataset)
   t.true(res)
 })
 
@@ -71,10 +71,10 @@ test('downloadFile function works', async t => {
   const bUrl = 'https://bits-staging.datapackaged.com/metadata/publisher/package/_v/latest' + tmpfile
   const path = tmpfile
   const publisher = '/' + tmpdir.split('/')[1]
-  const pkg = 'package'
+  const dataset = 'package'
   const mockBar = {tick: () => {}}
-  await get.downloadFile(bUrl, path, publisher, pkg, mockBar)
-  t.true(fs.existsSync(publisher, pkg, path))
+  await get.downloadFile(bUrl, path, publisher, dataset, mockBar)
+  t.true(fs.existsSync(publisher, dataset, path))
 })
 
 test('get list of download files', t => {

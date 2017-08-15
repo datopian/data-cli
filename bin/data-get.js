@@ -26,11 +26,11 @@ if (argv.help || !argv._[0]) {
   process.exit(0)
 }
 
-const dhpkgid = argv._[0]
+const identifier = argv._[0]
 
 const run = async () => {
   const stopSpinner = wait('Loading...')
-  await get(dhpkgid)
+  await get(identifier)
   stopSpinner()
 }
 
