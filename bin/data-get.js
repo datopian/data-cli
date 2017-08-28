@@ -35,18 +35,18 @@ const run = async () => {
   const stopSpinner = wait('Loading...')
   const start = new Date()
   const dataset = await Dataset.load(identifier)
-  const isEmpty = checkDestIsEmpty(dataset.identifier.owner, dataset.identifier.name)
+  const isEmpty = checkDestIsEmpty(dataset.identifier.owner || '', dataset.identifier.name)
   if (isEmpty) {
     try {
       const allResources = await get(dataset)
       // Save all files on disk
       allResources.forEach(async resource => {
-        await saveIt(dataset.identifier.owner, dataset.identifier.name, resource)
+        await saveIt(dataset.identifier.owner || '', dataset.identifier.name, resource)
       })
       stopSpinner()
       const end = new Date() - start
       console.log(`Time elapsed: ${(end / 1000).toFixed(2)} s`)
-      const savedPath = path.join(dataset.identifier.owner, dataset.identifier.name)
+      const savedPath = path.join(dataset.identifier.owner || '', dataset.identifier.name)
       console.log(`Dataset is saved in "${savedPath}"`)
     } catch (err) {
       stopSpinner()
@@ -63,7 +63,7 @@ const run = async () => {
 
 run()
 
-const saveIt = async (owner = '', name, resource) => {
+const saveIt = async (owner, name, resource) => {
   // We only can save if path is defined
   if (resource.descriptor.path) {
     const destPath = path.join(owner, name, resource.descriptor.path)
@@ -74,7 +74,7 @@ const saveIt = async (owner = '', name, resource) => {
 }
 
 // TODO: Move this somewhere to utils
-const checkDestIsEmpty = (owner = '', name) => {
+const checkDestIsEmpty = (owner, name) => {
   const dest = path.join(owner, name)
   if (!fs.existsSync(dest)) {
     return true
