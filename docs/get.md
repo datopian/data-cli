@@ -1,22 +1,29 @@
-
-# Get a Data Package from DataHub
-
-## Usage:
-
 ```
-$ data get <publisher>/<package>
+$ data get <url>
 ```
 
-## Options
+Get a dataset from the given URL.
+
+URL can be one of:
+
+* dataset in DataHub (e.g., https://datahub.io/core/co2-ppm)
+* dataset in GitHub (e.g., https://github.com/datasets/co2-ppm)
+* direct URL to dataset
+
+## Options:
 
 ```
--h, --help               Output usage information
+-h, --help               Outputs usage information
 ```
 
 ## Example:
 
 ```
-# Downloads the Data Package from DataHub
-# Saves to relative subdirectory {publisher}/{package}
-$ data get core/gdp
+# Get dataset from DataHub
+# Following dataset will be saved in core/co2-ppm
+$ data get https://datahub.io/core/co2-ppm
+
+# From GitHub
+# Following dataset will be saved in datasets/co2-ppm
+$ data get https://github.com/datasets/co2-ppm
 ```
