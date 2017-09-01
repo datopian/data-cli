@@ -71,7 +71,8 @@ const prepareDatasetFromFile = async filePath => {
   const pathParts = path.parse(filePath)
   const file = File.load(pathParts.base, {basePath: pathParts.dir})
 
-  await file.addSchema
+  await file.addSchema()
+  console.log(JSON.stringify(file.descriptor))
   const headers = file.descriptor.schema.fields.map(field => field.name)
   const fieldTypes = file.descriptor.schema.fields.map(field => field.type)
   // Prompt user with headers and fieldTypes
