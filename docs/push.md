@@ -1,22 +1,16 @@
+  ■ data push [PATH]
 
-# Push a Data Package to DataHub
+  `PATH` (optional) is the path to the data file or data package.
 
-## Usage:
+  Options:
 
-```
-$ data push
-```
+  -h, --help               Output usage information
 
-## Options:
+  **Examples**
+   
+  \- Uploads Data Package to DataHub
 
-```
--h, --help               Output usage information
-```
+    ■ data push
 
-## Example:
+  Current working directory should have datapackage.json
 
-```
-# Uploads Data Package to DataHub
-# Current working directory should have datapackage.json
-$ data push
-```
