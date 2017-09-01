@@ -46,7 +46,7 @@ const aliases = new Map([
 let args = process.argv.slice(2)
 
 if (args[0] === '-v' || args[0] === '--version') {
-  console.log(`Version: ${version}`)
+  console.log(`${version}`)
   process.exit()
 }
 
