@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const {File} = require('../lib/utils/data')
+const {File} = require('data.js')
 const {dumpers} = require('../lib/cat')
 
 const resource = File.load('test/fixtures/sample.csv')

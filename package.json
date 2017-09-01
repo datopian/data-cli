@@ -15,7 +15,6 @@
     "lint": "xo --quiet",
     "data": "node bin/data.js",
     "pack": "pkg bin/data.js -c package.json -o packed/datahub",
-    "build": "babel lib -d dist",
     "precommit": "npm run lint && npm run build"
   },
   "xo": {
@@ -34,9 +33,6 @@
     ]
   },
   "ava": {
-    "require": [
-      "babel-core/register"
-    ],
     "failFast": false,
     "files": [
       "test/*test.js"
@@ -76,6 +72,7 @@
     "crypto": "0.0.3",
     "csv-parse": "^1.2.0",
     "csv-string": "^2.3.2",
+    "data.js": "^0.9.3",
     "datapackage": "git+https://github.com/anuveyatsu/datapackage-js-temp.git",
     "datapackage-identifier": "^0.4.2",
     "expand-home-dir": "0.0.3",
@@ -98,7 +95,7 @@
     "progress": "^2.0.0",
     "request": "^2.81.0",
     "request-promise-native": "^1.0.4",
-    "tableschema": "^1.0.0-alpha.11",
+    "tableschema": "1.0.0-alpha.14",
     "tmp": "0.0.31",
     "tv4": "^1.3.0",
     "url-join": "^2.0.2",
@@ -106,11 +103,6 @@
   },
   "devDependencies": {
     "ava": "^0.19.1",
-    "babel-cli": "^6.24.1",
-    "babel-core": "^6.25.0",
-    "babel-plugin-transform-async-to-generator": "^6.24.1",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-node6": "^11.0.0",
     "cross-spawn": "^5.1.0",
     "inquirer-test": "^1.0.5",
     "mocha": "^3.4.1",

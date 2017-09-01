@@ -27,6 +27,6 @@ if (argv.help) {
   process.exit(0)
 }
 
-const pathForDp = argv._[0]
+const pathForDataset = argv._[0]
 
-normalize(pathForDp)
+normalize(pathForDataset)

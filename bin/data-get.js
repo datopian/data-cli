@@ -3,12 +3,15 @@
 // Packages
 const fs = require('fs')
 const path = require('path')
+const mkdirp = require('mkdirp')
 const minimist = require('minimist')
 const {customMarked} = require('../lib/utils/tools.js')
 
 // Ours
+const {Dataset, File} = require('data.js')
 const {get} = require('../lib/get')
 const wait = require('../lib/utils/output/wait')
+const {handleError} = require('../lib/utils/error')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['get'],
@@ -26,12 +29,62 @@ if (argv.help || !argv._[0]) {
   process.exit(0)
 }
 
-const dhpkgid = argv._[0]
+const identifier = argv._[0]
 
 const run = async () => {
   const stopSpinner = wait('Loading...')
-  await get(dhpkgid)
-  stopSpinner()
+  const start = new Date()
+  const dataset = await Dataset.load(identifier)
+  const isEmpty = checkDestIsEmpty(dataset.identifier.owner || '', dataset.identifier.name)
+  if (isEmpty) {
+    try {
+      const allResources = await get(dataset)
+      // Save all files on disk
+      allResources.forEach(async resource => {
+        await saveIt(dataset.identifier.owner || '', dataset.identifier.name, resource)
+      })
+      stopSpinner()
+      const end = new Date() - start
+      console.log(`Time elapsed: ${(end / 1000).toFixed(2)} s`)
+      const savedPath = path.join(dataset.identifier.owner || '', dataset.identifier.name)
+      console.log(`Dataset is saved in "${savedPath}"`)
+    } catch (err) {
+      stopSpinner()
+      handleError(err)
+      if (argv.debug) {
+        console.log('> [debug]\n' + err.stack)
+      }
+      process.exit(1)
+    }
+  } else { // If dest is not empty then error
+    throw new Error(`${dataset.identifier.owner}/${dataset.identifier.name} is not empty!`)
+  }
 }
 
 run()
+
+const saveIt = async (owner, name, resource) => {
+  // We only can save if path is defined
+  if (resource.descriptor.path) {
+    const destPath = path.join(owner, name, resource.descriptor.path)
+    mkdirp.sync(path.dirname(destPath))
+    const stream = await resource.stream()
+    stream.pipe(fs.createWriteStream(destPath))
+  }
+}
+
+// TODO: Move this somewhere to utils
+const checkDestIsEmpty = (owner, name) => {
+  const dest = path.join(owner, name)
+  if (!fs.existsSync(dest)) {
+    return true
+  }
+  if (fs.readdirSync(dest).length === 0) {
+    return true
+  }
+  return false
+}
+
+module.exports = {
+  checkDestIsEmpty
+}

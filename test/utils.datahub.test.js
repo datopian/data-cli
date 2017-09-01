@@ -3,7 +3,7 @@ const nock = require('nock')
 const urljoin = require('url-join')
 
 const {DataHub} = require('../lib/utils/datahub.js')
-const {Dataset} = require('../lib/utils/data.js')
+const {Dataset} = require('data.js')
 
 test('Can instantiate DataHub', t => {
   const apiUrl = 'https://apifix.datahub.io'
@@ -200,16 +200,16 @@ const apiSpecStore2 = nock(config.api, {
   })
 
 test('push works with packaged dataset', async t => {
-  const pkg = await Dataset.load('test/fixtures/dp-no-resources')
-  await datahub.push(pkg)
+  const dataset = await Dataset.load('test/fixtures/dp-no-resources')
+  await datahub.push(dataset)
 
   t.is(rawstoreAuthorize.isDone(), true)
   t.is(rawstoreStorageMock.isDone(), true)
   t.is(apiSpecStore.isDone(), true)
   t.is(authorizeForServices.isDone(), true)
 
-  // TODO: make sure we have not altered the pkg.resources object in any way
-  t.is(pkg.resources.length, 0)
+  // TODO: make sure we have not altered the dataset.resources object in any way
+  t.is(dataset.resources.length, 0)
 })
 
 test('push works with virtual package', async t => {
@@ -218,21 +218,21 @@ test('push works with virtual package', async t => {
     title: 'DP with No Resources',
     resources: []
   }
-  const pkg = await Dataset.load(descriptor)
-  await datahub.push(pkg)
+  const dataset = await Dataset.load(descriptor)
+  await datahub.push(dataset)
 
   t.is(rawstoreAuthorize.isDone(), true)
   t.is(rawstoreStorageMock.isDone(), true)
   t.is(apiSpecStore.isDone(), true)
   t.is(authorizeForServices.isDone(), true)
 
-  // TODO: make sure we have not altered the pkg.resources object in any way
-  t.is(pkg.resources.length, 0)
+  // TODO: make sure we have not altered the dataset.resources object in any way
+  t.is(dataset.resources.length, 0)
 })
 
 test('push works with package with resource', async t => {
-  const pkg = await Dataset.load('test/fixtures/finance-vix')
-  await datahub.push(pkg)
+  const dataset = await Dataset.load('test/fixtures/finance-vix')
+  await datahub.push(dataset)
 
   t.is(rawstoreAuthorize2.isDone(), true)
   t.is(rawstoreStorageMock.isDone(), true)
