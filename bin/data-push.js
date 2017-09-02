@@ -6,6 +6,7 @@ const minimist = require('minimist')
 const urljoin = require('url-join')
 const inquirer = require('inquirer')
 const hri = require('human-readable-ids').hri
+const {Dataset, File} = require('data.js')
 
 // Ours
 const config = require('../lib/utils/config')
@@ -13,7 +14,9 @@ const {customMarked} = require('../lib/utils/tools.js')
 const {handleError} = require('../lib/utils/error')
 const wait = require('../lib/utils/output/wait')
 const {DataHub} = require('../lib/utils/datahub.js')
-const {Dataset, File} = require('data.js')
+const {authenticate} = require('../lib/login')
+const info = require('../lib/utils/output/info.js')
+
 
 const argv = minimist(process.argv.slice(2), {
   string: ['push'],
@@ -33,6 +36,20 @@ if (argv.help) {
 
 Promise.resolve().then(async () => {
   let stopSpinner = () => {}
+  // First check if user is authenticated
+  const apiUrl = config.get('api')
+  const token = config.get('token')
+  let out
+  try {
+    out = await authenticate(apiUrl, token)
+  } catch (err) {
+    handleError(err)
+    process.exit(1)
+  }
+  if (!out.authenticated) {
+    info('You need to login in order to push your data. Please, use `data login` command.')
+    process.exit(0)
+  }
   try {
     const filePath = argv._[0] || process.cwd()
     let dataset
