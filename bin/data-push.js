@@ -7,6 +7,7 @@ const urljoin = require('url-join')
 const inquirer = require('inquirer')
 const hri = require('human-readable-ids').hri
 const {Dataset, File} = require('data.js')
+const { write: copyToClipboard } = require('clipboardy')
 
 // Ours
 const config = require('../lib/utils/config')
@@ -72,8 +73,9 @@ Promise.resolve().then(async () => {
 
     stopSpinner()
     const message = '🙌  your data is published!\n'
-    const url = '🔗  ' + urljoin(config.get('domain'), config.get('profile').username, dataset.descriptor.name)
-    console.log(message + url)
+    const url = urljoin(config.get('domain'), config.get('profile').username, dataset.descriptor.name)
+    await copyToClipboard(url)
+    console.log(message + '🔗  ' + url + ' (copied to clipboard)')
   } catch (err) {
     stopSpinner()
     handleError(err)
