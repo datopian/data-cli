@@ -38,14 +38,14 @@ test('"data -v --version" prints version', async t => {
   t.is(result.code, 0)
   let stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[0].includes(`Version: ${version}`))
+  t.true(stdout[0].includes(`${version}`))
 
   result = await runcli('--version')
 
   t.is(result.code, 0)
   stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[0].includes(`Version: ${version}`))
+  t.true(stdout[0].includes(`${version}`))
 })
 
 test('"data help" prints help message', async t => {
@@ -55,19 +55,6 @@ test('"data help" prints help message', async t => {
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
   t.true(stdout[1].includes('  ❒ data [options] <command> <args>'))
-})
-
-// Push
-
-// bit pointless as a test but more elaborate testing requires
-// a lot of mocking and we mock the core parts.
-test('"data push -h --help" prints help message for push command', async t => {
-  const result = await runcli('push', '-h')
-
-  t.is(result.code, 0)
-  const stdout = result.stdout.split('\n')
-  t.true(stdout.length > 1)
-  t.true(stdout[1].includes('Push a Data Package to DataHub'))
 })
 
 // TODO: reinstate this once we figure out what does not work
