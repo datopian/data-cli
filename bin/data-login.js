@@ -66,12 +66,11 @@ Promise.resolve().then(async () => {
   ])
   const authUrl = out.providers[result.loginProvider].url
   info('Opening browser and waiting for you to authenticate online')
-  let msg
   try {
-    msg = await login(apiUrl, authUrl)
+    await login(apiUrl, authUrl)
   } catch (err) {
     handleError(err)
   }
-  info(msg)
+  info('You are logged in!')
   process.exit(0)
 })
