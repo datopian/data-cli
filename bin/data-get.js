@@ -8,7 +8,7 @@ const minimist = require('minimist')
 const {customMarked} = require('../lib/utils/tools.js')
 
 // Ours
-const {Dataset, File} = require('data.js')
+const {Dataset, File, isDataset} = require('data.js')
 const {get} = require('../lib/get')
 const wait = require('../lib/utils/output/wait')
 const {handleError} = require('../lib/utils/error')
@@ -34,31 +34,41 @@ const identifier = argv._[0]
 const run = async () => {
   const stopSpinner = wait('Loading...')
   const start = new Date()
-  const dataset = await Dataset.load(identifier)
-  const isEmpty = checkDestIsEmpty(dataset.identifier.owner || '', dataset.identifier.name)
-  if (isEmpty) {
-    try {
-      const allResources = await get(dataset)
-      // Save all files on disk
-      allResources.forEach(async resource => {
-        await saveIt(dataset.identifier.owner || '', dataset.identifier.name, resource)
-      })
-      stopSpinner()
-      const end = new Date() - start
-      console.log(`Time elapsed: ${(end / 1000).toFixed(2)} s`)
-      const savedPath = path.join(dataset.identifier.owner || '', dataset.identifier.name)
-      console.log(`Dataset is saved in "${savedPath}"`)
-    } catch (err) {
-      stopSpinner()
-      handleError(err)
-      if (argv.debug) {
-        console.log('> [debug]\n' + err.stack)
+  let savedPath
+  const itIsDataset = isDataset(identifier)
+  if (itIsDataset) {
+    const dataset = await Dataset.load(identifier)
+    const isEmpty = checkDestIsEmpty(dataset.identifier.owner || '', dataset.identifier.name)
+    if (isEmpty) {
+      try {
+        const allResources = await get(dataset)
+        // Save all files on disk
+        allResources.forEach(async resource => {
+          await saveIt(dataset.identifier.owner || '', dataset.identifier.name, resource)
+        })
+        savedPath = path.join(dataset.identifier.owner || '', dataset.identifier.name)
+      } catch (err) {
+        stopSpinner()
+        handleError(err)
+        if (argv.debug) {
+          console.log('> [debug]\n' + err.stack)
+        }
+        process.exit(1)
       }
-      process.exit(1)
+    } else { // If dest is not empty then error
+      throw new Error(`${dataset.identifier.owner}/${dataset.identifier.name} is not empty!`)
     }
-  } else { // If dest is not empty then error
-    throw new Error(`${dataset.identifier.owner}/${dataset.identifier.name} is not empty!`)
+  } else {
+    const file = await File.load(identifier)
+    const destPath = [file.descriptor.name, file.descriptor.format].join('.')
+    const stream = await file.stream()
+    stream.pipe(fs.createWriteStream(destPath))
+    savedPath = destPath
   }
+  stopSpinner()
+  const end = new Date() - start
+  console.log(`Time elapsed: ${(end / 1000).toFixed(2)} s`)
+  console.log(`Dataset/file is saved in "${savedPath}"`)
 }
 
 run()
