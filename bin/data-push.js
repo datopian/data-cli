@@ -21,8 +21,8 @@ const info = require('../lib/utils/output/info.js')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['push'],
-  boolean: ['help', 'debug'],
-  alias: {help: 'h'}
+  boolean: ['help', 'debug', 'interactive'],
+  alias: {help: 'h', interactive: 'i'}
 })
 
 const pushMarkdown = fs.readFileSync(path.join(__dirname, '../docs/push.md'), 'utf8')
@@ -93,13 +93,15 @@ const prepareDatasetFromFile = async filePath => {
   await file.addSchema()
   const headers = file.descriptor.schema.fields.map(field => field.name)
   const fieldTypes = file.descriptor.schema.fields.map(field => field.type)
-  // Prompt user with headers and fieldTypes
-  const questions = [ask('headers', headers), ask('types', fieldTypes)]
-  const answers = await inquirer.prompt(questions)
+  if (argv.interactive) {
+    // Prompt user with headers and fieldTypes
+    const questions = [ask('headers', headers), ask('types', fieldTypes)]
+    const answers = await inquirer.prompt(questions)
 
-  if (answers.headers === 'n' & answers.types === 'n') {
-    // Maybe nicer exit - user has chosen not to proceed for now ...
-    throw new Error('Please, generate datapackage.json and push.')
+    if (answers.headers === 'n' & answers.types === 'n') {
+      // Maybe nicer exit - user has chosen not to proceed for now ...
+      throw new Error('Please, generate datapackage.json and push.')
+    }
   }
 
   let dpName = pathParts.name.replace(/\s+/g, '-').toLowerCase()
