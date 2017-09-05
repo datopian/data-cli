@@ -57,17 +57,6 @@ test('"data help" prints help message', async t => {
   t.true(stdout[1].includes('  ❒ data [options] <command> <args>'))
 })
 
-// TODO: reinstate this once we figure out what does not work
-// eslint-disable-next-line ava/no-skip-test
-test.skip('"data info core/co2-ppm" command prints out readme and resource list', async t => {
-  const result = await runcli('info', 'test/fixtures/core/co2-ppm')
-  t.is(result.code, 0)
-  const stdout = result.stdout.split('\n')
-  t.true(stdout.length > 1)
-  t.true(stdout[5].includes('CO2 PPM'))
-  t.true(stdout[17].includes('co2-annmean-mlo'))
-})
-
 module.exports = {
   runcli
 }

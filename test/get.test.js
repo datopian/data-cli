@@ -34,6 +34,8 @@ test('get function', async t => {
   t.is(res.length, 3)
 })
 
+// =====================
+// CLI tests
 test('get command with dataset', async t => {
   const identifier = 'test/fixtures/finance-vix'
   const result = await runcli('get', identifier)
