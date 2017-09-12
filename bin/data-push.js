@@ -21,7 +21,7 @@ const info = require('../lib/utils/output/info.js')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['push'],
-  boolean: ['help', 'debug', 'interactive'],
+  boolean: ['help', 'debug', 'interactive', 'published'],
   alias: {help: 'h', interactive: 'i'}
 })
 
@@ -69,7 +69,10 @@ Promise.resolve().then(async () => {
       ownerid: config.get('profile').id,
       owner: config.get('profile').username
     })
-    await datahub.push(dataset)
+    const options = {
+      findability: argv.published ? 'published' : 'unlisted'
+    }
+    await datahub.push(dataset, options)
 
     stopSpinner()
     const message = '🙌  your data is published!\n'

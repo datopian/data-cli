@@ -201,7 +201,8 @@ const apiSpecStore2 = nock(config.api, {
 
 test('push works with packaged dataset', async t => {
   const dataset = await Dataset.load('test/fixtures/dp-no-resources')
-  await datahub.push(dataset)
+  const options = {findability: 'unlisted'}
+  await datahub.push(dataset, options)
 
   t.is(rawstoreAuthorize.isDone(), true)
   t.is(rawstoreStorageMock.isDone(), true)
@@ -219,7 +220,8 @@ test('push works with virtual package', async t => {
     resources: []
   }
   const dataset = await Dataset.load(descriptor)
-  await datahub.push(dataset)
+  const options = {findability: 'unlisted'}
+  await datahub.push(dataset, options)
 
   t.is(rawstoreAuthorize.isDone(), true)
   t.is(rawstoreStorageMock.isDone(), true)
@@ -232,7 +234,8 @@ test('push works with virtual package', async t => {
 
 test('push works with package with resource', async t => {
   const dataset = await Dataset.load('test/fixtures/finance-vix')
-  await datahub.push(dataset)
+  const options = {findability: 'unlisted'}
+  await datahub.push(dataset, options)
 
   t.is(rawstoreAuthorize2.isDone(), true)
   t.is(rawstoreStorageMock.isDone(), true)
