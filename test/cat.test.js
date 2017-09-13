@@ -1,39 +1,34 @@
 const test = require('ava')
 
 const {File} = require('data.js')
-const {dumpers} = require('../lib/cat')
+const {writers} = require('../lib/cat')
 const {runcli} = require('./cli.test.js')
+const {streamToString} = require('../lib/utils/stream')
 
 const resource = File.load('test/fixtures/sample.csv')
 
+
 test('dumpAscii works', async t => {
-  const out = await dumpers.ascii(resource)
+  const stream = await writers.ascii(resource)
+  const out = await streamToString(stream)
   t.true(out.includes('number'))
 })
 
 test('dumpCsv works', async t => {
-  const out = await dumpers.csv(resource)
+  const stream = await writers.csv(resource)
+  const out = await streamToString(stream)
   t.true(out.includes('number,string,boolean'))
 })
 
 test('dumpMarkdown works', async t => {
-  const out = await dumpers.md(resource)
+  const stream = await writers.md(resource)
+  const out = await streamToString(stream)
   t.true(out.includes('| number | string | boolean |'))
 })
 
 test('dumpXlsx works', async t => {
-  // Xlsx dumper returns a sheet
-  const out = await dumpers.xlsx(resource)
-  t.is(out['!ref'], 'A1:C3')
-  t.deepEqual(out.A1, {t: 's', v: 'number'})
+  const stream = await writers.xlsx(resource)
+  const out = await streamToString(stream)
+  t.true(out.includes('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'))
 })
 
-// =====================
-// CLI tests
-test('cat command with a xlsx file and default output', async t => {
-  const identifier = 'test/fixtures/sample.xlsx'
-  const result = await runcli('cat', identifier)
-  const stdout = result.stdout.split('\n')
-  t.true(stdout[1].includes('boolean'))
-  t.true(stdout[5].includes('four'))
-})

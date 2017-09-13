@@ -69,7 +69,7 @@
     "cli-table": "^0.3.1",
     "clipboardy": "^1.1.4",
     "csv-parse": "^1.2.0",
-    "csv-string": "^2.3.2",
+    "csv-stringify": "^1.0.4",
     "data.js": "^0.9.5",
     "datapackage": "git+https://github.com/anuveyatsu/datapackage-js-temp.git",
     "form-data": "^2.2.0",
