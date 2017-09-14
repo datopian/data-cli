@@ -15,7 +15,7 @@
 
     Data Package specific:
 
-      normalize                 Normalize datapackage.json
+      normalize   [path]        Normalize datapackage.json according to the specification
       validate                  Validate Data Package structure
 
     Administrative:
@@ -32,15 +32,15 @@
 
   Push a Data Package (in the current directory)
 
-      $ data push
+      ■ data push
 
   Get a Data Package from the DataHub owned by `core` and with name `finance-vix`
 
-      $ data get core/finance-vix/
+      ■ data get core/finance-vix/
 
   Get a Data Package on github
 
-      $ data get https://github.com/datasets/gdp
+      ■ data get https://github.com/datasets/gdp
 
 
   **About**

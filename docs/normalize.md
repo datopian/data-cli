@@ -1,28 +1,26 @@
 
-#  Normalize a descriptor (datapackage.json)
+  **Usage**
 
-## Usage:
+  ■ data norm[alize] [path]
+    
+  `PATH` (optional) is the path to the data file or data package.
 
-```
-# Normalize a datapackage.json
-$ data norm[alize] [path]
-```
+  Options:
 
-## Options:
+  -h, --help               Output usage information
 
-```
--h, --help               Output usage information
-```
+  **Examples**
 
-## Example:
+  \- Normalize a descriptor and data in current working directory:
 
-```
-# Normalize a descriptor in current working directory:
-$ data normalize
+    ■ data normalize
+  
+  \- Normalize descriptor and data with local path to datapackage.json:
 
-# Normalize descriptor with local path to datapackage.json:
-$ data normalize core/finance-vix/datapackage.json
+    ■ data normalize core/finance-vix/datapackage.json
+    
+  \- Normalize descriptor and data with path to Data Package directory:
 
-# Normalize descriptor with path to Data Package directory:
-$ data normalize core/finance-vix
-```
+    ■ data normalize core/finance-vix
+
+
