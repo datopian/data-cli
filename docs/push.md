@@ -19,4 +19,4 @@
 
     ■ data push core/finance-vix/
   
-  Working directory should have datapackage.json
+  core/finance-vix/ should have datapackage.json
