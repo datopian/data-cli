@@ -3,12 +3,11 @@ const fs = require('fs')
 const path = require('path')
 
 const minimist = require('minimist')
-const XLSX = require('xlsx')
 
 // Ours
 const {customMarked} = require('../lib/utils/tools.js')
 const {File} = require('data.js')
-const {dumpers} = require('../lib/cat')
+const {writers} = require('../lib/cat')
 const info = require('../lib/utils/output/info.js')
 
 const argv = minimist(process.argv.slice(2), {
@@ -29,42 +28,42 @@ if (argv.help) {
 
 const pathParts = argv._[0] ? path.parse(argv._[0]) : {name: null}
 
-const outFileExt = argv._[1] ? path.extname(argv._[1]) : ''
+let outFileExt, outFormat
+if (argv._[1] && argv._[1] !== 'stdout') {
+  outFileExt = path.extname(argv._[1]) || '.noext'
+  outFormat = outFileExt.slice(1)
+} else {
+  outFormat = 'ascii'
+}
+
+const writersDatabase = {
+  ascii: writers.ascii,
+  csv: writers.csv,
+  xlsx: writers.xlsx,
+  md: writers.md
+}
 
 const dumpIt = async (res) => {
-  if (!argv._[1] || argv._[1] === 'stdout') {
-    const out = await dumpers.ascii(res)
-    console.log(out)
-  } else if (outFileExt === '.csv') {
-    const out = await dumpers.csv(res)
-    fs.writeFileSync(argv._[1], out)
-    info(`Your data is saved in ${argv._[1]}`)
-  } else if (outFileExt === '.md') {
-    const out = await dumpers.md(res)
-    fs.writeFileSync(argv._[1], out)
-    info(`Your data is saved in ${argv._[1]}`)
-  } else if (outFileExt === '.xlsx') {
-    const out = await dumpers.xlsx(res)
-    const wb = {SheetNames: ['sheet'], Sheets: {sheet: out}}
-    XLSX.writeFile(wb, argv._[1])
-    info(`Your data is saved in ${argv._[1]}`)
+  let stream
+  if (outFormat in writersDatabase) {
+    stream = await writersDatabase[outFormat](res)
+    if (outFormat === 'ascii') { // Write to stdout
+      stream.pipe(process.stdout)
+    } else { // Write to file
+      const writeStream = fs.createWriteStream(argv._[1], {flags : 'w'})
+      stream.pipe(writeStream)
+      writeStream.on('close', () => {
+        info(`All done! Your data is saved in "${argv._[1]}"`)
+      })
+    }
   } else {
-    info('Wrong output argument. Please, run "data cat --help" for usage information.')
+    info(`Sorry, provided output format is not supported.`)
   }
 }
 
-let pipedData = ''
 if (pathParts.name === '_' || (!pathParts.name && process.stdin.constructor.name === 'Socket')) {
-  process.stdin.on('readable', () => {
-    const chunk = process.stdin.read()
-    if (chunk !== null) {
-      pipedData += chunk
-    }
-   })
-
-  process.stdin.on('end', () => {
-    dumpIt(pipedData)
-  })
+  // TODO: atm, it is just passing stdin to stout. Fix it to process stdin to available writers.
+  process.stdin.pipe(process.stdout)
 } else if (pathParts.name) {
   const res = File.load(argv._[0])
   dumpIt(res)
