@@ -7,6 +7,7 @@ const {customMarked} = require('../lib/utils/tools.js')
 
 const data = require('data.js')
 const info = require('../lib/info')
+const {handleError} = require('../lib/utils/error')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['info'],
@@ -27,14 +28,19 @@ if (argv.help) {
 const fileOrDatasetIdentifier = argv._[0] ? argv._[0] : './'
 
 Promise.resolve().then(async () => {
-  const isdataset = data.isDataset(fileOrDatasetIdentifier)
-  if (isdataset) {
-    const dataset = await data.Dataset.load(fileOrDatasetIdentifier)
-    const out = info.infoPackage(dataset)
-    console.log(customMarked(out))
-  } else {
-    const file = data.File.load(fileOrDatasetIdentifier)
-    const out = await info.infoResource(file)
-    console.log(out)
+  try {
+    const isdataset = data.isDataset(fileOrDatasetIdentifier)
+    if (isdataset) {
+      const dataset = await data.Dataset.load(fileOrDatasetIdentifier)
+      const out = info.infoPackage(dataset)
+      console.log(customMarked(out))
+    } else {
+      const file = data.File.load(fileOrDatasetIdentifier)
+      const out = await info.infoResource(file)
+      console.log(out)
+    }
+  } catch (err) {
+    handleError(err)
+    process.exit(1)
   }
 })
