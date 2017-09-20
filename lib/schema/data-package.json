@@ -8,12 +8,12 @@
   ],
   "properties": {
     "profile": {
+      "default": "data-package",
       "propertyOrder": 10,
       "title": "Profile",
       "description": "The profile of this descriptor.",
-      "context": "Every Package and Resource descriptor has a profile. The default profile, if none is declared, is `default`. The namespace for the profile is the type of descriptor, so, `default` for a Package descriptor is not the same as `default` for a Resource descriptor.",
+      "context": "Every Package and Resource descriptor has a profile. The default profile, if none is declared, is `data-package` for Package and `data-resource` for Resource.",
       "type": "string",
-      "default": "default",
       "examples": [
         "{\n  \"profile\": \"tabular-data-package\"\n}\n",
         "{\n  \"profile\": \"http://example.com/my-profiles-json-schema.json\"\n}\n"
@@ -91,14 +91,12 @@
         "title": "Contributor",
         "description": "A contributor to this descriptor.",
         "properties": {
-          "name": {
-            "title": "Name",
-            "description": "An identifier string. Lower case characters with `.`, `_`, `-` and `/` are allowed.",
+          "title": {
+            "title": "Title",
+            "description": "A human-readable title.",
             "type": "string",
-            "pattern": "^([-a-z0-9._/])+$",
-            "context": "This is ideally a url-usable and human-readable name. Name `SHOULD` be invariant, meaning it `SHOULD NOT` change when its parent descriptor is updated.",
             "examples": [
-              "{\n  \"name\": \"my-nice-name\"\n}\n"
+              "{\n  \"title\": \"My Package Title\"\n}\n"
             ]
           },
           "path": {
@@ -121,7 +119,7 @@
             ]
           },
           "organisation": {
-            "title": "Organisation",
+            "title": "Organization",
             "description": "An organizational affiliation for this contributor.",
             "type": "string"
           },
@@ -133,17 +131,18 @@
               "maintainer",
               "wrangler",
               "contributor"
-            ]
+            ],
+            "default": "contributor"
           }
         },
         "required": [
-          "name"
+          "title"
         ],
         "context": "Use of this property does not imply that the person was the original creator of, or a contributor to, the data in the descriptor, but refers to the composition of the descriptor itself."
       },
       "examples": [
-        "{\n  \"contributors\": [\n    {\n      \"name\": \"Joe Bloggs\"\n    }\n  ]\n}\n",
-        "{\n  \"contributors\": [\n    {\n      \"name\": \"Joe Bloggs\",\n      \"email\": \"joe@example.com\",\n      \"role\": \"author\"\n    }\n  ]\n}\n"
+        "{\n  \"contributors\": [\n    {\n      \"title\": \"Joe Bloggs\"\n    }\n  ]\n}\n",
+        "{\n  \"contributors\": [\n    {\n      \"title\": \"Joe Bloggs\",\n      \"email\": \"joe@example.com\",\n      \"role\": \"author\"\n    }\n  ]\n}\n"
       ]
     },
     "keywords": {
@@ -159,8 +158,18 @@
         "{\n  \"keywords\": [\n    \"data\",\n    \"fiscal\",\n    \"transparency\"\n  ]\n}\n"
       ]
     },
-    "licenses": {
+    "image": {
       "propertyOrder": 100,
+      "title": "Image",
+      "description": "A image to represent this package.",
+      "type": "string",
+      "examples": [
+        "{\n  \"image\": \"http://example.com/image.jpg\"\n}\n",
+        "{\n  \"image\": \"relative/to/image.jpg\"\n}\n"
+      ]
+    },
+    "licenses": {
+      "propertyOrder": 110,
       "title": "Licenses",
       "description": "The license(s) under which this package is published.",
       "type": "array",
@@ -171,14 +180,10 @@
         "type": "object",
         "properties": {
           "name": {
-            "title": "Name",
-            "description": "An identifier string. Lower case characters with `.`, `_`, `-` and `/` are allowed.",
+            "title": "Open Definition license identifier",
+            "description": "MUST be an Open Definition license identifier, see http://licenses.opendefinition.org/",
             "type": "string",
-            "pattern": "^([-a-z0-9._/])+$",
-            "context": "This is ideally a url-usable and human-readable name. Name `SHOULD` be invariant, meaning it `SHOULD NOT` change when its parent descriptor is updated.",
-            "examples": [
-              "{\n  \"name\": \"my-nice-name\"\n}\n"
-            ]
+            "pattern": "^([-a-zA-Z0-9._])+$"
           },
           "path": {
             "title": "Path",
@@ -207,7 +212,7 @@
       ]
     },
     "resources": {
-      "propertyOrder": 110,
+      "propertyOrder": 120,
       "title": "Data Resources",
       "description": "An `array` of Data Resource objects, each compliant with the [Data Resource](/data-resource/) specification.",
       "type": "array",
@@ -216,18 +221,28 @@
         "title": "Data Resource",
         "description": "Data Resource.",
         "type": "object",
-        "required": [
-          "name",
-          "path"
+        "oneOf": [
+          {
+            "required": [
+              "name",
+              "data"
+            ]
+          },
+          {
+            "required": [
+              "name",
+              "path"
+            ]
+          }
         ],
         "properties": {
           "profile": {
             "propertyOrder": 10,
+            "default": "data-resource",
             "title": "Profile",
             "description": "The profile of this descriptor.",
-            "context": "Every Package and Resource descriptor has a profile. The default profile, if none is declared, is `default`. The namespace for the profile is the type of descriptor, so, `default` for a Package descriptor is not the same as `default` for a Resource descriptor.",
+            "context": "Every Package and Resource descriptor has a profile. The default profile, if none is declared, is `data-package` for Package and `data-resource` for Resource.",
             "type": "string",
-            "default": "default",
             "examples": [
               "{\n  \"profile\": \"tabular-data-package\"\n}\n",
               "{\n  \"profile\": \"http://example.com/my-profiles-json-schema.json\"\n}\n"
@@ -390,14 +405,10 @@
               "type": "object",
               "properties": {
                 "name": {
-                  "title": "Name",
-                  "description": "An identifier string. Lower case characters with `.`, `_`, `-` and `/` are allowed.",
+                  "title": "Open Definition license identifier",
+                  "description": "MUST be an Open Definition license identifier, see http://licenses.opendefinition.org/",
                   "type": "string",
-                  "pattern": "^([-a-z0-9._/])+$",
-                  "context": "This is ideally a url-usable and human-readable name. Name `SHOULD` be invariant, meaning it `SHOULD NOT` change when its parent descriptor is updated.",
-                  "examples": [
-                    "{\n  \"name\": \"my-nice-name\"\n}\n"
-                  ]
+                  "pattern": "^([-a-zA-Z0-9._])+$"
                 },
                 "path": {
                   "title": "Path",
