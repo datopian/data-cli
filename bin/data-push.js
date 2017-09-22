@@ -92,12 +92,14 @@ Promise.resolve().then(async () => {
 const prepareDatasetFromFile = async filePath => {
   const pathParts = path.parse(filePath)
   const file = File.load(pathParts.base, {basePath: pathParts.dir})
-  if (file.format === 'csv') {
+  // List of formats that are known as tabular
+  const knownTabularFormats = ['csv', 'tsv', 'dsv', 'xlsx', 'xls']
+  if (knownTabularFormats.includes(file.descriptor.format)) {
     await file.addSchema()
-    const headers = file.descriptor.schema.fields.map(field => field.name)
-    const fieldTypes = file.descriptor.schema.fields.map(field => field.type)
     if (argv.interactive) {
       // Prompt user with headers and fieldTypes
+      const headers = file.descriptor.schema.fields.map(field => field.name)
+      const fieldTypes = file.descriptor.schema.fields.map(field => field.type)
       const questions = [ask('headers', headers), ask('types', fieldTypes)]
       const answers = await inquirer.prompt(questions)
 
