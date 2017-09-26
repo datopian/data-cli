@@ -29,7 +29,8 @@ const datahub = new DataHub({apiUrl: config.api, token: config.token, ownerid: c
 
 const dpinfo = {
   md5: 'm84YSonibUrw5Mg8QbCNHA==',
-  length: 72
+  length: 72,
+  name: 'datapackage.json'
 }
 
 const finVixInfo = {
@@ -180,7 +181,8 @@ const apiSpecStore2 = nock(config.api, {
       version: 1,
       ownerid: config.profile.id,
       owner: config.profile.username,
-      dataset: 'finance-vix'
+      dataset: 'finance-vix',
+      findability: 'unlisted'
     },
     inputs: [
       {
