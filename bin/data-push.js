@@ -6,8 +6,10 @@ const minimist = require('minimist')
 const urljoin = require('url-join')
 const inquirer = require('inquirer')
 const hri = require('human-readable-ids').hri
-const {Dataset, File} = require('data.js')
+const {Dataset, File, xlsxParser} = require('data.js')
 const { write: copyToClipboard } = require('clipboardy')
+const toArray = require('stream-to-array')
+const infer = require('tableschema').infer
 
 // Ours
 const config = require('../lib/utils/config')
@@ -95,7 +97,12 @@ const prepareDatasetFromFile = async filePath => {
   // List of formats that are known as tabular
   const knownTabularFormats = ['csv', 'tsv', 'dsv', 'xlsx', 'xls']
   if (knownTabularFormats.includes(file.descriptor.format)) {
-    await file.addSchema()
+    if (['xlsx', 'xls'].includes(file.descriptor.format)) {
+      const rows = await toArray(await xlsxParser(file, false, 0))
+      file.descriptor.schema = await infer(rows)
+    } else {
+      await file.addSchema()
+    }
     if (argv.interactive) {
       // Prompt user with headers and fieldTypes
       const headers = file.descriptor.schema.fields.map(field => field.name)

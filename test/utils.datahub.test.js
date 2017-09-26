@@ -1,9 +1,10 @@
+const path = require('path')
 const test = require('ava')
 const nock = require('nock')
 const urljoin = require('url-join')
+const {Dataset, File} = require('data.js')
 
-const {DataHub} = require('../lib/utils/datahub.js')
-const {Dataset} = require('data.js')
+const {DataHub, processExcelSheets} = require('../lib/utils/datahub.js')
 
 test('Can instantiate DataHub', t => {
   const apiUrl = 'https://apifix.datahub.io'
@@ -241,4 +242,21 @@ test('push works with package with resource', async t => {
   t.is(rawstoreStorageMock.isDone(), true)
   t.is(apiSpecStore2.isDone(), true)
   t.is(authorizeForServices.isDone(), true)
+})
+
+// processExcelSheets function
+test('processExcelSheets function works', async t => {
+  const filePath = 'test/fixtures/sample-2sheets.xlsx'
+  const pathParts = path.parse(filePath)
+  const file = File.load(pathParts.base, {basePath: pathParts.dir})
+  const metadata = {
+    name: 'test',
+    resources: []
+  }
+  const dataset = await Dataset.load(metadata)
+  dataset.addResource(file)
+  const processing = await processExcelSheets(dataset.resources)
+  t.is(processing[0].input, 'sample-2sheets')
+  t.is(processing[0].output, 'sample-2sheets-sheet-2')
+  t.is(processing[0].schema.fields[0].name, 'header4')
 })
