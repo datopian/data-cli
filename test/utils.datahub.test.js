@@ -152,7 +152,8 @@ const apiSpecStore = nock(config.api, {
     version: 1,
     ownerid: config.profile.id,
     owner: config.profile.username,
-    dataset: 'dp-no-resources'
+    dataset: 'dp-no-resources',
+    findability: 'unlisted'
   },
   inputs: [
     {
