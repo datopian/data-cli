@@ -26,6 +26,7 @@ const commands = new Set([
   'help',
   'get',
   'push',
+  'push-flow',
   'normalize',
   'norm',
   'validate',
