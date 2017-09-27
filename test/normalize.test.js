@@ -45,6 +45,9 @@ const dp = {
   contributors: [
     {
       name: 'contributor-name'
+    },
+    {
+      email: 'test@gmail.com'
     }
   ]
 }
@@ -91,11 +94,17 @@ test('checks normalized all properties', t => {
     ],
     contributors: [
       {
+        name: 'contributor-name',
         title: 'contributor-name'
       },
       {
+        email: 'test@gmail.com',
+        title: ''      
+      },
+      {
         title: 'Mikane'
-      }
+      },
+    
     ]
   }
   t.deepEqual(res, exp)
