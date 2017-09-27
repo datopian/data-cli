@@ -203,6 +203,57 @@ const apiSpecStore2 = nock(config.api, {
     errors: []
   })
 
+const apiSpecStore3 = nock(config.api, {
+  reqheaders: {
+    'Auth-Token': 'authz.token'
+  }
+})
+  .persist()
+  .post('/source/upload', {
+    meta: {
+      version: 1,
+      ownerid: 'testid',
+      owner: 'test',
+      dataset: 'finance-vix',
+      findability: 'published'
+    },
+    inputs: [
+      {
+        kind: 'datapackage',
+        url: 'http:/testing.com/.datahub/datapackage.json',
+        parameters: {
+          'resource-mapping': {
+            'vix-daily': 'http:/testing.com/vixcurrent.csv'
+          }
+        }
+      }
+    ],
+    processing: [
+      {
+        input: 'vix-daily',
+        tabulator: {
+          skip_rows: 2,
+          headers: [
+            'Date',
+            'VIXOpen',
+            'VIXHigh',
+            'VIXLow',
+            'VIXClose'
+          ],
+        },
+        output: 'vix-daily'
+      }
+    ],
+    schedule: {
+      crontab: '0 0 * * *'
+    }
+  })
+  .reply(200, {
+    success: true,
+    id: 'test',
+    errors: []
+  })
+
 test('push works with packaged dataset', async t => {
   const dataset = await Dataset.load('test/fixtures/dp-no-resources')
   const options = {findability: 'unlisted'}
@@ -215,6 +266,11 @@ test('push works with packaged dataset', async t => {
 
   // TODO: make sure we have not altered the dataset.resources object in any way
   t.is(dataset.resources.length, 0)
+})
+
+test('push-flow works', async t => {
+  await datahub.pushFlow('test/fixtures/finance-vix/.datahub/flow.yaml')
+  t.is(apiSpecStore3.isDone(), true)
 })
 
 test('push works with virtual package', async t => {
