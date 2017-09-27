@@ -6,12 +6,14 @@ const {runcli} = require('./cli.test.js')
 
 const dp = {
   name: 'example',
+  author: 'Mikane',
   licenses: {
     name: 'example license',
     url: 'https://example/license.com'
   },
   resources: [
     {
+      url: 'https://raw.github.com/datasets/dp/ppp-gdp.csv',
       path: 'dp/ppp-gdp.csv',
       format: 'csv',
       mediatype: 'text/csv',
@@ -39,177 +41,13 @@ const dp = {
     {
       name: 'source-name'
     }
+  ],
+  contributors: [
+    {
+      name: 'contributor-name'
+    }
   ]
 }
-
-test('checks normalized schema', t => {
-  const res = normalizeSchema(dp)
-  const exp = {
-    name: 'example',
-    licenses: [{
-      name: 'example license',
-      url: 'https://example/license.com'
-    }],
-    resources: [
-      {
-        path: 'dp/ppp-gdp.csv',
-        format: 'csv',
-        mediatype: 'text/csv',
-        schema: {
-          fields: [
-            {
-              name: 'Country',
-              type: 'string'
-            },
-            {
-              name: 'Country ID',
-              type: 'decimal',
-              description: 'ISO 3166-1 alpha-2 code'
-            },
-            {
-              name: 'Year',
-              type: 'date',
-              format: 'YYYY',
-              description: 'Relevant year'
-            }
-          ]}
-      }
-    ],
-    sources: [
-      {
-        name: 'source-name'
-      }
-    ]
-  }
-  t.deepEqual(res, exp)
-})
-
-test('checks normalized types', t => {
-  const res = normalizeType(dp)
-  const exp = {
-    name: 'example',
-    licenses: [{
-      name: 'example license',
-      url: 'https://example/license.com'
-    }],
-    resources: [
-      {
-        path: 'dp/ppp-gdp.csv',
-        format: 'csv',
-        mediatype: 'text/csv',
-        schema: {
-          fields: [
-            {
-              name: 'Country',
-              type: 'string'
-            },
-            {
-              name: 'Country ID',
-              type: 'number',
-              description: 'ISO 3166-1 alpha-2 code'
-            },
-            {
-              name: 'Year',
-              type: 'date',
-              format: 'YYYY',
-              description: 'Relevant year'
-            }
-          ]}
-      }
-    ],
-    sources: [
-      {
-        name: 'source-name'
-      }
-    ]
-  }
-  t.deepEqual(res, exp)
-})
-
-test('checks normalized date format', t => {
-  const res = nomralizeDateFormat(dp)
-  const exp = {
-    name: 'example',
-    licenses: [{
-      name: 'example license',
-      url: 'https://example/license.com'
-    }],
-    resources: [
-      {
-        path: 'dp/ppp-gdp.csv',
-        format: 'csv',
-        mediatype: 'text/csv',
-        schema: {
-          fields: [
-            {
-              name: 'Country',
-              type: 'string'
-            },
-            {
-              name: 'Country ID',
-              type: 'number',
-              description: 'ISO 3166-1 alpha-2 code'
-            },
-            {
-              name: 'Year',
-              type: 'date',
-              format: 'any',
-              description: 'Relevant year'
-            }
-          ]}
-      }
-    ],
-    sources: [
-      {
-        name: 'source-name'
-      }
-    ]
-  }
-  t.deepEqual(res, exp)
-})
-
-test('checks normalized resourse name', t => {
-  const res = normalizeNames(dp)
-  const exp = {
-    name: 'example',
-    licenses: [{
-      name: 'example license',
-      url: 'https://example/license.com'
-    }],
-    resources: [
-      {
-        name: 'ppp-gdp',
-        path: 'dp/ppp-gdp.csv',
-        format: 'csv',
-        mediatype: 'text/csv',
-        schema: {
-          fields: [
-            {
-              name: 'Country',
-              type: 'string'
-            },
-            {
-              name: 'Country ID',
-              type: 'number',
-              description: 'ISO 3166-1 alpha-2 code'
-            },
-            {
-              name: 'Year',
-              type: 'date',
-              format: 'any',
-              description: 'Relevant year'
-            }
-          ]}
-      }
-    ],
-    sources: [
-      {
-        name: 'source-name'
-      }
-    ]
-  }
-  t.deepEqual(res, exp)
-})
 
 test('checks normalized all properties', t => {
   const res = normalizeAll(dp)
@@ -249,6 +87,14 @@ test('checks normalized all properties', t => {
       {
         title: 'source-name',
         name: 'source-name'
+      }
+    ],
+    contributors: [
+      {
+        title: 'contributor-name'
+      },
+      {
+        title: 'Mikane'
       }
     ]
   }
