@@ -50,8 +50,8 @@ Promise.resolve().then(async () => {
     process.exit(0)
   }
   try {
-    const filePath = argv._[0] || process.cwd()
-    dataset = await Dataset.load(filePath)
+    const datasetPath = argv._[0] || process.cwd()
+    dataset = await Dataset.load(datasetPath)
     stopSpinner = wait('Commencing push ...')
 
     const datahub = new DataHub({
@@ -61,7 +61,7 @@ Promise.resolve().then(async () => {
       ownerid: config.get('profile').id,
       owner: config.get('profile').username
     })
-    await datahub.pushFlow(path.join(__dirname, filePath ,'.datahub/flow.yaml')
+    await datahub.pushFlow(path.join(__dirname, datasetPath ,'.datahub/flow.yaml')
 
     stopSpinner()
     const message = '🙌  your data is published!\n'

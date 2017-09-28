@@ -12,10 +12,10 @@ Options:
 
   ■ data push-flow
 
-  data package should have ./datahub/flow.yaml
+  data package should have .datahub/flow.yaml
 
 \- Uploads Data Package to DataHub with path:
 
   ■ data push-flow core/finance-vix/
 
-  core/finance-vix/ should have datapackage.json and ./datahub/flow.yaml
+  core/finance-vix/ should have datapackage.json and .datahub/flow.yaml
