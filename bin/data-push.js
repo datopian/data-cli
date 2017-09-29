@@ -96,14 +96,9 @@ const prepareDatasetFromFile = async filePath => {
   const pathParts = path.parse(filePath)
   const file = File.load(pathParts.base, {basePath: pathParts.dir})
   // List of formats that are known as tabular
-  const knownTabularFormats = ['csv', 'tsv', 'dsv', 'xlsx', 'xls']
+  const knownTabularFormats = ['csv', 'tsv', 'dsv']
   if (knownTabularFormats.includes(file.descriptor.format)) {
-    if (['xlsx', 'xls'].includes(file.descriptor.format)) {
-      const rows = await toArray(await xlsxParser(file, false, 0))
-      file.descriptor.schema = await infer(rows)
-    } else {
-      await file.addSchema()
-    }
+    await file.addSchema()
     if (argv.interactive) {
       // Prompt user with headers and fieldTypes
       const headers = file.descriptor.schema.fields.map(field => field.name)
