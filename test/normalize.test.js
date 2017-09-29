@@ -53,10 +53,6 @@ const dp = {
   ]
 }
 
-const dpLicense = {
-  license: 'PDDL-1.0'
-}
-
 test('checks normalized all properties', t => {
   const res = normalizeAll(dp)
   const exp = {
@@ -115,12 +111,19 @@ test('checks normalized all properties', t => {
   t.deepEqual(res, exp)
 })
 
-test('checks normalized license when it is type of string', t => {
-  const res = normalizeLicenses(dpLicense)
+test('normalizeLicenses function', t => {
+  let dp = {
+    license: 'PDDL-1.0'
+  }
+  let res = normalizeLicenses(dp)
   const exp = {
     licenses: [{
       name: 'PDDL-1.0'
     }]
+  }
+  t.deepEqual(res, exp)
+  dp = {
+    license: {name: 'PDDL-1.0'}
   }
   t.deepEqual(res, exp)
 })
