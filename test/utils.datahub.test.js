@@ -320,4 +320,7 @@ test('processExcelSheets function works', async t => {
   t.is(processing[0].schema.fields[0].name, 'header1')
   processing = await processExcelSheets(dataset.resources, 'all')
   t.is(processing[1].output, 'sample-2sheets-sheet-2')
+  processing = await processExcelSheets(dataset.resources, '2')
+  t.is(processing.length, 1)
+  t.is(processing[0].output, 'sample-2sheets-sheet-2')
 })
