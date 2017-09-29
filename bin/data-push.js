@@ -64,13 +64,14 @@ Promise.resolve().then(async () => {
 
     stopSpinner = wait('Commencing push ...')
 
-    const datahub = new DataHub({
+    const datahubConfigs = {
       apiUrl: config.get('api'),
       token: config.get('token'),
       debug: argv.debug,
-      ownerid: config.get('profile').id,
-      owner: config.get('profile').username
-    })
+      ownerid: config.get('profile') ? config.get('profile').id : config.get('id'),
+      owner: config.get('profile') ? config.get('profile').username : config.get('username')
+    }
+    const datahub = new DataHub(datahubConfigs)
     const options = {
       findability: argv.published ? 'published' : 'unlisted'
     }
@@ -78,7 +79,7 @@ Promise.resolve().then(async () => {
 
     stopSpinner()
     const message = '🙌  your data is published!\n'
-    const url = urljoin(config.get('domain'), config.get('profile').username, dataset.descriptor.name)
+    const url = urljoin(config.get('domain'), datahubConfigs.owner, dataset.descriptor.name)
     await copyToClipboard(url)
     console.log(message + '🔗  ' + url + ' (copied to clipboard)')
   } catch (err) {
