@@ -314,8 +314,10 @@ test('processExcelSheets function works', async t => {
   }
   const dataset = await Dataset.load(metadata)
   dataset.addResource(file)
-  const processing = await processExcelSheets(dataset.resources)
+  let processing = await processExcelSheets(dataset.resources)
   t.is(processing[0].input, 'sample-2sheets')
   t.is(processing[0].output, 'sample-2sheets-sheet-1')
   t.is(processing[0].schema.fields[0].name, 'header1')
+  processing = await processExcelSheets(dataset.resources, 'all')
+  t.is(processing[1].output, 'sample-2sheets-sheet-2')
 })

@@ -73,7 +73,8 @@ Promise.resolve().then(async () => {
     }
     const datahub = new DataHub(datahubConfigs)
     const options = {
-      findability: argv.published ? 'published' : 'unlisted'
+      findability: argv.published ? 'published' : 'unlisted',
+      sheets: argv.sheets
     }
     await datahub.push(dataset, options)
 
