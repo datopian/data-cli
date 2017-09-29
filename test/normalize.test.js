@@ -1,13 +1,13 @@
 const test = require('ava')
 const {
-  normalizeSchema, normalizeType, nomralizeDateFormat, normalizeAll, normalizeNames
+  normalizeAll
 } = require('../lib/normalize.js')
 const {runcli} = require('./cli.test.js')
 
 const dp = {
   name: 'example',
   author: 'Mikane',
-  licenses: {
+  license: {
     name: 'example license',
     url: 'https://example/license.com'
   },
@@ -39,7 +39,8 @@ const dp = {
   ],
   sources: [
     {
-      name: 'source-name'
+      name: 'source-name',
+      web: 'https://example/source.com'
     }
   ],
   contributors: [
@@ -89,7 +90,8 @@ test('checks normalized all properties', t => {
     sources: [
       {
         title: 'source-name',
-        name: 'source-name'
+        name: 'source-name',
+        path: 'https://example/source.com'
       }
     ],
     contributors: [
@@ -99,12 +101,11 @@ test('checks normalized all properties', t => {
       },
       {
         email: 'test@gmail.com',
-        title: ''      
+        title: ''
       },
       {
         title: 'Mikane'
-      },
-    
+      }
     ]
   }
   t.deepEqual(res, exp)
