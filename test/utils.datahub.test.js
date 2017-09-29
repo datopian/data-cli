@@ -4,7 +4,7 @@ const nock = require('nock')
 const urljoin = require('url-join')
 const {Dataset, File} = require('data.js')
 
-const {DataHub, processExcelSheets} = require('../lib/utils/datahub.js')
+const {DataHub, processExcelSheets, handleOutputs} = require('../lib/utils/datahub.js')
 
 test('Can instantiate DataHub', t => {
   const apiUrl = 'https://apifix.datahub.io'
@@ -323,4 +323,25 @@ test('processExcelSheets function works', async t => {
   processing = await processExcelSheets(dataset.resources, '2')
   t.is(processing.length, 1)
   t.is(processing[0].output, 'sample-2sheets-sheet-2')
+})
+
+// handleOutputs function
+test('handleOutputs function works', t => {
+  const outputsConfig = {
+    zip: true,
+    sqlite: true
+  }
+  const outputs = handleOutputs(outputsConfig)
+  const exp = [
+    {
+      kind: 'zip',
+      parameters: {
+        'outFile': 'dataset.zip'
+      }
+    },
+    {
+      kind: 'sqlite'
+    }
+  ]
+  t.deepEqual(outputs, exp)
 })

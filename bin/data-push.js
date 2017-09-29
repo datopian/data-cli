@@ -23,7 +23,7 @@ const info = require('../lib/utils/output/info.js')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['push'],
-  boolean: ['help', 'debug', 'interactive', 'published'],
+  boolean: ['help', 'debug', 'interactive', 'published', 'zip', 'sqlite'],
   alias: {help: 'h', interactive: 'i'}
 })
 
@@ -74,7 +74,11 @@ Promise.resolve().then(async () => {
     const datahub = new DataHub(datahubConfigs)
     const options = {
       findability: argv.published ? 'published' : 'unlisted',
-      sheets: argv.sheets
+      sheets: argv.sheets,
+      outputs: {
+        zip: argv.zip,
+        sqlite: argv.sqlite
+      }
     }
     await datahub.push(dataset, options)
 
