@@ -23,7 +23,7 @@ const argv = minimist(process.argv.slice(2), {
   alias: {help: 'h', interactive: 'i'}
 })
 
-const pushMarkdown = fs.reSync(path.join(__dirname, '../docs/push-flow.md'), 'utf8')
+const pushMarkdown = fs.readFileSync(path.join(__dirname, '../docs/push-flow.md'), 'utf8')
 const help = () => {
   console.log('\n' + customMarked(pushMarkdown))
 }
@@ -61,7 +61,7 @@ Promise.resolve().then(async () => {
       ownerid: config.get('profile').id,
       owner: config.get('profile').username
     })
-    await datahub.pushFlow(path.join(__dirname, datasetPath ,'.datahub/flow.yaml')
+    await datahub.pushFlow(path.join(datasetPath ,'.datahub/flow.yaml'))
 
     stopSpinner()
     const message = '🙌  your data is published!\n'
