@@ -78,7 +78,8 @@ Promise.resolve().then(async () => {
       outputs: {
         zip: argv.zip,
         sqlite: argv.sqlite
-      }
+      },
+      schedule: argv.schedule
     }
     await datahub.push(dataset, options)
 
