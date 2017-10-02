@@ -3,6 +3,7 @@
 // Packages
 const fs = require('fs')
 const path = require('path')
+const url = require('url')
 const mkdirp = require('mkdirp')
 const minimist = require('minimist')
 const {customMarked} = require('../lib/utils/tools.js')
@@ -73,7 +74,14 @@ run()
 const saveIt = async (owner, name, resource) => {
   // We only can save if path is defined
   if (resource.descriptor.path) {
-    const destPath = path.join(owner, name, resource.descriptor.path)
+    const pathParts = url.parse(resource.descriptor.path)
+    let destPath
+    if (pathParts.protocol === 'http:' || pathParts.protocol === 'https:') {
+      const relativePath = resource.descriptor.path.split('/').slice(5).join('/')
+      destPath = path.join(owner, name, relativePath)
+    } else {
+      destPath = path.join(owner, name, resource.descriptor.path)
+    }
     mkdirp.sync(path.dirname(destPath))
     const stream = await resource.stream()
     stream.pipe(fs.createWriteStream(destPath))
