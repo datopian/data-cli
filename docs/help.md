@@ -15,7 +15,6 @@
 
     Data Package specific:
 
-      normalize   [path]        Normalize datapackage.json according to the specification
       validate                  Validate Data Package structure
 
     Administrative:
