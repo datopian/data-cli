@@ -27,17 +27,11 @@ const commands = new Set([
   'get',
   'push',
   'push-flow',
-  'normalize',
-  'norm',
   'validate',
   'info',
   'init',
   'cat',
   'login'
-])
-
-const aliases = new Map([
-  ['norm', 'normalize']
 ])
 
 // Parse args and dispatch to relevant command
