@@ -57,7 +57,6 @@ if (index > -1) {
     args.unshift('--help')
   }
 
-  cmd = aliases.get(cmd) || cmd
   if (cmd.includes(' ')) {
     const parts = cmd.split(' ')
     cmd = parts.shift()
