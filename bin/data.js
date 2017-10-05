@@ -27,17 +27,11 @@ const commands = new Set([
   'get',
   'push',
   'push-flow',
-  'normalize',
-  'norm',
   'validate',
   'info',
   'init',
   'cat',
   'login'
-])
-
-const aliases = new Map([
-  ['norm', 'normalize']
 ])
 
 // Parse args and dispatch to relevant command
@@ -63,7 +57,6 @@ if (index > -1) {
     args.unshift('--help')
   }
 
-  cmd = aliases.get(cmd) || cmd
   if (cmd.includes(' ')) {
     const parts = cmd.split(' ')
     cmd = parts.shift()
