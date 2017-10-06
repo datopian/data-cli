@@ -342,7 +342,7 @@ test('handleOutputs function works', t => {
     {
       kind: 'zip',
       parameters: {
-        'outFile': 'dataset.zip'
+        'out-file': 'dataset.zip'
       }
     },
     {
