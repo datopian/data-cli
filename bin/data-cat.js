@@ -40,7 +40,8 @@ const writersDatabase = {
   ascii: writers.ascii,
   csv: writers.csv,
   xlsx: writers.xlsx,
-  md: writers.md
+  md: writers.md,
+  html: writers.html
 }
 
 const dumpIt = async (res) => {
