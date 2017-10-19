@@ -137,6 +137,40 @@ const rawstoreAuthorize2 = nock(config.api, {reqheaders: {'Auth-Token': 'authz.t
     }
   })
 
+const rawstoreAuthorizeRemoteResource = nock(config.api, {reqheaders: {'Auth-Token': 'authz.token'}})
+  .persist()
+  .post('/rawstore/authorize', {
+    "metadata": {
+      "owner": "test-userid"
+    },
+    "filedata": {
+      "datapackage.json": {
+        "length": 257,
+        "md5": "iwWrmUOdQ2tuOPx8P5wU7w==",
+        "name": "datapackage.json"
+      }
+    }
+  })
+  .reply(200, {
+    filedata: {
+      'datapackage.json': {
+        md5: "iwWrmUOdQ2tuOPx8P5wU7w==",
+        length: 257,
+        name: 'datapackage.json',
+        // eslint-disable-next-line camelcase
+        upload_query: {
+          key: "iwWrmUOdQ2tuOPx8P5wU7w==",
+          policy: '...',
+          'x-amz-algorithm': 'AWS4-HMAC-SHA256',
+          'x-amz-credential': 'XXX',
+          'x-amz-signature': 'YYY'
+        },
+        // eslint-disable-next-line camelcase
+        upload_url: rawstoreUrl
+      }
+    }
+  })
+
 const rawstoreStorageMock = nock(rawstoreUrl, {
 }).persist().post(
     // TODO: get uploadBody working
@@ -199,6 +233,36 @@ const apiSpecStore2 = nock(config.api, {
     schedule: {
       crontab: '0 0 * * *'
     }
+  })
+  .reply(200, {
+    success: true,
+    id: 'test',
+    errors: []
+  })
+
+const apiSpecStoreRemoteResource = nock(config.api, {
+  reqheaders: {
+    'Auth-Token': 'authz.token'
+  }
+})
+  .persist()
+  .post('/source/upload', {
+    "meta": {
+      "version": 1,
+      "ownerid": "test-userid",
+      "owner": "test-username",
+      "dataset": "dp-no-resources",
+      "findability": "unlisted"
+    },
+    "inputs": [
+      {
+        "kind": "datapackage",
+        "url": "https://s3-us-west-2.amazonaws.com/iwWrmUOdQ2tuOPx8P5wU7w==",
+        "parameters": {
+          "resource-mapping": {}
+        }
+      }
+    ]
   })
   .reply(200, {
     success: true,
@@ -307,6 +371,13 @@ test('push works with package with resource and schedule can be setup', async t 
   t.is(rawstoreStorageMock.isDone(), true)
   t.is(apiSpecStore2.isDone(), true)
   t.is(authorizeForServices.isDone(), true)
+})
+
+test('push works with package with remote resource', async t => {
+  const dataset = await Dataset.load('test/fixtures/dp-remote-resource')
+  await datahub.push(dataset, {findability: 'unlisted'})
+  t.is(rawstoreAuthorizeRemoteResource.isDone(), true)
+  t.is(apiSpecStoreRemoteResource.isDone(), true)
 })
 
 // processExcelSheets function

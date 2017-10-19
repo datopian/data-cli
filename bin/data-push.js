@@ -6,7 +6,7 @@ const minimist = require('minimist')
 const urljoin = require('url-join')
 const inquirer = require('inquirer')
 const hri = require('human-readable-ids').hri
-const {Dataset, File, xlsxParser} = require('data.js')
+const {Dataset, File, xlsxParser, isDataset, isUrl} = require('data.js')
 const { write: copyToClipboard } = require('clipboardy')
 const toArray = require('stream-to-array')
 const infer = require('tableschema').infer
@@ -56,10 +56,14 @@ Promise.resolve().then(async () => {
   try {
     const filePath = argv._[0] || process.cwd()
     let dataset
-    if (fs.lstatSync(filePath).isFile()) {
-      dataset = await prepareDatasetFromFile(filePath)
-    } else {
+    if (isDataset(filePath)) {
+      if (isUrl(filePath)) {
+        console.log('Error: You can push only local datasets.')
+        process.exit(0)
+      }
       dataset = await Dataset.load(filePath)
+    } else {
+      dataset = await prepareDatasetFromFile(filePath)
     }
 
     stopSpinner = wait('Commencing push ...')
@@ -103,8 +107,13 @@ Promise.resolve().then(async () => {
 })
 
 const prepareDatasetFromFile = async filePath => {
-  const pathParts = path.parse(filePath)
-  const file = File.load(pathParts.base, {basePath: pathParts.dir})
+  let file
+  if (isUrl(filePath)) {
+    file = File.load(filePath)
+  } else {
+    const pathParts = path.parse(filePath)
+    file = File.load(pathParts.base, {basePath: pathParts.dir})
+  }
   // List of formats that are known as tabular
   const knownTabularFormats = ['csv', 'tsv', 'dsv']
   if (knownTabularFormats.includes(file.descriptor.format)) {
@@ -123,7 +132,7 @@ const prepareDatasetFromFile = async filePath => {
     }
   }
 
-  let dpName = pathParts.name.replace(/\s+/g, '-').toLowerCase()
+  let dpName = file.descriptor.name.replace(/\s+/g, '-').toLowerCase()
   // Add human readable id so that this packge does not conflict with other
   // packages (name is coming from the file name which could just be
   // data.csv)
