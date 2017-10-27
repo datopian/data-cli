@@ -29,6 +29,5 @@ test('info command with a file', async t => {
   const identifier = 'test/fixtures/sample.csv'
   const result = await runcli('info', identifier)
   const stdout = result.stdout.split('\n')
-  t.true(stdout[1].includes('number'))
-  t.true(stdout[3].includes('two'))
+  t.true(stdout[0].includes('File descriptor:'))
 })

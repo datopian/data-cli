@@ -36,8 +36,12 @@ Promise.resolve().then(async () => {
       console.log(customMarked(out))
     } else {
       const file = data.File.load(fileOrDatasetIdentifier)
+      await file.addSchema()
       const out = await info.infoResource(file)
+      console.log(customMarked('**File descriptor:**'))
+      console.log(JSON.stringify(file.descriptor, null, 2))
       console.log(out)
+      console.log(customMarked('*Only showing first 10 lines. There might be more data.*'))
     }
   } catch (err) {
     handleError(err)
