@@ -1,5 +1,5 @@
 ```
-$ data login
+■ data login
 ```
 
 Login to DataHub system using your Google/GitHub account.

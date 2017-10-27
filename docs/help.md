@@ -1,5 +1,5 @@
 
-  ❒ data [options] <command> <args>
+  ■ data [options] <command> <args>
 
   Commands:
 
@@ -44,7 +44,7 @@
 
   **About**
 
-  DataHub is a home for all your data, nicely packaged ❒
+  DataHub is a home for all your data, nicely packaged ■
 
   We hope this tool will bring you much joy as you work with your data and the DataHub.
 

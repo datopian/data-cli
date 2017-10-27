@@ -1,5 +1,5 @@
 
-❒  data cat [OPTIONS] PATH-OR-URL [OUT-PATH]
+■  data cat [OPTIONS] PATH-OR-URL [OUT-PATH]
 
 Read a data file and write its output to stdout or `OUT-PATH` if `OUT-PATH` provided.
 
@@ -20,7 +20,7 @@ Output data files supported:
 Reading from stdin:
 
 ```
-❒ cat PATH | data cat _ [OUT-PATH]
+■ cat PATH | data cat _ [OUT-PATH]
 
-❒ curl URL | data cat _ [OUT-PATH]
+■ curl URL | data cat _ [OUT-PATH]
 ```

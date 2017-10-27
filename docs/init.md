@@ -4,7 +4,7 @@
 ## Usage:
 
 ```
-$ data init
+■ data init
 ```
 
 ## Options
@@ -17,5 +17,5 @@ $ data init
 
 ```
 # Initialize Data Package in current working directory:
-$ data init
+■ data init
 ```
