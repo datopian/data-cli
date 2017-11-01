@@ -4,7 +4,7 @@ const nock = require('nock')
 const urljoin = require('url-join')
 const {Dataset, File} = require('data.js')
 
-const {DataHub, processExcelSheets, handleOutputs} = require('../lib/utils/datahub.js')
+const {DataHub, processExcelSheets, handleOutputs, makeSourceSpec} = require('../lib/utils/datahub.js')
 
 test('Can instantiate DataHub', t => {
   const apiUrl = 'https://apifix.datahub.io'
@@ -421,4 +421,32 @@ test('handleOutputs function works', t => {
     }
   ]
   t.deepEqual(outputs, exp)
+})
+
+test('makeSourceSpec function works', async t => {
+  const rawstoreResponse = {
+    'datapackage.json': {
+      md5: finVixInfo['datapackage.json'].md5,
+      length: finVixInfo['datapackage.json'].length,
+      name: 'datapackage.json',
+      // eslint-disable-next-line camelcase
+      upload_query: {
+        key: finVixInfo['datapackage.json'].md5,
+        policy: '...',
+        'x-amz-algorithm': 'AWS4-HMAC-SHA256',
+        'x-amz-credential': 'XXX',
+        'x-amz-signature': 'YYY'
+      },
+      // eslint-disable-next-line camelcase
+      upload_url: rawstoreUrl
+    }
+  }
+  const ownerid = 'test'
+  const owner = 'test'
+  const dataset = await Dataset.load('test/fixtures/finance-vix')
+  const options = {findability: 'unlisted'}
+  const spec = await makeSourceSpec(rawstoreResponse, ownerid, owner, dataset, options)
+  t.is(spec.meta.dataset, 'finance-vix')
+  t.is(spec.inputs[0].kind, 'datapackage')
+  t.deepEqual(spec.inputs[0].parameters.descriptor, dataset.descriptor)
 })
