@@ -181,58 +181,28 @@ const apiSpecStore = nock(config.api, {
   reqheaders: {
     'Auth-Token': 'authz.token'
   }
-}).persist().post('/source/upload', {
-  meta: {
-    version: 1,
-    ownerid: config.profile.id,
-    owner: config.profile.username,
-    dataset: 'dp-no-resources',
-    findability: 'unlisted'
-  },
-  inputs: [
-    {
-      kind: 'datapackage',
-      url: urljoin(rawstoreUrl, dpinfo.md5),
-      parameters: {
-        'resource-mapping': {}
-      }
-    }
-  ]
-})
-  .reply(200, {
-    success: true,
-    id: 'test',
-    errors: []
-  })
-
-const apiSpecStore2 = nock(config.api, {
-  reqheaders: {
-    'Auth-Token': 'authz.token'
-  }
-})
-  .persist()
-  .post('/source/upload', {
-    meta: {
-      version: 1,
-      ownerid: config.profile.id,
-      owner: config.profile.username,
-      dataset: 'finance-vix',
-      findability: 'unlisted'
-    },
-    inputs: [
-      {
-        kind: 'datapackage',
-        url: urljoin(rawstoreUrl, finVixInfo['datapackage.json'].md5),
-        parameters: {
-          'resource-mapping': {
-            'vix-daily': urljoin(rawstoreUrl, finVixInfo['vix-daily'].md5)
+}).persist()
+  .post('/source/upload', (body) => {
+    const expected = {
+      meta: {
+        version: 1,
+        ownerid: config.profile.id,
+        owner: config.profile.username,
+        dataset: 'dp-no-resources',
+        findability: 'unlisted'
+      },
+      inputs: [
+        {
+          kind: 'datapackage',
+          url: 'https://s3-us-west-2.amazonaws.com/m84YSonibUrw5Mg8QbCNHA==',
+          parameters: {
+            'resource-mapping': {}
           }
         }
-      }
-    ],
-    schedule: {
-      crontab: '0 0 * * *'
+      ]
     }
+    delete body.inputs[0].parameters.descriptor
+    return JSON.stringify(body) === JSON.stringify(expected)
   })
   .reply(200, {
     success: true,
@@ -246,23 +216,66 @@ const apiSpecStoreRemoteResource = nock(config.api, {
   }
 })
   .persist()
-  .post('/source/upload', {
-    "meta": {
-      "version": 1,
-      "ownerid": "test-userid",
-      "owner": "test-username",
-      "dataset": "dp-no-resources",
-      "findability": "unlisted"
-    },
-    "inputs": [
-      {
-        "kind": "datapackage",
-        "url": "https://s3-us-west-2.amazonaws.com/iwWrmUOdQ2tuOPx8P5wU7w==",
-        "parameters": {
-          "resource-mapping": {}
+  .post('/source/upload', (body) => {
+    const expected = {
+      "meta": {
+        "version": 1,
+        "ownerid": "test-userid",
+        "owner": "test-username",
+        "dataset": "dp-no-resources",
+        "findability": "unlisted"
+      },
+      "inputs": [
+        {
+          "kind": "datapackage",
+          "url": "https://s3-us-west-2.amazonaws.com/iwWrmUOdQ2tuOPx8P5wU7w==",
+          "parameters": {
+            "resource-mapping": {}
+          }
         }
+      ]
+    }
+    delete body.inputs[0].parameters.descriptor
+    return JSON.stringify(body) === JSON.stringify(expected)
+  })
+  .reply(200, {
+    success: true,
+    id: 'test',
+    errors: []
+  })
+
+const apiSpecStore2 = nock(config.api, {
+  reqheaders: {
+    'Auth-Token': 'authz.token'
+  }
+})
+  .persist()
+  .post('/source/upload', (body) => {
+    const expected = {
+      meta: {
+        version: 1,
+        ownerid: config.profile.id,
+        owner: config.profile.username,
+        dataset: 'finance-vix',
+        findability: 'unlisted'
+      },
+      inputs: [
+        {
+          kind: 'datapackage',
+          url: urljoin(rawstoreUrl, finVixInfo['datapackage.json'].md5),
+          parameters: {
+            'resource-mapping': {
+              'vix-daily': urljoin(rawstoreUrl, finVixInfo['vix-daily'].md5)
+            }
+          }
+        }
+      ],
+      schedule: {
+        crontab: '0 0 * * *'
       }
-    ]
+    }
+    delete body.inputs[0].parameters.descriptor
+    return JSON.stringify(body) === JSON.stringify(expected)
   })
   .reply(200, {
     success: true,
@@ -377,7 +390,7 @@ test('push works with package with remote resource', async t => {
   const dataset = await Dataset.load('test/fixtures/dp-remote-resource')
   await datahub.push(dataset, {findability: 'unlisted'})
   t.is(rawstoreAuthorizeRemoteResource.isDone(), true)
-  t.is(apiSpecStoreRemoteResource.isDone(), true)
+  t.is(apiSpecStore.isDone(), true)
 })
 
 // processExcelSheets function
