@@ -70,7 +70,7 @@
     "clipboardy": "^1.1.4",
     "csv-parse": "^1.2.0",
     "csv-stringify": "^1.0.4",
-    "data.js": "^0.9.8",
+    "data.js": "^0.9.9",
     "datapackage": "git+https://github.com/anuveyatsu/datapackage-js-temp.git",
     "form-data": "^2.2.0",
     "human-readable-ids": "^1.0.3",

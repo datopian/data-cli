@@ -14,6 +14,7 @@ URL can be one of:
 
 ```
 -h, --help               Outputs usage information
+--format                 Explicitly provide input file format, e.g., if it does not have conventional name
 ```
 
 ## Example:

@@ -66,7 +66,7 @@ if (pathParts.name === '_' || (!pathParts.name && process.stdin.constructor.name
   // TODO: atm, it is just passing stdin to stout. Fix it to process stdin to available writers.
   process.stdin.pipe(process.stdout)
 } else if (pathParts.name) {
-  const res = File.load(argv._[0])
+  const res = File.load(argv._[0], {format: argv.format})
   dumpIt(res)
 } else {
   info('No input is provided. Please, run "data cat --help" for usage information.')

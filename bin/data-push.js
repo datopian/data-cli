@@ -109,10 +109,10 @@ Promise.resolve().then(async () => {
 const prepareDatasetFromFile = async filePath => {
   let file
   if (isUrl(filePath)) {
-    file = File.load(filePath)
+    file = await File.load(filePath, {format: argv.format})
   } else {
     const pathParts = path.parse(filePath)
-    file = File.load(pathParts.base, {basePath: pathParts.dir})
+    file = await File.load(pathParts.base, {basePath: pathParts.dir, format: argv.format})
   }
   // List of formats that are known as tabular
   const knownTabularFormats = ['csv', 'tsv', 'dsv']

@@ -15,6 +15,10 @@ Output data files supported:
 * excel (.xlsx)
 * markdown (.md)
 
+**Options**
+
+--format      explicitly provide input file format, e.g., if it does not have conventional name
+
 **Examples**
 
 Reading from stdin:

@@ -12,6 +12,7 @@
 
 ```
 -h, --help               Output usage information
+--format                 Explicitly provide input file format, e.g., if it does not have conventional name
 ```
 
 ## Example:
@@ -28,4 +29,3 @@
 
 # Additionally, you can preview local or remote tabular data file:
 ■ data info https://raw.githubusercontent.com/datahq/core-datasets-tools/master/examples.csv
-

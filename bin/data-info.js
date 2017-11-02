@@ -35,7 +35,7 @@ Promise.resolve().then(async () => {
       const out = info.infoPackage(dataset)
       console.log(customMarked(out))
     } else {
-      const file = data.File.load(fileOrDatasetIdentifier)
+      const file = data.File.load(fileOrDatasetIdentifier, {format: argv.format})
       await file.addSchema()
       const out = await info.infoResource(file)
       console.log(customMarked('**File descriptor:**'))

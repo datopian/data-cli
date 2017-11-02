@@ -57,7 +57,7 @@ const run = async () => {
       console.log(`Time elapsed: ${(end / 1000).toFixed(2)} s`)
       console.log(`Dataset/file is saved in "${savedPath}"`)
     } else {
-      const file = await File.load(identifier)
+      const file = await File.load(identifier, {format: argv.format})
       const destPath = [file.descriptor.name, file.descriptor.format].join('.')
       const stream = await file.stream()
       stream.pipe(fs.createWriteStream(destPath)).on('finish', () => {
