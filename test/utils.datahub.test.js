@@ -34,7 +34,7 @@ const dpinfo = {
 }
 
 const finVixInfo = {
-  'vix-daily': {
+  'data/vix-daily.csv': {
     length: 719,
     md5: 'zqYInZMy1fFndkTED3QUPQ==',
     name: 'vix-daily'
@@ -104,13 +104,13 @@ const rawstoreAuthorize2 = nock(config.api, {reqheaders: {'Auth-Token': 'authz.t
   })
   .reply(200, {
     filedata: {
-      'vix-daily': {
-        md5: finVixInfo['vix-daily'].md5,
-        length: finVixInfo['vix-daily'].length,
-        name: finVixInfo['vix-daily'].name,
+      'data/vix-daily.csv': {
+        md5: finVixInfo['data/vix-daily.csv'].md5,
+        length: finVixInfo['data/vix-daily.csv'].length,
+        name: finVixInfo['data/vix-daily.csv'].name,
         // eslint-disable-next-line camelcase
         upload_query: {
-          key: finVixInfo['vix-daily'].md5,
+          key: finVixInfo['data/vix-daily.csv'].md5,
           policy: '...',
           'x-amz-algorithm': 'AWS4-HMAC-SHA256',
           'x-amz-credential': 'XXX',
@@ -265,7 +265,7 @@ const apiSpecStore2 = nock(config.api, {
           url: urljoin(rawstoreUrl, finVixInfo['datapackage.json'].md5),
           parameters: {
             'resource-mapping': {
-              'vix-daily': urljoin(rawstoreUrl, finVixInfo['vix-daily'].md5)
+              'data/vix-daily.csv': urljoin(rawstoreUrl, finVixInfo['data/vix-daily.csv'].md5)
             }
           }
         }
