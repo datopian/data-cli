@@ -35,7 +35,7 @@
 
   Get a Data Package from the DataHub owned by `core` and with name `finance-vix`
 
-      ■ data get core/finance-vix/
+      ■ data get https://datahub.io/core/finance-vix/
 
   Get a Data Package on github
 
