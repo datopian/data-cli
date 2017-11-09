@@ -22,5 +22,4 @@ processing:
         - VIXLow
         - VIXClose
     output: vix-daily
-schedule:
-    crontab: '0 0 * * *'
+schedule: 'every 1d'

@@ -270,9 +270,7 @@ const apiSpecStore2 = nock(config.api, {
           }
         }
       ],
-      schedule: {
-        crontab: '0 0 * * *'
-      }
+      schedule: 'every 1d'
     }
     delete body.inputs[0].parameters.descriptor
     return JSON.stringify(body) === JSON.stringify(expected)
@@ -324,9 +322,7 @@ const apiSpecStore3 = nock(config.api, {
         output: 'vix-daily'
       }
     ],
-    schedule: {
-      crontab: '0 0 * * *'
-    }
+    schedule: 'every 1d'
   })
   .reply(200, {
     success: true,
@@ -376,7 +372,7 @@ test('push works with package with resource and schedule can be setup', async t 
   const dataset = await Dataset.load('test/fixtures/finance-vix')
   const options = {
     findability: 'unlisted',
-    schedule: '0 0 * * *'
+    schedule: 'every 1d'
   }
   await datahub.push(dataset, options)
 
