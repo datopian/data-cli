@@ -14,7 +14,7 @@
     "watch:test": "npm t -- --watch",
     "lint": "xo --quiet",
     "data": "node bin/data.js",
-    "pack": "pkg bin/data.js -c package.json -o packed/datahub",
+    "pack": "pkg bin/data.js -c package.json -o packed/data",
     "precommit": "npm run lint && npm run build"
   },
   "xo": {
