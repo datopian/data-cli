@@ -129,7 +129,10 @@ const prepareDatasetFromFile = async filePath => {
       // Prompt user with headers and fieldTypes
       const headers = file.descriptor.schema.fields.map(field => field.name)
       const fieldTypes = file.descriptor.schema.fields.map(field => field.type)
-      const questions = [ask('headers', headers), ask('types', fieldTypes)]
+      const questions = [
+        ask('headers', headers, 'y', 'yesOrNo'),
+        ask('types', fieldTypes, 'y', 'yesOrNo')
+      ]
       const answers = await inquirer.prompt(questions)
 
       if (answers.headers === 'n' & answers.types === 'n') {
@@ -139,14 +142,29 @@ const prepareDatasetFromFile = async filePath => {
     }
   }
 
-  let dpName = file.descriptor.name.replace(/\s+/g, '-').toLowerCase()
-  // Add human readable id so that this packge does not conflict with other
-  // packages (name is coming from the file name which could just be
-  // data.csv)
-  dpName += '-' + hri.random()
+  let dpName, dpTitle
+  if (argv.name) {
+    dpName = argv.name
+  } else {
+    dpName = file.descriptor.name.replace(/\s+/g, '-').toLowerCase()
+    // Add human readable id so that this packge does not conflict with other
+    // packages (name is coming from the file name which could just be
+    // data.csv)
+    dpName += '-' + hri.random()
+    // Confirm dpName with user:
+    const answer = await inquirer.prompt([ask('name', dpName, dpName, 'nameValidation')])
+    dpName = answer.name
+  }
+
+  // Make unslugifies version for title:
+  dpTitle = dpName.replace(/-+/g, ' ')
+  dpTitle = dpTitle.charAt(0).toUpperCase() + dpTitle.slice(1)
+  // Confirm title with user:
+  const answer = await inquirer.prompt([ask('title', dpTitle, dpTitle)])
+
   const metadata = {
     name: dpName,
-    title: '', // TODO: generate from file name (maybe prompt user for it ...)
+    title: answer.title,
     resources: []
   }
   const dataset = await Dataset.load(metadata)
@@ -154,20 +172,28 @@ const prepareDatasetFromFile = async filePath => {
   return dataset
 }
 
-const ask = (name, data) => {
-  return {
+const validationPatterns = {
+  yesOrNo: /^[y,n]+$/,
+  nameValidation: /^([-a-z0-9._\/])+$/
+}
+
+const ask = (property, data, defaultValue, validation) => {
+  const inquirerObj = {
     type: 'input',
-    name,
-    message: `Are these ${name} correct for this dataset:\n[${data}]\ny/n?`,
+    name: property,
+    message: `Please, confirm ${property} for this dataset:\n${data}`,
     default: () => {
-      return 'y'
-    },
-    validate: value => {
-      const pass = value.match(/^[y,n]+$/)
+      return defaultValue
+    }
+  }
+  if (validation) {
+    inquirerObj.validate = value => {
+      const pass = value.match(validationPatterns[validation])
       if (pass) {
         return true
       }
-      return `Please, provide with following responses 'y' for yes or 'n' for no`
+      return `Provided value must match following pattern: ${validationPatterns[validation]}`
     }
   }
+  return inquirerObj
 }
