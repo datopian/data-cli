@@ -69,7 +69,8 @@ const rawstoreAuthorize = nock(config.api, {reqheaders: {'Auth-Token': 'authz.to
   .persist()
   .post('/rawstore/authorize', {
     metadata: {
-      owner: config.profile.id
+      owner: config.profile.id,
+      findability: 'unlisted'
     },
     filedata: {'datapackage.json': dpinfo}
   })
@@ -98,7 +99,8 @@ const rawstoreAuthorize2 = nock(config.api, {reqheaders: {'Auth-Token': 'authz.t
   .persist()
   .post('/rawstore/authorize', {
     metadata: {
-      owner: config.profile.id
+      owner: config.profile.id,
+      findability: 'unlisted'
     },
     filedata: finVixInfo
   })
@@ -141,7 +143,8 @@ const rawstoreAuthorizeRemoteResource = nock(config.api, {reqheaders: {'Auth-Tok
   .persist()
   .post('/rawstore/authorize', {
     "metadata": {
-      "owner": "test-userid"
+      "owner": "test-userid",
+      "findability": "unlisted"
     },
     "filedata": {
       "datapackage.json": {

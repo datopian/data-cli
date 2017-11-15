@@ -23,7 +23,7 @@ const info = require('../lib/utils/output/info.js')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['push'],
-  boolean: ['help', 'debug', 'interactive', 'published', 'zip', 'sqlite'],
+  boolean: ['help', 'debug', 'interactive', 'published', 'private', 'zip', 'sqlite'],
   alias: {help: 'h', interactive: 'i'}
 })
 
@@ -75,9 +75,16 @@ Promise.resolve().then(async () => {
       ownerid: config.get('profile') ? config.get('profile').id : config.get('id'),
       owner: config.get('profile') ? config.get('profile').username : config.get('username')
     }
+    let findability = 'unlisted'
+    if (argv.published) {
+      findability = 'published'
+    }
+    if (argv.private) {
+      findability = 'private'
+    }
     const datahub = new DataHub(datahubConfigs)
     const options = {
-      findability: argv.published ? 'published' : 'unlisted',
+      findability: findability,
       sheets: argv.sheets,
       outputs: {
         zip: argv.zip,
