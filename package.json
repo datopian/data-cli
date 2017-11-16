@@ -1,6 +1,6 @@
 {
   "name": "datahub-cli",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "CLI for working with data packages",
   "main": "./lib/index.js",
   "bin": {
