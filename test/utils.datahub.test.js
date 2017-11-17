@@ -4,7 +4,7 @@ const nock = require('nock')
 const urljoin = require('url-join')
 const {Dataset, File} = require('data.js')
 
-const {DataHub, processExcelSheets, handleOutputs, makeSourceSpec} = require('../lib/utils/datahub.js')
+const {DataHub, processExcelSheets, handleOutputs} = require('../lib/utils/datahub.js')
 
 test('Can instantiate DataHub', t => {
   const apiUrl = 'https://apifix.datahub.io'
@@ -333,6 +333,18 @@ const apiSpecStore3 = nock(config.api, {
     errors: []
   })
 
+const signurl = nock(config.api, {reqheaders: {'Auth-Token': 'authz.token'}})
+  .persist()
+  .get('/rawstore/presign?ownerid=test-userid&url=https://s3-us-west-2.amazonaws.com/m84YSonibUrw5Mg8QbCNHA==')
+  .reply(200, {url: 'https://s3-us-west-2.amazonaws.com/m84YSonibUrw5Mg8QbCNHA=='})
+  .get('/rawstore/presign?ownerid=test-userid&url=https://s3-us-west-2.amazonaws.com/s6Ex9JHrfrGSkEF7Gin8jg==')
+  .reply(200, {url: 'https://s3-us-west-2.amazonaws.com/s6Ex9JHrfrGSkEF7Gin8jg=='})
+  .get('/rawstore/presign?ownerid=test-userid&url=https://s3-us-west-2.amazonaws.com/zqYInZMy1fFndkTED3QUPQ==')
+  .reply(200, {url: 'https://s3-us-west-2.amazonaws.com/zqYInZMy1fFndkTED3QUPQ=='})
+  .get('/rawstore/presign?ownerid=test-userid&url=https://s3-us-west-2.amazonaws.com/iwWrmUOdQ2tuOPx8P5wU7w==')
+  .reply(200, {url: 'https://s3-us-west-2.amazonaws.com/m84YSonibUrw5Mg8QbCNHA=='})
+
+
 test('push works with packaged dataset', async t => {
   const dataset = await Dataset.load('test/fixtures/dp-no-resources')
   const options = {findability: 'unlisted'}
@@ -450,14 +462,13 @@ test('makeSourceSpec function works', async t => {
         'x-amz-signature': 'YYY'
       },
       // eslint-disable-next-line camelcase
-      upload_url: rawstoreUrl
+      upload_url: rawstoreUrl,
+      rawstore_url: rawstoreUrl + '/' + finVixInfo['datapackage.json'].md5
     }
   }
-  const ownerid = 'test'
-  const owner = 'test'
   const dataset = await Dataset.load('test/fixtures/finance-vix')
   const options = {findability: 'unlisted'}
-  const spec = await makeSourceSpec(rawstoreResponse, ownerid, owner, dataset, options)
+  const spec = await datahub.makeSourceSpec(rawstoreResponse, dataset, options)
   t.is(spec.meta.dataset, 'finance-vix')
   t.is(spec.inputs[0].kind, 'datapackage')
   t.deepEqual(spec.inputs[0].parameters.descriptor, dataset.descriptor)
