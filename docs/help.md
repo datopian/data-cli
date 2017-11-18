@@ -1,51 +1,43 @@
 
-  ❒ data [options] <command> <args>
+❒ data [options] <command> <args>
 
-  Commands:
+Commands:
 
-    DataHub:
+  DataHub:
 
-      push        [path]        Push data at `path` to the DataHub
+    push        [path]        Push data at `path` to the DataHub
 
-    General:
+  General:
 
-      get         [url]         Retrieve data at `url` to local disk
-      info        [path/url]    Get info on data (file or dataset) at path or url
-      cat         path [out]    Read data at path and write to out (or stdout)
+    get         [url]         Retrieve data at `url` to local disk
+    info        [path/url]    Get info on data (file or dataset) at path or url
+    cat         path [out]    Read data at path and write to out (or stdout)
 
-    Data Package specific:
+  Data Package specific:
 
-      validate                  Validate Data Package structure
+    validate                  Validate Data Package structure
 
-    Administrative:
+  Administrative:
 
-      help        [cmd]         Show help on cmd
-      login                     Login or signup to the DataHub
+    help        [cmd]         Show help on cmd
+    login                     Login or signup to the DataHub
 
-  Options:
+Options:
 
-  -h, --help              Output usage information
-  -v, --version           Output the version
+-h, --help              Output usage information
+-v, --version           Output the version
 
-  **Examples**
+**Examples**
 
-  Push a Data Package (in the current directory)
+Push a Data Package (in the current directory)
 
-      ■ data push
+    ■ data push
 
-  Get a Data Package from the DataHub owned by `core` and with name `finance-vix`
+Get a Data Package from the DataHub owned by `core` and with name `finance-vix`
 
-      ■ data get core/finance-vix/
+    ■ data get https://datahub.io/core/finance-vix
 
-  Get a Data Package on github
+Get a Data Package on github
 
-      ■ data get https://github.com/datasets/gdp
-
-
-  **About**
-
-  DataHub is a home for all your data, nicely packaged ❒
-
-  We hope this tool will bring you much joy as you work with your data and the DataHub.
-
+    ■ data get https://github.com/datasets/gdp
 
