@@ -4,7 +4,7 @@ const nock = require('nock')
 const urljoin = require('url-join')
 const {Dataset, File} = require('data.js')
 
-const {DataHub, processExcelSheets, handleOutputs} = require('../lib/utils/datahub.js')
+const {DataHub, processExcelSheets, handleOutputs, makeSourceSpec} = require('../lib/utils/datahub.js')
 
 test('Can instantiate DataHub', t => {
   const apiUrl = 'https://apifix.datahub.io'
@@ -34,7 +34,7 @@ const dpinfo = {
 }
 
 const finVixInfo = {
-  'vix-daily': {
+  'data/vix-daily.csv': {
     length: 719,
     md5: 'zqYInZMy1fFndkTED3QUPQ==',
     name: 'vix-daily'
@@ -69,7 +69,8 @@ const rawstoreAuthorize = nock(config.api, {reqheaders: {'Auth-Token': 'authz.to
   .persist()
   .post('/rawstore/authorize', {
     metadata: {
-      owner: config.profile.id
+      owner: config.profile.id,
+      findability: 'unlisted'
     },
     filedata: {'datapackage.json': dpinfo}
   })
@@ -98,19 +99,20 @@ const rawstoreAuthorize2 = nock(config.api, {reqheaders: {'Auth-Token': 'authz.t
   .persist()
   .post('/rawstore/authorize', {
     metadata: {
-      owner: config.profile.id
+      owner: config.profile.id,
+      findability: 'unlisted'
     },
     filedata: finVixInfo
   })
   .reply(200, {
     filedata: {
-      'vix-daily': {
-        md5: finVixInfo['vix-daily'].md5,
-        length: finVixInfo['vix-daily'].length,
-        name: finVixInfo['vix-daily'].name,
+      'data/vix-daily.csv': {
+        md5: finVixInfo['data/vix-daily.csv'].md5,
+        length: finVixInfo['data/vix-daily.csv'].length,
+        name: finVixInfo['data/vix-daily.csv'].name,
         // eslint-disable-next-line camelcase
         upload_query: {
-          key: finVixInfo['vix-daily'].md5,
+          key: finVixInfo['data/vix-daily.csv'].md5,
           policy: '...',
           'x-amz-algorithm': 'AWS4-HMAC-SHA256',
           'x-amz-credential': 'XXX',
@@ -137,6 +139,41 @@ const rawstoreAuthorize2 = nock(config.api, {reqheaders: {'Auth-Token': 'authz.t
     }
   })
 
+const rawstoreAuthorizeRemoteResource = nock(config.api, {reqheaders: {'Auth-Token': 'authz.token'}})
+  .persist()
+  .post('/rawstore/authorize', {
+    "metadata": {
+      "owner": "test-userid",
+      "findability": "unlisted"
+    },
+    "filedata": {
+      "datapackage.json": {
+        "length": 257,
+        "md5": "iwWrmUOdQ2tuOPx8P5wU7w==",
+        "name": "datapackage.json"
+      }
+    }
+  })
+  .reply(200, {
+    filedata: {
+      'datapackage.json': {
+        md5: "iwWrmUOdQ2tuOPx8P5wU7w==",
+        length: 257,
+        name: 'datapackage.json',
+        // eslint-disable-next-line camelcase
+        upload_query: {
+          key: "iwWrmUOdQ2tuOPx8P5wU7w==",
+          policy: '...',
+          'x-amz-algorithm': 'AWS4-HMAC-SHA256',
+          'x-amz-credential': 'XXX',
+          'x-amz-signature': 'YYY'
+        },
+        // eslint-disable-next-line camelcase
+        upload_url: rawstoreUrl
+      }
+    }
+  })
+
 const rawstoreStorageMock = nock(rawstoreUrl, {
 }).persist().post(
     // TODO: get uploadBody working
@@ -147,24 +184,63 @@ const apiSpecStore = nock(config.api, {
   reqheaders: {
     'Auth-Token': 'authz.token'
   }
-}).persist().post('/source/upload', {
-  meta: {
-    version: 1,
-    ownerid: config.profile.id,
-    owner: config.profile.username,
-    dataset: 'dp-no-resources',
-    findability: 'unlisted'
-  },
-  inputs: [
-    {
-      kind: 'datapackage',
-      url: urljoin(rawstoreUrl, dpinfo.md5),
-      parameters: {
-        'resource-mapping': {}
-      }
+}).persist()
+  .post('/source/upload', (body) => {
+    const expected = {
+      meta: {
+        version: 1,
+        ownerid: config.profile.id,
+        owner: config.profile.username,
+        dataset: 'dp-no-resources',
+        findability: 'unlisted'
+      },
+      inputs: [
+        {
+          kind: 'datapackage',
+          url: 'https://s3-us-west-2.amazonaws.com/m84YSonibUrw5Mg8QbCNHA==',
+          parameters: {
+            'resource-mapping': {}
+          }
+        }
+      ]
     }
-  ]
+    delete body.inputs[0].parameters.descriptor
+    return JSON.stringify(body) === JSON.stringify(expected)
+  })
+  .reply(200, {
+    success: true,
+    id: 'test',
+    errors: []
+  })
+
+const apiSpecStoreRemoteResource = nock(config.api, {
+  reqheaders: {
+    'Auth-Token': 'authz.token'
+  }
 })
+  .persist()
+  .post('/source/upload', (body) => {
+    const expected = {
+      "meta": {
+        "version": 1,
+        "ownerid": "test-userid",
+        "owner": "test-username",
+        "dataset": "dp-no-resources",
+        "findability": "unlisted"
+      },
+      "inputs": [
+        {
+          "kind": "datapackage",
+          "url": "https://s3-us-west-2.amazonaws.com/iwWrmUOdQ2tuOPx8P5wU7w==",
+          "parameters": {
+            "resource-mapping": {}
+          }
+        }
+      ]
+    }
+    delete body.inputs[0].parameters.descriptor
+    return JSON.stringify(body) === JSON.stringify(expected)
+  })
   .reply(200, {
     success: true,
     id: 'test',
@@ -177,28 +253,30 @@ const apiSpecStore2 = nock(config.api, {
   }
 })
   .persist()
-  .post('/source/upload', {
-    meta: {
-      version: 1,
-      ownerid: config.profile.id,
-      owner: config.profile.username,
-      dataset: 'finance-vix',
-      findability: 'unlisted'
-    },
-    inputs: [
-      {
-        kind: 'datapackage',
-        url: urljoin(rawstoreUrl, finVixInfo['datapackage.json'].md5),
-        parameters: {
-          'resource-mapping': {
-            'vix-daily': urljoin(rawstoreUrl, finVixInfo['vix-daily'].md5)
+  .post('/source/upload', (body) => {
+    const expected = {
+      meta: {
+        version: 1,
+        ownerid: config.profile.id,
+        owner: config.profile.username,
+        dataset: 'finance-vix',
+        findability: 'unlisted'
+      },
+      inputs: [
+        {
+          kind: 'datapackage',
+          url: urljoin(rawstoreUrl, finVixInfo['datapackage.json'].md5),
+          parameters: {
+            'resource-mapping': {
+              'data/vix-daily.csv': urljoin(rawstoreUrl, finVixInfo['data/vix-daily.csv'].md5)
+            }
           }
         }
-      }
-    ],
-    schedule: {
-      crontab: '0 0 * * *'
+      ],
+      schedule: 'every 1d'
     }
+    delete body.inputs[0].parameters.descriptor
+    return JSON.stringify(body) === JSON.stringify(expected)
   })
   .reply(200, {
     success: true,
@@ -247,9 +325,7 @@ const apiSpecStore3 = nock(config.api, {
         output: 'vix-daily'
       }
     ],
-    schedule: {
-      crontab: '0 0 * * *'
-    }
+    schedule: 'every 1d'
   })
   .reply(200, {
     success: true,
@@ -299,7 +375,7 @@ test('push works with package with resource and schedule can be setup', async t 
   const dataset = await Dataset.load('test/fixtures/finance-vix')
   const options = {
     findability: 'unlisted',
-    schedule: '0 0 * * *'
+    schedule: 'every 1d'
   }
   await datahub.push(dataset, options)
 
@@ -307,6 +383,13 @@ test('push works with package with resource and schedule can be setup', async t 
   t.is(rawstoreStorageMock.isDone(), true)
   t.is(apiSpecStore2.isDone(), true)
   t.is(authorizeForServices.isDone(), true)
+})
+
+test('push works with package with remote resource', async t => {
+  const dataset = await Dataset.load('test/fixtures/dp-remote-resource')
+  await datahub.push(dataset, {findability: 'unlisted'})
+  t.is(rawstoreAuthorizeRemoteResource.isDone(), true)
+  t.is(apiSpecStore.isDone(), true)
 })
 
 // processExcelSheets function
@@ -350,4 +433,32 @@ test('handleOutputs function works', t => {
     }
   ]
   t.deepEqual(outputs, exp)
+})
+
+test('makeSourceSpec function works', async t => {
+  const rawstoreResponse = {
+    'datapackage.json': {
+      md5: finVixInfo['datapackage.json'].md5,
+      length: finVixInfo['datapackage.json'].length,
+      name: 'datapackage.json',
+      // eslint-disable-next-line camelcase
+      upload_query: {
+        key: finVixInfo['datapackage.json'].md5,
+        policy: '...',
+        'x-amz-algorithm': 'AWS4-HMAC-SHA256',
+        'x-amz-credential': 'XXX',
+        'x-amz-signature': 'YYY'
+      },
+      // eslint-disable-next-line camelcase
+      upload_url: rawstoreUrl
+    }
+  }
+  const ownerid = 'test'
+  const owner = 'test'
+  const dataset = await Dataset.load('test/fixtures/finance-vix')
+  const options = {findability: 'unlisted'}
+  const spec = await makeSourceSpec(rawstoreResponse, ownerid, owner, dataset, options)
+  t.is(spec.meta.dataset, 'finance-vix')
+  t.is(spec.inputs[0].kind, 'datapackage')
+  t.deepEqual(spec.inputs[0].parameters.descriptor, dataset.descriptor)
 })

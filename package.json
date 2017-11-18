@@ -1,6 +1,6 @@
 {
   "name": "datahub-cli",
-  "version": "0.4.4",
+  "version": "0.6.1",
   "description": "CLI for working with data packages",
   "main": "./lib/index.js",
   "bin": {
@@ -14,7 +14,7 @@
     "watch:test": "npm t -- --watch",
     "lint": "xo --quiet",
     "data": "node bin/data.js",
-    "pack": "pkg bin/data.js -c package.json -o packed/datahub",
+    "pack": "pkg bin/data.js -c package.json -o packed/data",
     "precommit": "npm run lint && npm run build"
   },
   "xo": {
@@ -70,7 +70,7 @@
     "clipboardy": "^1.1.4",
     "csv-parse": "^1.2.0",
     "csv-stringify": "^1.0.4",
-    "data.js": "^0.9.7",
+    "data.js": "^0.9.10",
     "datapackage": "git+https://github.com/anuveyatsu/datapackage-js-temp.git",
     "form-data": "^2.2.0",
     "human-readable-ids": "^1.0.3",
@@ -82,9 +82,11 @@
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "nconf": "^0.8.4",
+    "nock": "^9.1.0",
     "node-fetch": "^1.7.1",
     "opn": "^5.1.0",
     "ora": "^1.2.0",
+    "pkg": "^4.2.5",
     "progress": "^2.0.0",
     "tableschema": "1.0.0-alpha.14",
     "tv4": "^1.3.0",
@@ -96,8 +98,6 @@
     "ava": "^0.19.1",
     "cross-spawn": "^5.1.0",
     "inquirer-test": "^1.0.5",
-    "nock": "^9.0.13",
-    "pkg": "^4.2.2",
     "sinon": "^2.3.2",
     "stream-to-array": "^2.3.0",
     "xo": "^0.18.2"

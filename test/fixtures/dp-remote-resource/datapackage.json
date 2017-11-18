@@ -1,0 +1,14 @@
+{
+  "name": "dp-no-resources",
+  "title": "DP with Remote Resources",
+  "resources": [
+    {
+      "path": "https://raw.githubusercontent.com/datahq/datahub-cli/master/test/fixtures/sample.csv",
+      "pathType": "remote",
+      "name": "sample",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "schema": {}
+    }
+  ]
+}

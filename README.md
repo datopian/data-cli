@@ -30,6 +30,8 @@ export DATAHUB_JSON=~/.my-special-datahub.json
 
 # For developers
 
+*You need to have Node.js version >7.6*
+
 ## Install
 
 ```

@@ -44,24 +44,29 @@ const run = async () => {
       if (isEmpty) {
         const allResources = await get(dataset)
         // Save all files on disk
-        allResources.forEach(async resource => {
-          await saveIt(dataset.identifier.owner || '', dataset.identifier.name, resource)
+        const myPromises = allResources.map(async resource => {
+          return saveIt(dataset.identifier.owner || '', dataset.identifier.name, resource)
         })
+        await Promise.all(myPromises)
         savedPath = path.join(dataset.identifier.owner || '', dataset.identifier.name)
       } else { // If dest is not empty then error
         throw new Error(`${dataset.identifier.owner}/${dataset.identifier.name} is not empty!`)
       }
+      stopSpinner()
+      const end = new Date() - start
+      console.log(`Time elapsed: ${(end / 1000).toFixed(2)} s`)
+      console.log(`Dataset/file is saved in "${savedPath}"`)
     } else {
-      const file = await File.load(identifier)
+      const file = await File.load(identifier, {format: argv.format})
       const destPath = [file.descriptor.name, file.descriptor.format].join('.')
       const stream = await file.stream()
-      stream.pipe(fs.createWriteStream(destPath))
-      savedPath = destPath
+      stream.pipe(fs.createWriteStream(destPath)).on('finish', () => {
+        stopSpinner()
+        const end = new Date() - start
+        console.log(`Time elapsed: ${(end / 1000).toFixed(2)} s`)
+        console.log(`Dataset/file is saved in "${destPath}"`)
+      })
     }
-    stopSpinner()
-    const end = new Date() - start
-    console.log(`Time elapsed: ${(end / 1000).toFixed(2)} s`)
-    console.log(`Dataset/file is saved in "${savedPath}"`)
   } catch (err) {
     stopSpinner()
     handleError(err)
@@ -71,21 +76,25 @@ const run = async () => {
 
 run()
 
-const saveIt = async (owner, name, resource) => {
-  // We only can save if path is defined
-  if (resource.descriptor.path) {
-    const pathParts = url.parse(resource.descriptor.path)
-    let destPath
-    if (pathParts.protocol === 'http:' || pathParts.protocol === 'https:') {
-      const relativePath = resource.descriptor.path.split('/').slice(5).join('/')
-      destPath = path.join(owner, name, relativePath)
-    } else {
-      destPath = path.join(owner, name, resource.descriptor.path)
+const saveIt = (owner, name, resource) => {
+  return new Promise(async (resolve, reject) => {
+    // We only can save if path is defined
+    if (resource.descriptor.path) {
+      const pathParts = url.parse(resource.descriptor.path)
+      let destPath
+      if (pathParts.protocol === 'http:' || pathParts.protocol === 'https:') {
+        const relativePath = resource.descriptor.path.split('/').slice(5).join('/')
+        destPath = path.join(owner, name, relativePath)
+      } else {
+        destPath = path.join(owner, name, resource.descriptor.path)
+      }
+      mkdirp.sync(path.dirname(destPath))
+      const stream = await resource.stream()
+      stream.pipe(fs.createWriteStream(destPath)).on('finish', () => {
+        resolve()
+      })
     }
-    mkdirp.sync(path.dirname(destPath))
-    const stream = await resource.stream()
-    stream.pipe(fs.createWriteStream(destPath))
-  }
+  })
 }
 
 // TODO: Move this somewhere to utils

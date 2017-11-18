@@ -54,7 +54,7 @@ test('"data help" prints help message', async t => {
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('  ❒ data [options] <command> <args>'))
+  t.true(stdout[1].includes('  ■ data [options] <command> <args>'))
 })
 
 module.exports = {

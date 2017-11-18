@@ -5,7 +5,7 @@
 
 ```
 # Validates datapackage.json in given path/URL or in cwd if not given:
-$ data validate [path | URL]
+■ data validate [path | URL]
 
 # If a descriptor is invalid, it will print out validation errors.
 ```
@@ -20,11 +20,11 @@ $ data validate [path | URL]
 
 ```
 # Validate descriptor in current working directory:
-$ data validate
+■ data validate
 
 # Validate descriptor from local path:
-$ data validate test/fixtures/datapackage.json
+■ data validate test/fixtures/datapackage.json
 
 # Validate descriptor from URL:
-$ data validate https://bits-staging.datapackaged.com/metadata/core/gdp/_v/latest/datapackage.json
+■ data validate https://bits-staging.datapackaged.com/metadata/core/gdp/_v/latest/datapackage.json
 ```
