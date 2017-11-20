@@ -16,16 +16,16 @@ $ data --help
 
 ## Configuration
 
-Configuration is in `~/.datahub.json`. In general, you should not need to edit this by hand. You can also override any variables in there using environment variables or on the command line by using the same name e.g.
+Configuration is in `~/.config/datahub/config.json`. In general, you should not need to edit this by hand. You can also override any variables in there using environment variables or on the command line by using the same name e.g.
 
 ```
 $ data login --api https://api-testing.datahub.io
 ```
 
-NB: you can set a custom location for the `.datahub.json` config file using the `DATAHUB_JSON` environment variable e.g.:
+NB: you can set a custom location for the `config.json` config file using the `DATAHUB_JSON` environment variable e.g.:
 
 ```
-export DATAHUB_JSON=~/.my-special-datahub.json
+export DATAHUB_JSON=~/.config/datahub/my-special-config.json
 ```
 
 # For developers
