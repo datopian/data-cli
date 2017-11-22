@@ -5,8 +5,8 @@ const {resolve} = require('path')
 const {version} = require('../package.json')
 
 // Ours
-const {error} = require('../lib/utils/error')
-const {handleError} = require('../lib/utils/error')
+const {error} = require('datahub')
+const {handleError} = require('datahub')
 
 // Handle all uncaught exceptions and unhandled rejections
 process.on('uncaughtException', (err) => {

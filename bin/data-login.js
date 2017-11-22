@@ -5,12 +5,12 @@ const path = require('path')
 const minimist = require('minimist')
 const inquirer = require('inquirer')
 
-const {customMarked} = require('../lib/utils/tools.js')
-const config = require('../lib/utils/config')
-const {handleError} = require('../lib/utils/error')
-const info = require('../lib/utils/output/info.js')
-const {login, authenticate} = require('../lib/login')
-const wait = require('../lib/utils/output/wait')
+const {customMarked} = require('datahub')
+const {config} = require('datahub')
+const {handleError} = require('datahub')
+const {infoOutput} = require('datahub')
+const {login, authenticate} = require('datahub')
+const {wait} = require('datahub')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['login'],
@@ -43,7 +43,7 @@ Promise.resolve().then(async () => {
 
   if (out.authenticated) {
     stopSpinner()
-    info('You are already logged in.')
+    infoOutput('You are already logged in.')
     process.exit(0)
   }
   // Signup or signin
@@ -65,12 +65,12 @@ Promise.resolve().then(async () => {
     }
   ])
   const authUrl = out.providers[result.loginProvider].url
-  info('Opening browser and waiting for you to authenticate online')
+  infoOutput('Opening browser and waiting for you to authenticate online')
   try {
     await login(apiUrl, authUrl)
   } catch (err) {
     handleError(err)
   }
-  info('You are logged in!')
+  infoOutput('You are logged in!')
   process.exit(0)
 })

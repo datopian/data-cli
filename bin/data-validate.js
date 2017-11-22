@@ -6,9 +6,9 @@ const path = require('path')
 const minimist = require('minimist')
 
 // Ours
-const {validate} = require('../lib/validate')
-const {customMarked} = require('../lib/utils/tools')
-const {error} = require('../lib/utils/error')
+const {validate} = require('datahub').validate
+const {customMarked} = require('datahub')
+const {error} = require('datahub')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['validate'],

@@ -6,8 +6,8 @@ const path = require('path')
 const minimist = require('minimist')
 
 // Ours
-const {init} = require('../lib/init')
-const {customMarked} = require('../lib/utils/tools.js')
+const {init} = require('datahub').init
+const {customMarked} = require('datahub')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['init'],

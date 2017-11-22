@@ -8,13 +8,13 @@ const {Dataset} = require('data.js')
 const { write: copyToClipboard } = require('clipboardy')
 
 // Ours
-const config = require('../lib/utils/config')
-const {customMarked} = require('../lib/utils/tools.js')
-const {handleError} = require('../lib/utils/error')
-const wait = require('../lib/utils/output/wait')
-const {DataHub} = require('../lib/utils/datahub.js')
-const {authenticate} = require('../lib/login')
-const info = require('../lib/utils/output/info.js')
+const {config} = require('datahub')
+const {customMarked} = require('datahub')
+const {handleError} = require('datahub')
+const {wait} = require('datahub')
+const {DataHub} = require('datahub')
+const {authenticate} = require('datahub')
+const {infoOutput} = require('datahub')
 
 
 const argv = minimist(process.argv.slice(2), {
@@ -46,7 +46,7 @@ Promise.resolve().then(async () => {
     process.exit(1)
   }
   if (!out.authenticated) {
-    info('You need to login in order to push your data. Please, use `data login` command.')
+    infoOutput('You need to login in order to push your data. Please, use `data login` command.')
     process.exit(0)
   }
   try {

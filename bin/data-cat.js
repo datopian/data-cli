@@ -5,10 +5,10 @@ const path = require('path')
 const minimist = require('minimist')
 
 // Ours
-const {customMarked} = require('../lib/utils/tools.js')
+const {customMarked} = require('datahub')
 const {File} = require('data.js')
-const {writers} = require('../lib/cat')
-const info = require('../lib/utils/output/info.js')
+const {writers} = require('datahub').cat
+const {infoOutput} = require('datahub')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['cat'],
@@ -54,11 +54,11 @@ const dumpIt = async (res) => {
       const writeStream = fs.createWriteStream(argv._[1], {flags : 'w'})
       stream.pipe(writeStream)
       writeStream.on('close', () => {
-        info(`All done! Your data is saved in "${argv._[1]}"`)
+        infoOutput(`All done! Your data is saved in "${argv._[1]}"`)
       })
     }
   } else {
-    info(`Sorry, provided output format is not supported.`)
+    infoOutput(`Sorry, provided output format is not supported.`)
   }
 }
 
@@ -69,5 +69,5 @@ if (pathParts.name === '_' || (!pathParts.name && process.stdin.constructor.name
   const res = File.load(argv._[0], {format: argv.format})
   dumpIt(res)
 } else {
-  info('No input is provided. Please, run "data cat --help" for usage information.')
+  infoOutput('No input is provided. Please, run "data cat --help" for usage information.')
 }
