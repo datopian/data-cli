@@ -1,9 +1,0 @@
-{
-  "name": "name",
-  "resources": [
-    {
-      "name": "first-resource",
-      "data": ["data"]
-    }
-  ]
-}

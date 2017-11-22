@@ -1,8 +1,0 @@
-{
-  "name": "mock-dp",
-  "resources": [
-    {
-      "name": "mock-resource"
-    }
-  ]
-}
