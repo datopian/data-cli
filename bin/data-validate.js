@@ -4,11 +4,11 @@
 const fs = require('fs')
 const path = require('path')
 const minimist = require('minimist')
+const {validate} = require('datahub').validate
 
 // Ours
-const {validate} = require('datahub').validate
-const {customMarked} = require('datahub')
-const {error} = require('datahub')
+const {customMarked} = require('../lib/utils/tools')
+const {error} = require('../lib/utils/error')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['validate'],

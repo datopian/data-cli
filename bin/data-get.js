@@ -6,13 +6,13 @@ const path = require('path')
 const url = require('url')
 const mkdirp = require('mkdirp')
 const minimist = require('minimist')
-const {customMarked} = require('datahub')
-
-// Ours
 const {Dataset, File, isDataset} = require('data.js')
 const {get} = require('datahub')
-const {wait} = require('datahub')
-const {handleError} = require('datahub')
+
+// Ours
+const {customMarked} = require('../lib/utils/tools.js')
+const wait = require('../lib/utils/output/wait')
+const {handleError} = require('../lib/utils/error')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['get'],

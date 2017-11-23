@@ -4,10 +4,10 @@
 const fs = require('fs')
 const path = require('path')
 const minimist = require('minimist')
+const {init} = require('datahub').init
 
 // Ours
-const {init} = require('datahub').init
-const {customMarked} = require('datahub')
+const {customMarked} = require('../lib/utils/tools.js')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['init'],
