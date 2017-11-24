@@ -10,14 +10,14 @@ const {Dataset, File, xlsxParser, isDataset, isUrl} = require('data.js')
 const { write: copyToClipboard } = require('clipboardy')
 const toArray = require('stream-to-array')
 const infer = require('tableschema').infer
+const {config} = require('datahub')
+const {DataHub} = require('datahub')
+const {authenticate} = require('datahub')
 
 // Ours
-const config = require('../lib/utils/config')
 const {customMarked} = require('../lib/utils/tools.js')
 const {handleError} = require('../lib/utils/error')
 const wait = require('../lib/utils/output/wait')
-const {DataHub} = require('../lib/utils/datahub.js')
-const {authenticate} = require('../lib/login')
 const info = require('../lib/utils/output/info.js')
 
 

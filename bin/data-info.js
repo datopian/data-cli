@@ -3,10 +3,10 @@ const fs = require('fs')
 const path = require('path')
 
 const minimist = require('minimist')
-const {customMarked} = require('../lib/utils/tools.js')
-
 const data = require('data.js')
-const info = require('../lib/info')
+const {info} = require('datahub')
+
+const {customMarked} = require('../lib/utils/tools.js')
 const {handleError} = require('../lib/utils/error')
 
 const argv = minimist(process.argv.slice(2), {

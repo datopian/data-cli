@@ -3,11 +3,11 @@ const fs = require('fs')
 const path = require('path')
 
 const minimist = require('minimist')
+const {File} = require('data.js')
+const {writers} = require('datahub').cat
 
 // Ours
 const {customMarked} = require('../lib/utils/tools.js')
-const {File} = require('data.js')
-const {writers} = require('../lib/cat')
 const info = require('../lib/utils/output/info.js')
 
 const argv = minimist(process.argv.slice(2), {

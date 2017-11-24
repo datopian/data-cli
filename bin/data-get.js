@@ -6,11 +6,11 @@ const path = require('path')
 const url = require('url')
 const mkdirp = require('mkdirp')
 const minimist = require('minimist')
-const {customMarked} = require('../lib/utils/tools.js')
+const {Dataset, File, isDataset} = require('data.js')
+const {get} = require('datahub')
 
 // Ours
-const {Dataset, File, isDataset} = require('data.js')
-const {get} = require('../lib/get')
+const {customMarked} = require('../lib/utils/tools.js')
 const wait = require('../lib/utils/output/wait')
 const {handleError} = require('../lib/utils/error')
 

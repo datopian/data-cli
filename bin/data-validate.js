@@ -4,9 +4,9 @@
 const fs = require('fs')
 const path = require('path')
 const minimist = require('minimist')
+const {validate} = require('datahub').validate
 
 // Ours
-const {validate} = require('../lib/validate')
 const {customMarked} = require('../lib/utils/tools')
 const {error} = require('../lib/utils/error')
 

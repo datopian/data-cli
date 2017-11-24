@@ -5,15 +5,15 @@ const path = require('path')
 const minimist = require('minimist')
 const urljoin = require('url-join')
 const {Dataset} = require('data.js')
+const {DataHub} = require('datahub')
+const {authenticate} = require('datahub')
+const {config} = require('datahub')
 const { write: copyToClipboard } = require('clipboardy')
 
 // Ours
-const config = require('../lib/utils/config')
 const {customMarked} = require('../lib/utils/tools.js')
 const {handleError} = require('../lib/utils/error')
 const wait = require('../lib/utils/output/wait')
-const {DataHub} = require('../lib/utils/datahub.js')
-const {authenticate} = require('../lib/login')
 const info = require('../lib/utils/output/info.js')
 
 
