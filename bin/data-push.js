@@ -10,9 +10,9 @@ const {Dataset, File, xlsxParser, isDataset, isUrl} = require('data.js')
 const { write: copyToClipboard } = require('clipboardy')
 const toArray = require('stream-to-array')
 const infer = require('tableschema').infer
-const {config} = require('datahub')
-const {DataHub} = require('datahub')
-const {authenticate} = require('datahub')
+const {config} = require('datahub-client')
+const {DataHub} = require('datahub-client')
+const {authenticate} = require('datahub-client')
 
 // Ours
 const {customMarked} = require('../lib/utils/tools.js')

@@ -7,7 +7,7 @@ const url = require('url')
 const mkdirp = require('mkdirp')
 const minimist = require('minimist')
 const {Dataset, File, isDataset} = require('data.js')
-const {get} = require('datahub')
+const {get} = require('datahub-client')
 
 // Ours
 const {customMarked} = require('../lib/utils/tools.js')

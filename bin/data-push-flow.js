@@ -5,9 +5,9 @@ const path = require('path')
 const minimist = require('minimist')
 const urljoin = require('url-join')
 const {Dataset} = require('data.js')
-const {DataHub} = require('datahub')
-const {authenticate} = require('datahub')
-const {config} = require('datahub')
+const {DataHub} = require('datahub-client')
+const {authenticate} = require('datahub-client')
+const {config} = require('datahub-client')
 const { write: copyToClipboard } = require('clipboardy')
 
 // Ours

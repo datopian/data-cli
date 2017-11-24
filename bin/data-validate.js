@@ -4,7 +4,7 @@
 const fs = require('fs')
 const path = require('path')
 const minimist = require('minimist')
-const {validate} = require('datahub').validate
+const {validate} = require('datahub-client').validate
 
 // Ours
 const {customMarked} = require('../lib/utils/tools')

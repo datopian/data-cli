@@ -6,10 +6,10 @@ const minimist = require('minimist')
 const inquirer = require('inquirer')
 
 const {customMarked} = require('../lib/utils/tools.js')
-const {config} = require('datahub')
+const {config} = require('datahub-client')
 const {handleError} = require('../lib/utils/error')
 const info = require('../lib/utils/output/info.js')
-const {login, authenticate} = require('datahub')
+const {login, authenticate} = require('datahub-client')
 const wait = require('../lib/utils/output/wait')
 
 const argv = minimist(process.argv.slice(2), {

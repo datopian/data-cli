@@ -4,7 +4,7 @@ const path = require('path')
 
 const minimist = require('minimist')
 const data = require('data.js')
-const {info} = require('datahub')
+const {info} = require('datahub-client')
 
 const {customMarked} = require('../lib/utils/tools.js')
 const {handleError} = require('../lib/utils/error')

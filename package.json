@@ -67,7 +67,7 @@
     "chalk": "^2.3.0",
     "clipboardy": "^1.1.4",
     "data.js": "^0.9.10",
-    "datahub": "git+https://github.com/datahq/datahub.git",
+    "datahub-client": "^0.1.0",
     "datapackage": "git+https://github.com/anuveyatsu/datapackage-js-temp.git",
     "human-readable-ids": "^1.0.3",
     "inquirer": "^3.1.1",
