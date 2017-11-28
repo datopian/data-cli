@@ -9,7 +9,6 @@ const hri = require('human-readable-ids').hri
 const {Dataset, File, xlsxParser, isDataset, isUrl} = require('data.js')
 const { write: copyToClipboard } = require('clipboardy')
 const toArray = require('stream-to-array')
-const infer = require('tableschema').infer
 const {config} = require('datahub-client')
 const {DataHub} = require('datahub-client')
 const {authenticate} = require('datahub-client')
@@ -85,7 +84,7 @@ Promise.resolve().then(async () => {
     const datahub = new DataHub(datahubConfigs)
     const options = {
       findability: findability,
-      sheets: argv.sheets,
+      sheets: argv.sheets.toString(),
       outputs: {
         zip: argv.zip,
         sqlite: argv.sqlite
