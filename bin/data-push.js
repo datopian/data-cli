@@ -64,7 +64,6 @@ Promise.resolve().then(async () => {
     } else {
       dataset = await prepareDatasetFromFile(filePath)
     }
-
     stopSpinner = wait('Commencing push ...')
 
     const datahubConfigs = {
@@ -84,7 +83,7 @@ Promise.resolve().then(async () => {
     const datahub = new DataHub(datahubConfigs)
     const options = {
       findability: findability,
-      sheets: argv.sheets.toString(),
+      sheets: argv.sheets ? argv.sheets.toString() : undefined,
       outputs: {
         zip: argv.zip,
         sqlite: argv.sqlite
