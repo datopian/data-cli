@@ -1,4 +1,4 @@
-■ data push [PATH]
+  ■ data push [PATH]
 
   `PATH` (optional) is the path to the data file or data package.
 

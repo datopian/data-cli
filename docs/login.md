@@ -4,7 +4,7 @@
 
 Login to DataHub system using your Google/GitHub account.
 
-## Options:
+**Options:**
 
 ```
 -h, --help               Outputs usage information

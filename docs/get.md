@@ -10,14 +10,13 @@ URL can be one of:
 * dataset in GitHub (e.g., https://github.com/datasets/co2-ppm)
 * direct URL to dataset
 
-## Options:
+**Options:**
 
 ```
 -h, --help               Outputs usage information
---format                 Explicitly provide input file format, e.g., if it does not have conventional name
 ```
 
-## Example:
+**Example:**
 
 ```
 # Get dataset from DataHub

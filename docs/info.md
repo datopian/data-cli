@@ -1,21 +1,21 @@
 
-# Preview a Dataset
+**Preview a Dataset**
 
-## Usage:
+**Usage:**
 
 ```
 # Get information about Dataset:
 ■ data info [path]
 ```
 
-## Options:
+**Options:**
 
 ```
 -h, --help               Output usage information
 --format                 Explicitly provide input file format, e.g., if it does not have conventional name
 ```
 
-## Example:
+**Example:**
 
 ```
 # Get information about Dataset in current working directory:
