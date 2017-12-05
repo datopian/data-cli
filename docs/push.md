@@ -1,8 +1,9 @@
-■ data push [PATH]
 
+  ■ data push [PATH]
+  
   `PATH` (optional) is the path to the data file or data package.
 
-**Options:**
+## Options:
 
   -h, --help               Output usage information.
   
@@ -23,7 +24,7 @@
                            You also can list sheet numbers, e.g., `--sheets=1,2`. If you wanted to push only 
                            the second sheet, you would do `--sheets=2`. Sheet number starts from 1.
 
-**Examples:**
+## Examples:
 
 Uploads Data Package to DataHub in current working directory:
 

@@ -1,12 +1,13 @@
+```
 ■ data push-flow [PATH]
-
+```
   `PATH` (optional) is the path to the data package.
 
-Options:
+## Options:
 
   -h, --help               Output usage information
 
-**Examples**
+## Examples:
 
 \- Uploads Data Package to DataHub in current working directory
 

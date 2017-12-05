@@ -1,5 +1,5 @@
 
-#  Initialize Data Package
+# Initialize Data Package
 
 ## Usage:
 
@@ -7,7 +7,7 @@
 ■ data init
 ```
 
-## Options
+## Options:
 
 ```
 -h, --help               Output usage information

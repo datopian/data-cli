@@ -1,5 +1,5 @@
 
-#  Validate a descriptor
+# Validate a descriptor
 
 ## Usage:
 

@@ -1,7 +1,7 @@
-
+```
 ❒ data [options] <command> <args>
-
-Commands:
+```
+## Commands:
 
   DataHub:
 
@@ -22,12 +22,12 @@ Commands:
     help        [cmd]         Show help on cmd
     login                     Login or signup to the DataHub
 
-Options:
+## Options:
 
 -h, --help              Output usage information
 -v, --version           Output the version
 
-**Examples**
+## Examples
 
 Push a Data Package (in the current directory)
 

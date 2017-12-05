@@ -66,12 +66,13 @@ if (index > -1) {
     args.splice(index, 1)
     args.unshift('--help')
   }
-
   if (cmd.includes(' ')) {
     const parts = cmd.split(' ')
     cmd = parts.shift()
     args = [].concat(parts, args)
   }
+} else if (args[0] === '-h' || args[0] === '--help') {
+  cmd = 'help'
 } else if (args.length === 0) { // One final option is no command in which case show help
   cmd = 'help'
 } else {
