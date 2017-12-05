@@ -1,7 +1,7 @@
 
-#  Validate a descriptor
+# Validate a descriptor
 
-**Usage:**
+## Usage:
 
 ```
 # Validates datapackage.json in given path/URL or in cwd if not given:
@@ -10,13 +10,13 @@
 # If a descriptor is invalid, it will print out validation errors.
 ```
 
-**Options:**
+## Options:
 
 ```
 -h, --help               Output usage information
 ```
 
-**Example:**
+## Example:
 
 ```
 # Validate descriptor in current working directory:

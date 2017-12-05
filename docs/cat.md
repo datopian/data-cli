@@ -1,6 +1,6 @@
-
-■  data cat [OPTIONS] PATH-OR-URL [OUT-PATH]
-
+```
+■ data cat [OPTIONS] PATH-OR-URL [OUT-PATH]
+```
 Read a data file and write its output to stdout or `OUT-PATH` if `OUT-PATH` provided.
 
 Input data formats supported:
@@ -15,11 +15,11 @@ Output data files supported:
 * excel (.xlsx)
 * markdown (.md)
 
-**Options**
+## Options
 
 --format      explicitly provide input file format, e.g., if it does not have conventional name
 
-**Examples**
+## Examples
 
 Reading from stdin:
 

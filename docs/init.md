@@ -1,19 +1,19 @@
 
-#  Initialize Data Package
+# Initialize Data Package
 
-**Usage:**
+## Usage:
 
 ```
 ■ data init
 ```
 
-**Options**
+## Options:
 
 ```
 -h, --help               Output usage information
 ```
 
-**Example:**
+## Example:
 
 ```
 # Initialize Data Package in current working directory:
