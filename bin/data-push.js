@@ -90,11 +90,11 @@ Promise.resolve().then(async () => {
       },
       schedule: argv.schedule
     }
-    await datahub.push(dataset, options)
-
+    let res = await datahub.push(dataset, options)
+    let revisionId = res.flow_id.split('/').pop()
     stopSpinner()
     const message = '🙌  your data is published!\n'
-    const url = urljoin(config.get('domain'), datahubConfigs.owner, dataset.descriptor.name)
+    const url = urljoin(config.get('domain'), datahubConfigs.owner, dataset.descriptor.name,'v',revisionId)
     try {
       await copyToClipboard(url)
     } catch (err) {
