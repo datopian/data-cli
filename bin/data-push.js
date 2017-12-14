@@ -90,7 +90,7 @@ Promise.resolve().then(async () => {
       },
       schedule: argv.schedule
     }
-    let res = await datahub.push(dataset, options)
+    const res = await datahub.push(dataset, options)
     let revisionId = res.flow_id.split('/').pop()
     stopSpinner()
     const message = '🙌  your data is published!\n'

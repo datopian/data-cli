@@ -61,8 +61,7 @@ Promise.resolve().then(async () => {
       ownerid: config.get('profile').id,
       owner: config.get('profile').username
     })
-    let res = await datahub.pushFlow(path.join(datasetPath ,'.datahub/flow.yaml'))
-    console.log(res)
+    const res = await datahub.pushFlow(path.join(datasetPath ,'.datahub/flow.yaml'))
     let revisionId = res.flow_id.split('/').pop()
     
     stopSpinner()
