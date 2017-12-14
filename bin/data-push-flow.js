@@ -61,11 +61,12 @@ Promise.resolve().then(async () => {
       ownerid: config.get('profile').id,
       owner: config.get('profile').username
     })
-    await datahub.pushFlow(path.join(datasetPath ,'.datahub/flow.yaml'))
-
+    const res = await datahub.pushFlow(path.join(datasetPath ,'.datahub/flow.yaml'))
+    let revisionId = res.flow_id.split('/').pop()
+    
     stopSpinner()
     const message = '🙌  your data is published!\n'
-    const url = urljoin(config.get('domain'), config.get('profile').username, dataset.descriptor.name)
+    const url = urljoin(config.get('domain'), config.get('profile').username, dataset.descriptor.name,'v',revisionId)
     await copyToClipboard(url)
     console.log(message + '🔗  ' + url + ' (copied to clipboard)')
   } catch (err) {
