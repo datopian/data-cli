@@ -53,18 +53,17 @@ Promise.resolve().then(async () => {
     const datasetPath = argv._[0] || process.cwd()
     dataset = await Dataset.load(datasetPath)
     stopSpinner = wait('Commencing push ...')
-
-    const datahub = new DataHub({
+    
+    const datahubConfigs = {
       apiUrl: config.get('api'),
       token: config.get('token'),
       debug: argv.debug,
       ownerid: config.get('profile') ? config.get('profile').id : config.get('id'),
       owner: config.get('profile') ? config.get('profile').username : config.get('username')
-    })
-    
+    }
+    const datahub = new DataHub(datahubConfigs)
     const res = await datahub.pushFlow(path.join(datasetPath ,'.datahub/flow.yaml'))
     let revisionId = res.flow_id.split('/').pop()
-    
     stopSpinner()
     const message = '🙌  your data is published!\n'
     const url = urljoin(config.get('domain'), datahubConfigs.owner, dataset.descriptor.name,'v',revisionId)
