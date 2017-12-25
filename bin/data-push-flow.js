@@ -58,9 +58,10 @@ Promise.resolve().then(async () => {
       apiUrl: config.get('api'),
       token: config.get('token'),
       debug: argv.debug,
-      ownerid: config.get('profile').id,
-      owner: config.get('profile').username
+      ownerid: config.get('profile') ? config.get('profile').id : config.get('id'),
+      owner: config.get('profile') ? config.get('profile').username : config.get('username')
     })
+    
     const res = await datahub.pushFlow(path.join(datasetPath ,'.datahub/flow.yaml'))
     let revisionId = res.flow_id.split('/').pop()
     
