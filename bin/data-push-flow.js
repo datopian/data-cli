@@ -67,7 +67,7 @@ Promise.resolve().then(async () => {
     
     stopSpinner()
     const message = '🙌  your data is published!\n'
-    const url = urljoin(config.get('domain'), config.get('profile').username, dataset.descriptor.name,'v',revisionId)
+    const url = urljoin(config.get('domain'), datahubConfigs.owner, dataset.descriptor.name,'v',revisionId)
     await copyToClipboard(url)
     console.log(message + '🔗  ' + url + ' (copied to clipboard)')
   } catch (err) {
