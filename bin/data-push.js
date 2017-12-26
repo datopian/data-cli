@@ -95,12 +95,14 @@ Promise.resolve().then(async () => {
     stopSpinner()
     const message = '🙌  your data is published!\n'
     const url = urljoin(config.get('domain'), datahubConfigs.owner, dataset.descriptor.name,'v',revisionId)
+    let copied = ' (copied to clipboard)'
     try {
       await copyToClipboard(url)
     } catch (err) {
-      console.log(`Could not copy to clipboard - ${err.message}`)
+      copied = ''
+      console.log(`Warning: Failed to copy to clipboard - ${err.message}`)
     }
-    console.log(message + '🔗  ' + url + ' (copied to clipboard)')
+    console.log(message + '🔗  ' + url + copied)
   } catch (err) {
     stopSpinner()
     handleError(err)
