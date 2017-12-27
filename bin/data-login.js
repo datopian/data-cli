@@ -40,7 +40,6 @@ Promise.resolve().then(async () => {
     handleError(err)
     process.exit(1)
   }
-
   if (out.authenticated) {
     stopSpinner()
     info('You are already logged in.')
@@ -67,7 +66,7 @@ Promise.resolve().then(async () => {
   const authUrl = out.providers[result.loginProvider].url
   info('Opening browser and waiting for you to authenticate online')
   try {
-    await login(apiUrl, authUrl)
+    await login(apiUrl, authUrl, config.get('domain'))
   } catch (err) {
     handleError(err)
   }
