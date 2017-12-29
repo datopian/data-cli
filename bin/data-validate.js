@@ -64,7 +64,16 @@ try {
     if (result === true) {
       console.log('Your Data Package is valid!')
     } else {
-      error(result)
+      console.log(JSON.stringify(result))
+      // result is a TableSchemaError with attributes: message, rowNumber, and errors
+      // each error in errors is of form { message, rowNumber, columnNumber }
+      
+      // strip out confusing "(see 'error.errors')" in error message
+      const msg = result.message.replace(" (see 'error.errors')", '') + ' on line ' + result.rowNumber
+      error(msg)
+      result.errors.forEach(err => {
+        error(err.message)
+      })
     }
   })
 } catch (err) {
