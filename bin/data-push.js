@@ -121,8 +121,6 @@ Promise.resolve().then(async () => {
   }
 })
 
-
-
 const prepareDatasetFromFile = async filePath => {
   let file
   if (isUrl(filePath)) {
