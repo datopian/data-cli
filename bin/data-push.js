@@ -90,6 +90,14 @@ Promise.resolve().then(async () => {
       },
       schedule: argv.schedule
     }
+    
+    for (const idx in dataset._descriptor.resources) {
+      if (!dataset._descriptor.resources[idx].name.match(validationPatterns['nameValidation'])) {
+        dataset._descriptor.resources[idx].name = dataset._descriptor.resources[idx].name.replace(/\s+/g, '-').toLowerCase()
+        dataset._resources[idx]._descriptor.name = dataset._resources[idx]._descriptor.name.replace(/\s+/g, '-').toLowerCase()
+      }
+    }
+    
     const res = await datahub.push(dataset, options)
     let revisionId = res.flow_id.split('/').pop()
     stopSpinner()
@@ -112,6 +120,8 @@ Promise.resolve().then(async () => {
     process.exit(1)
   }
 })
+
+
 
 const prepareDatasetFromFile = async filePath => {
   let file
