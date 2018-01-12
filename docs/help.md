@@ -15,6 +15,7 @@
 
   Data Package specific:
 
+    init                      Create a Data Package
     validate                  Validate Data Package structure
 
   Administrative:
