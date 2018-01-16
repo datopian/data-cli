@@ -72,6 +72,7 @@
     "human-readable-ids": "^1.0.3",
     "inquirer": "^3.1.1",
     "inquirer-test": "^1.0.5",
+    "jsonlint": "^1.6.2",
     "marked": "^0.3.6",
     "marked-terminal": "^2.0.0",
     "minimist": "^1.2.0",

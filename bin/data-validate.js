@@ -4,6 +4,7 @@
 const fs = require('fs')
 const path = require('path')
 const minimist = require('minimist')
+const jsonlint = require('json-lint')
 const {validate} = require('datahub-client').validate
 
 // Ours
@@ -55,6 +56,12 @@ try {
   process.exit(1)
 }
 
+var lint = jsonlint(content.toString())
+if (lint.error) {
+  error(`Invalid JSON: on line ${lint.line}, character ${lint.character}\n\n  ${lint.error}\n\n${lint.evidence}`)
+  process.exit(1)
+}
+
 // Get JS object from file content
 const descriptor = JSON.parse(content)
 
@@ -64,11 +71,11 @@ try {
     if (result === true) {
       console.log('Your Data Package is valid!')
     } else {
-      console.log(JSON.stringify(result))
+      // console.log(JSON.stringify(result))
       // result is a TableSchemaError with attributes: message, rowNumber, and errors
       // each error in errors is of form { message, rowNumber, columnNumber }
       
-      // strip out confusing "(see 'error.errors')" in error message
+      // HACK: strip out confusing "(see 'error.errors')" in error message
       const msg = result.message.replace(" (see 'error.errors')", '') + ' on line ' + result.rowNumber
       error(msg)
       result.errors.forEach(err => {
