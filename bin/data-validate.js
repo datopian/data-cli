@@ -76,11 +76,16 @@ try {
       // each error in errors is of form { message, rowNumber, columnNumber }
       
       // HACK: strip out confusing "(see 'error.errors')" in error message
-      const msg = result.message.replace(" (see 'error.errors')", '') + ' on line ' + result.rowNumber
-      error(msg)
-      result.errors.forEach(err => {
-        error(err.message)
-      })
+      if (result.message) {
+        const msg = result.message.replace(" (see 'error.errors')", '') + ' on line ' + result.rowNumber
+        error(msg)
+        result.errors.forEach(err => {
+          error(err.message)
+        })
+      }
+      else {
+        error(result)
+      }
     }
   })
 } catch (err) {
