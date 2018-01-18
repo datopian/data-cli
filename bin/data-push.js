@@ -19,7 +19,6 @@ const {customMarked} = require('../lib/utils/tools.js')
 const {handleError} = require('../lib/utils/error')
 const wait = require('../lib/utils/output/wait')
 const info = require('../lib/utils/output/info.js')
-const {error} = require('../lib/utils/error')
 
 
 const argv = minimist(process.argv.slice(2), {
@@ -102,7 +101,7 @@ Promise.resolve().then(async () => {
   
     const validate = await validateMetadata(dataset._descriptor)
     
-    // const res = await datahub.push(dataset, options)
+    const res = await datahub.push(dataset, options)
     let revisionId = res.flow_id.split('/').pop()
     stopSpinner()
     const message = '🙌  your data is published!\n'
