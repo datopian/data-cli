@@ -53,7 +53,7 @@ Promise.resolve().then(async () => {
     const datasetPath = argv._[0] || process.cwd()
     dataset = await Dataset.load(datasetPath)
     stopSpinner = wait('Commencing push ...')
-    
+
     const datahubConfigs = {
       apiUrl: config.get('api'),
       token: config.get('token'),
@@ -62,11 +62,15 @@ Promise.resolve().then(async () => {
       owner: config.get('profile') ? config.get('profile').username : config.get('username')
     }
     const datahub = new DataHub(datahubConfigs)
-    const res = await datahub.pushFlow(path.join(datasetPath ,'.datahub/flow.yaml'))
-    let revisionId = res.flow_id.split('/').pop()
+    const res = await datahub.pushFlow(
+      path.join(datasetPath ,'.datahub/flow.yaml'),
+      path.join(datasetPath ,'.datahub/datapackage.json')
+    )
+    const revisionId = res.flow_id.split('/').pop()
+    const datasetName = res.dataset_id.split('/').pop()
     stopSpinner()
     const message = '🙌  your data is published!\n'
-    const url = urljoin(config.get('domain'), datahubConfigs.owner, dataset.descriptor.name,'v',revisionId)
+    const url = urljoin(config.get('domain'), datahubConfigs.owner, datasetName,'v',revisionId)
     await copyToClipboard(url)
     console.log(message + '🔗  ' + url + ' (copied to clipboard)')
   } catch (err) {
