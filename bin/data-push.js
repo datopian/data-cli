@@ -12,6 +12,7 @@ const toArray = require('stream-to-array')
 const {config} = require('datahub-client')
 const {DataHub} = require('datahub-client')
 const {authenticate} = require('datahub-client')
+const {validateMetadata} = require('datahub-client').validate
 
 // Ours
 const {customMarked} = require('../lib/utils/tools.js')
@@ -97,6 +98,8 @@ Promise.resolve().then(async () => {
         dataset._resources[idx]._descriptor.name = dataset._resources[idx]._descriptor.name.replace(/\s+/g, '-').toLowerCase()
       }
     }
+  
+    const validate = await validateMetadata(dataset._descriptor)
     
     const res = await datahub.push(dataset, options)
     let revisionId = res.flow_id.split('/').pop()
