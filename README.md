@@ -1,12 +1,12 @@
-[![Build Status](https://travis-ci.org/datahq/datahub-cli.svg?branch=master)](https://travis-ci.org/datahq/datahub-cli)
+[![Build Status](https://travis-ci.org/datahq/data-cli.svg?branch=master)](https://travis-ci.org/datahq/data-cli)
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
-[![Issues](https://img.shields.io/badge/issue-tracker-orange.svg)](https://github.com/datopian/datahub-cli/issues)
+[![Issues](https://img.shields.io/badge/issue-tracker-orange.svg)](https://github.com/datahq/data-cli/issues)
 
 # Usage
 
 ## Install
 
-To install `datahub-cli`, you need to download the package from the [releases section](https://github.com/datopian/datahub-cli/releases).
+To install `data`, you need to download the package from the [releases section](https://github.com/datahq/data-cli/releases).
 
 Once it is downloaded and installed run the following command to see all available options:
 
@@ -66,3 +66,4 @@ $ npm run lint # shows errors only
 # Fixing erros automatically:
 $ xo --fix
 ```
+

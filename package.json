@@ -1,5 +1,5 @@
 {
-  "name": "datahub-cli",
+  "name": "data-cli",
   "version": "0.6.3",
   "description": "CLI for working with data packages",
   "main": "./lib/index.js",
@@ -50,18 +50,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/datopian/datahub-cli.git"
+    "url": "git+https://github.com/datahq/data-cli.git"
   },
   "keywords": [
+    "data",
+    "data package",
     "datahub",
     "datapackage"
   ],
-  "author": "",
+  "author": "Rufus Pollock and DataHQ",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/datopian/datahub-cli/issues"
+    "url": "https://github.com/datahq/data-cli/issues"
   },
-  "homepage": "https://github.com/datopian/datahub-cli#readme",
+  "homepage": "https://datahub.io/docs",
   "dependencies": {
     "ansi-escapes": "^3.0.0",
     "chalk": "^2.3.0",
