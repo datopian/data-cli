@@ -1,6 +1,6 @@
 {
   "name": "data-cli",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "CLI for working with data packages",
   "main": "./lib/index.js",
   "bin": {
