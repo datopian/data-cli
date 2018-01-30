@@ -43,7 +43,9 @@ test.after('cleanup', t => {
     'sample.csv',
     'finance-vix/datapackage.json',
     'finance-vix/README.md',
-    'finance-vix/data/vix-daily.csv'
+    'finance-vix/data/vix-daily.csv',
+    'core/finance-vix',
+    'datasets/finance-vix'
   ]
   filesToRemove.forEach(fs.unlinkSync)
   fs.rmdirSync('finance-vix/data')
@@ -64,6 +66,29 @@ test('get command with file', async t => {
   const stdout = result.stdout.split('\n')
   t.true(stdout[0].includes('Time elapsed:'))
   t.true(stdout[1].includes('Dataset/file is saved in "sample.csv"'))
+})
+
+test('get command with dataset from DataHub', async t => {
+  const identifier = 'http://datahub.io/core/finance-vix'
+  const result = await runcli('get', identifier)
+  const stdout = result.stdout.split('\n')
+  t.true(fs.existsSync("core/finance-vix/datapackage.json")) 
+  t.true(fs.existsSync("core/finance-vix/data/vix-daily.csv"))
+  t.true(fs.existsSync("core/finance-vix/README.md"))
+  t.true(stdout[0].includes('Time elapsed:'))
+  t.true(stdout[1].includes('Dataset/file is saved in "core/finance-vix"'))
+  
+})
+
+test('get command with dataset from GitHub', async t => {
+  const identifier = 'https://github.com/datasets/finance-vix'
+  const result = await runcli('get', identifier)
+  const stdout = result.stdout.split('\n')
+  t.true(fs.existsSync("datasets/finance-vix/datapackage.json")) 
+  t.true(fs.existsSync("datasets/finance-vix/data/vix-daily.csv"))
+  t.true(fs.existsSync("datasets/finance-vix/README.md"))
+  t.true(stdout[0].includes('Time elapsed:'))
+  t.true(stdout[1].includes('Dataset/file is saved in "datasets/finance-vix"'))
 })
 
 test('runs init command with data input', async t => {
