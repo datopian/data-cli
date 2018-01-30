@@ -15,7 +15,7 @@
     "lint": "xo --quiet",
     "data": "node bin/data.js",
     "gzip": "ls packed/data* | xargs gzip -k",
-    "pack": "pkg bin/data.js -c package.json -o packed/data --options no-warnings && yarn run gzip",
+    "pack": "pkg bin/data.js -c package.json -o packed/data --options no-warnings && npm run gzip",
     "precommit": "npm run lint && npm run build"
   },
   "xo": {
