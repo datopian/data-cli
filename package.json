@@ -1,6 +1,6 @@
 {
   "name": "data-cli",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "description": "CLI for working with data packages",
   "main": "./lib/index.js",
   "bin": {
@@ -46,7 +46,8 @@
     ],
     "targets": [
       "node7-linux-x64",
-      "node7-macos-x64"
+      "node7-macos-x64",
+      "node7-win-x64"
     ]
   },
   "repository": {
