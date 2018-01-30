@@ -14,7 +14,8 @@
     "watch:test": "npm t -- --watch",
     "lint": "xo --quiet",
     "data": "node bin/data.js",
-    "pack": "pkg bin/data.js -c package.json -o packed/data",
+    "gzip": "ls packed/data* | xargs gzip -k",
+    "pack": "pkg bin/data.js -c package.json -o packed/data --options no-warnings && yarn run gzip",
     "precommit": "npm run lint && npm run build"
   },
   "xo": {
