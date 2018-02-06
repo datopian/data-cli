@@ -37,9 +37,9 @@ const run = async () => {
   try {
     const start = new Date()
     let savedPath
-    const itIsDatahubOrGitHub = parseDatasetIdentifier(identifier)
+    const parsedIdentifier = parseDatasetIdentifier(identifier)
     const itIsDataset = isDataset(identifier)
-    if (itIsDataset || itIsDatahubOrGitHub.type === "datahub" || itIsDatahubOrGitHub.type === "github") {
+    if (itIsDataset || parsedIdentifier.type === "datahub" || parsedIdentifier.type === "github") {
       const dataset = await Dataset.load(identifier)
       const isEmpty = checkDestIsEmpty(dataset.identifier.owner || '', dataset.identifier.name)
       if (isEmpty) {
