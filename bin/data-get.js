@@ -6,7 +6,7 @@ const path = require('path')
 const url = require('url')
 const mkdirp = require('mkdirp')
 const minimist = require('minimist')
-const {Dataset, File, isDataset} = require('data.js')
+const {Dataset, File, isDataset, parseDatasetIdentifier} = require('data.js')
 const {get} = require('datahub-client')
 
 // Ours
@@ -37,8 +37,9 @@ const run = async () => {
   try {
     const start = new Date()
     let savedPath
+    const parsedIdentifier = parseDatasetIdentifier(identifier)
     const itIsDataset = isDataset(identifier)
-    if (itIsDataset) {
+    if (itIsDataset || parsedIdentifier.type === "datahub" || parsedIdentifier.type === "github") {
       const dataset = await Dataset.load(identifier)
       const isEmpty = checkDestIsEmpty(dataset.identifier.owner || '', dataset.identifier.name)
       if (isEmpty) {
