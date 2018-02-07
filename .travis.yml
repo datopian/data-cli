@@ -6,7 +6,6 @@ install:
 script: npm test
 before_deploy: npm run pack
 deploy:
-  matrix:
   - provider: releases
     api_key:
       secure: "Ids51LgFBEoOR1q1DrmxNRP/ryPHPEAuf7vsO7aBVy+qFwcaRzwmvxvjPVa5907Sv7zkccg+qbFW9+W1HQ7IYi4nyaX/4o8WaxQgev2aki2KD5ztQlsWeGRcquAZfZplLrUbXJkEW8cnXcGIE8QKc08yiQa25+3s8fsBi797z8pj04iLAvkK600lFbKls90rQH7FsIlIrc0LarvNNFqEi/qtUoPeMQ6ksWoE1emvRZfLaIh8IIgzfN00MxX/hZb+50v2eZaypjfODZZL5GDvnCM+fofqCyEnJwo0JLxRHz7rHKN4/nAN6Rbvqx2bGQu7WtWCX3nT+u7rdgg3gjqR4oeHHpNqhalwXpfPWU/3G9HiyCSODqa/bps8FODM3hm8+LENQrsWYWZ6/mLxY76F97MqHTQHSz4rB74aKDc+nZ1Teqw8oykC0T47JwguH+ZIfKt7bOW9awWFkEbPSOrWNGQV7ZVjhxKlr4bazeYUyHFhTLjkawH8P1jRSt3H2a+AZES5cDuXEwKER7I7hZU7FCNNbFxUHJo0rSG/dynFk9jmiSmUELAKkkj/C0UTP3r55Zkq7LleOlfhXELmk6cEr+uQIAm/OzQ/CKL+5Vq1uhSNqmdxFGURHQNUQrv2tmysyNEzo+N9mwtOQH43JRjT7PnhuTWI/BOrqi8kk7csUaw="
