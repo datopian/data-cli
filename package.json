@@ -1,6 +1,6 @@
 {
   "name": "data-cli",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "CLI for working with data packages",
   "main": "./lib/index.js",
   "bin": {
@@ -14,7 +14,7 @@
     "watch:test": "npm t -- --watch",
     "lint": "xo --quiet",
     "data": "node bin/data.js",
-    "gzip": "ls packed/data* | xargs gzip -k",
+    "gzip": "rm -rf packed/*.gz && ls packed/data* | xargs gzip -k",
     "pack": "pkg bin/data.js -c package.json -o packed/data --options no-warnings && npm run gzip",
     "precommit": "npm run lint && npm run build"
   },
