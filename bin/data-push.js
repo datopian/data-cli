@@ -91,16 +91,18 @@ Promise.resolve().then(async () => {
       },
       schedule: argv.schedule
     }
-    
-    for (const idx in dataset._descriptor.resources) {
-      if (!dataset._descriptor.resources[idx].name.match(validationPatterns['nameValidation'])) {
-        dataset._descriptor.resources[idx].name = dataset._descriptor.resources[idx].name.replace(/\s+/g, '-').toLowerCase()
-        dataset._resources[idx]._descriptor.name = dataset._resources[idx]._descriptor.name.replace(/\s+/g, '-').toLowerCase()
+
+    // Validate metadata prior to pushing:
+    // Let's normalize resource names as it is common when they're capitalized
+    // or have spaces - they're generated from file names:
+    for (const idx in dataset.descriptor.resources) {
+      if (!dataset.descriptor.resources[idx].name.match(validationPatterns['nameValidation'])) {
+        dataset.descriptor.resources[idx].name = dataset.descriptor.resources[idx].name.replace(/\s+/g, '-').toLowerCase()
+        dataset.resources[idx].descriptor.name = dataset.resources[idx].descriptor.name.replace(/\s+/g, '-').toLowerCase()
       }
     }
-  
-    const validate = await validateMetadata(dataset._descriptor)
-    
+    const validate = await validateMetadata(dataset.descriptor)
+
     const res = await datahub.push(dataset, options)
     let revisionId = res.flow_id.split('/').pop()
     stopSpinner()
