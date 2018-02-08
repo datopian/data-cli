@@ -4,7 +4,7 @@
 const fs = require('fs')
 const path = require('path')
 const minimist = require('minimist')
-const jsonlint = require('json-lint')
+const jsonlint = require('jsonlint')
 const {validate} = require('datahub-client').validate
 
 // Ours
@@ -56,7 +56,7 @@ try {
   process.exit(1)
 }
 
-var lint = jsonlint(content.toString())
+var lint = jsonlint.parse(content.toString())
 if (lint.error) {
   error(`Invalid JSON: on line ${lint.line}, character ${lint.character}\n\n  ${lint.error}\n\n${lint.evidence}`)
   process.exit(1)
@@ -74,7 +74,7 @@ try {
       // console.log(JSON.stringify(result))
       // result is a TableSchemaError with attributes: message, rowNumber, and errors
       // each error in errors is of form { message, rowNumber, columnNumber }
-      
+
       // HACK: strip out confusing "(see 'error.errors')" in error message
       if (result.message) {
         const msg = result.message.replace(" (see 'error.errors')", '') + ' on line ' + result.rowNumber
