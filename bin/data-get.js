@@ -37,7 +37,7 @@ const run = async () => {
   try {
     const start = new Date()
     let savedPath
-    const parsedIdentifier = parseDatasetIdentifier(identifier)
+    const parsedIdentifier = await parseDatasetIdentifier(identifier)
     const itIsDataset = isDataset(identifier)
     if (itIsDataset || parsedIdentifier.type === "datahub" || parsedIdentifier.type === "github") {
       const dataset = await Dataset.load(identifier)
