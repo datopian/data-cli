@@ -113,6 +113,27 @@ test('info command with a file', async t => {
   t.true(stdout[0].includes('File descriptor:'))
 })
 
+test('validate command - basic dataset', async t => {
+  const path_ = 'test/fixtures/finance-vix/'
+  const result = await runcli('validate', path_)
+  const stdout = result.stdout.split('\n')
+  t.is(stdout[0], 'Your Data Package is valid!')
+})
+
+test('validate command - remote basic dataset', async t => {
+  const url_ = 'https://github.com/frictionlessdata/test-data/tree/master/packages/basic-csv'
+  const result = await runcli('validate', url_)
+  const stdout = result.stdout.split('\n')
+  t.is(stdout[0], 'Your Data Package is valid!')
+})
+
+test('validate command - invalid dataset', async t => {
+  const path_ = 'test/fixtures/test-data/packages/types-formats-and-constraints/constraints'
+  const result = await runcli('validate', path_)
+  const stdout = result.stdout.split('\n')
+  t.is(stdout[0], '> Error! There are 7 type and format mismatch errors on line 3')
+})
+
 module.exports = {
   runcli
 }

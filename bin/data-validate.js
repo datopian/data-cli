@@ -6,6 +6,7 @@ const path = require('path')
 const minimist = require('minimist')
 const jsonlint = require('jsonlint')
 const {validate} = require('datahub-client').validate
+const {Dataset} = require('data.js')
 
 // Ours
 const {customMarked} = require('../lib/utils/tools')
@@ -33,61 +34,55 @@ if (!path_) {
   path_ = process.cwd()
 }
 
-// Get path to datapackage.json
-if (fs.lstatSync(path_).isDirectory()) {
-  // Read datapackage.json in this dir
-  path_ = path.join(path_, 'datapackage.json')
-} else if (path.basename(path_) !== 'datapackage.json') {
-  // Check if there is a datapackage.json in cwd, if not throw an error
-  const dpJsonPath = path.join(process.cwd(), 'datapackage.json')
-  if (fs.existsSync(dpJsonPath)) {
-    path_ = dpJsonPath
-  } else {
-    error('datapackage.json not found in cwd')
+Dataset.load(path_).then(dataset => {
+  // Validate
+  try {
+    validate(dataset).then(result => {
+      if (result === true) {
+        console.log('Your Data Package is valid!')
+      } else {
+        // console.log(JSON.stringify(result))
+        // result is a TableSchemaError with attributes: message, rowNumber, and errors
+        // each error in errors is of form { message, rowNumber, columnNumber }
+
+        // HACK: strip out confusing "(see 'error.errors')" in error message
+        if (result.message) {
+          const msg = result.message.replace(" (see 'error.errors')", '') + ' on line ' + result.rowNumber
+          error(msg)
+          result.errors.forEach(err => {
+            error(err.message)
+          })
+        }
+        else {
+          error(result)
+        }
+      }
+    })
+  } catch (err) {
+    error(err.message)
   }
-}
-
-// Read given path
-let content
-try {
-  content = fs.readFileSync(path_)
-} catch (err) {
+}).catch(err => { // If 'Dataset.load' throws error then let's try to identify what's wrong with descriptor:
   error(err.message)
-  process.exit(1)
-}
-
-var lint = jsonlint.parse(content.toString())
-if (lint.error) {
-  error(`Invalid JSON: on line ${lint.line}, character ${lint.character}\n\n  ${lint.error}\n\n${lint.evidence}`)
-  process.exit(1)
-}
-
-// Get JS object from file content
-const descriptor = JSON.parse(content)
-
-// Validate
-try {
-  validate(descriptor, path.dirname(path_)).then(result => {
-    if (result === true) {
-      console.log('Your Data Package is valid!')
-    } else {
-      // console.log(JSON.stringify(result))
-      // result is a TableSchemaError with attributes: message, rowNumber, and errors
-      // each error in errors is of form { message, rowNumber, columnNumber }
-
-      // HACK: strip out confusing "(see 'error.errors')" in error message
-      if (result.message) {
-        const msg = result.message.replace(" (see 'error.errors')", '') + ' on line ' + result.rowNumber
-        error(msg)
-        result.errors.forEach(err => {
-          error(err.message)
-        })
-      }
-      else {
-        error(result)
-      }
+  // Get path to datapackage.json
+  if (fs.lstatSync(path_).isDirectory()) {
+    // Check datapackage.json in this dir and if doesn't exist then throw error:
+    path_ = path.join(path_, 'datapackage.json')
+    if (!fs.existsSync(path_)) {
+      error('datapackage.json not found in the given directory')
     }
-  })
-} catch (err) {
-  error(err.message)
-}
+  }
+  // Read given path
+  let content
+  try {
+    content = fs.readFileSync(path_)
+  } catch (err) {
+    error(err.message)
+    process.exit(1)
+  }
+
+  var lint = jsonlint.parse(content.toString())
+  if (lint.error) {
+    error(`Invalid JSON: on line ${lint.line}, character ${lint.character}\n\n  ${lint.error}\n\n${lint.evidence}`)
+    process.exit(1)
+  }
+})
