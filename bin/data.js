@@ -7,6 +7,7 @@ const {version} = require('../package.json')
 // Ours
 const {error} = require('../lib/utils/error')
 const {handleError} = require('../lib/utils/error')
+const updateNotifier = require('../lib/utils/update')
 
 // Handle all uncaught exceptions and unhandled rejections
 process.on('uncaughtException', (err) => {
@@ -16,6 +17,9 @@ process.on('uncaughtException', (err) => {
 process.on('unhandledRejection', (err) => {
   handleError(err)
 })
+
+// Check and notify if any updates are available:
+updateNotifier()
 
 // Check if the current path exists and throw and error
 // if the user is trying to deploy a non-existing path!
