@@ -29,8 +29,9 @@ const fileOrDatasetIdentifier = argv._[0] ? argv._[0] : './'
 
 Promise.resolve().then(async () => {
   try {
+    const parsedIdentifier = await data.parseDatasetIdentifier(fileOrDatasetIdentifier)
     const isdataset = data.isDataset(fileOrDatasetIdentifier)
-    if (isdataset) {
+    if (isdataset || parsedIdentifier.type === "datahub" || parsedIdentifier.type === "github") {
       const dataset = await data.Dataset.load(fileOrDatasetIdentifier)
       const out = info.infoPackage(dataset)
       console.log(customMarked(out))
