@@ -113,6 +113,20 @@ test('info command with a file', async t => {
   t.true(stdout[0].includes('File descriptor:'))
 })
 
+test('info command with a dataset from GitHub', async t => {
+  const identifier = 'https://github.com/datasets/finance-vix'
+  const result = await runcli('info', identifier)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('CBOE Volatility Index (VIX)'))
+})
+
+test('info command with a dataset from DataHub', async t => {
+  const identifier = 'https://datahub.io/core/finance-vix'
+  const result = await runcli('info', identifier)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('CBOE Volatility Index (VIX)'))
+})
+
 test('validate command - basic dataset', async t => {
   const path_ = 'test/fixtures/finance-vix/'
   const result = await runcli('validate', path_)
