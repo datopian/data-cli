@@ -24,9 +24,6 @@ matrix:
     env: TEST=false
 install: if $TEST; then npm install; else echo 'skipping this script...'; fi
 script: if $TEST; then npm test; else echo 'skipping this script...'; fi
-after_success:
-  - chmod ugo+x test-script.sh
-  - ./test-script.sh
 before_deploy: npm run pack
 deploy:
   - provider: releases
