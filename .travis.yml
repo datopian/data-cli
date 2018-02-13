@@ -6,11 +6,16 @@ matrix:
     env: TEST=true
     sudo: required
   - os: linux
-    node_js: ['7', '9']
+    node_js:
+      - '7'
+      - '9'
     env: TEST=false
     sudo: required
   - os: osx
-    node_js: ['7', '8', '9']
+    node_js:
+      - '7'
+      - '8'
+      - '9'
     env: TEST=false
 install: if $TEST; then npm install; else echo 'skipping this script...'; fi
 script: if $TEST; then npm test; else echo 'skipping this script...'; fi
