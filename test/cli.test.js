@@ -124,7 +124,7 @@ test('info command with a dataset from DataHub', async t => {
   const identifier = 'https://datahub.io/core/finance-vix'
   const result = await runcli('info', identifier)
   const stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('CBOE Volatility Index (VIX)'))
+  t.true(stdout[9].includes('vix-daily_csv '))
 })
 
 test('validate command - basic dataset', async t => {
