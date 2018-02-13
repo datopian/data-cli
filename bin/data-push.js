@@ -61,7 +61,14 @@ Promise.resolve().then(async () => {
         console.log('Error: You can push only local datasets.')
         process.exit(0)
       }
-      dataset = await Dataset.load(filePath)
+      try {
+        dataset = await Dataset.load(filePath)
+      } catch(err){
+        console.error('Error: '+err.message)
+        info("You can run 'data init' to create a datapackage.")
+        info("You can run 'data help push' to get more info.")
+        process.exit(1)
+      }
     } else {
       dataset = await prepareDatasetFromFile(filePath)
     }
