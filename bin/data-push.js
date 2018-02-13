@@ -65,7 +65,7 @@ Promise.resolve().then(async () => {
         dataset = await Dataset.load(filePath)
       } catch(err){
         console.error('Error: '+err.message)
-        info("You can run 'data init <path>' to create a datapackage.")
+        info("You can run 'data init' to create a datapackage.")
         info("You can run 'data help push' to get more info.")
         process.exit(1)
       }
