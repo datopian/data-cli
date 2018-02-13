@@ -6,7 +6,7 @@ const path = require('path')
 const url = require('url')
 const mkdirp = require('mkdirp')
 const minimist = require('minimist')
-const {Dataset, File, isDataset, parseDatasetIdentifier} = require('data.js')
+const {Dataset, File, isDataset, parseDatasetIdentifier, isFile} = require('data.js')
 const {get} = require('datahub-client')
 
 // Ours
@@ -30,7 +30,7 @@ if (argv.help || !argv._[0]) {
   process.exit(0)
 }
 
-const identifier = argv._[0]
+let identifier = argv._[0]
 
 const run = async () => {
   const stopSpinner = wait('Loading...')
@@ -39,7 +39,7 @@ const run = async () => {
     let savedPath
     const parsedIdentifier = await parseDatasetIdentifier(identifier)
     const itIsDataset = isDataset(identifier)
-    if (itIsDataset || parsedIdentifier.type === "datahub" || parsedIdentifier.type === "github") {
+    if (itIsDataset || parsedIdentifier.type === "datahub" || (parsedIdentifier.type === "github" && parsedIdentifier.name.slice((parsedIdentifier.name.lastIndexOf(".") - 1 >>> 0) + 2) === '')) {
       const dataset = await Dataset.load(identifier)
       const isEmpty = checkDestIsEmpty(dataset.identifier.owner || '', dataset.identifier.name)
       if (isEmpty) {
@@ -58,6 +58,9 @@ const run = async () => {
       console.log(`Time elapsed: ${(end / 1000).toFixed(2)} s`)
       console.log(`Dataset/file is saved in "${savedPath}"`)
     } else {
+      if (parsedIdentifier.type === "github" && parsedIdentifier.name.slice((parsedIdentifier.name.lastIndexOf(".") - 1 >>> 0) + 2) !== '') {
+        identifier += `?raw=true`
+      }
       const file = await File.load(identifier, {format: argv.format})
       const destPath = [file.descriptor.name, file.descriptor.format].join('.')
       const stream = await file.stream()
