@@ -16,7 +16,7 @@ const {validateMetadata} = require('datahub-client').validate
 
 // Ours
 const {customMarked} = require('../lib/utils/tools.js')
-const {handleError} = require('../lib/utils/error')
+const {error, handleError} = require('../lib/utils/error')
 const wait = require('../lib/utils/output/wait')
 const info = require('../lib/utils/output/info.js')
 
@@ -64,9 +64,11 @@ Promise.resolve().then(async () => {
       try {
         dataset = await Dataset.load(filePath)
       } catch(err){
-        console.error('Error: '+err.message)
-        info("You can run 'data init' to create a datapackage.")
-        info("You can run 'data help push' to get more info.")
+        error(err.message)
+        info("You can run:")
+        info("'data validate' to check your data.")
+        info("'data init' to create a datapackage.")
+        info("'data help push' to get more info.")
         process.exit(1)
       }
     } else {
