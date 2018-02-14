@@ -39,7 +39,8 @@ const run = async () => {
     let savedPath
     const parsedIdentifier = await parseDatasetIdentifier(identifier)
     const itIsDataset = isDataset(identifier)
-    if (itIsDataset || parsedIdentifier.type === "datahub" || (parsedIdentifier.type === "github" && parsedIdentifier.name.slice((parsedIdentifier.name.lastIndexOf(".") - 1 >>> 0) + 2) === '')) {
+    const githubDataset = parsedIdentifier.type === 'github' && parsedIdentifier.name.slice((parsedIdentifier.name.lastIndexOf('.') - 1 >>> 0) + 2) === ''
+    if (itIsDataset || parsedIdentifier.type === "datahub" || githubDataset) {
       const dataset = await Dataset.load(identifier)
       const isEmpty = checkDestIsEmpty(dataset.identifier.owner || '', dataset.identifier.name)
       if (isEmpty) {
@@ -58,7 +59,7 @@ const run = async () => {
       console.log(`Time elapsed: ${(end / 1000).toFixed(2)} s`)
       console.log(`Dataset/file is saved in "${savedPath}"`)
     } else {
-      if (parsedIdentifier.type === "github" && parsedIdentifier.name.slice((parsedIdentifier.name.lastIndexOf(".") - 1 >>> 0) + 2) !== '') {
+      if (!githubDataset) {
         identifier += `?raw=true`
       }
       const file = await File.load(identifier, {format: argv.format})
