@@ -59,7 +59,7 @@ const run = async () => {
       console.log(`Time elapsed: ${(end / 1000).toFixed(2)} s`)
       console.log(`Dataset/file is saved in "${savedPath}"`)
     } else {
-      if (!githubDataset) {
+      if (parsedIdentifier.type === 'github' && !githubDataset) {
         identifier += `?raw=true`
       }
       const file = await File.load(identifier, {format: argv.format})
