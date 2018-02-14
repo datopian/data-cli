@@ -8,6 +8,7 @@ const {info} = require('datahub-client')
 
 const {customMarked} = require('../lib/utils/tools.js')
 const {handleError} = require('../lib/utils/error')
+const printInfo = require('../lib/utils/output/info')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['info'],
@@ -46,6 +47,9 @@ Promise.resolve().then(async () => {
     }
   } catch (err) {
     handleError(err)
+    if (!argv._[0]) {
+      printInfo('Running `data info` without an argument will search a `datapackage.json` file in the current working directory.')
+    }
     process.exit(1)
   }
 })
