@@ -157,9 +157,9 @@ const prepareDatasetFromFile = async filePath => {
       ]
       const answers = await inquirer.prompt(questions)
 
-      if (answers.headers === 'n' & answers.types === 'n') {
+      if (answers.headers === 'n' || answers.types === 'n') {
         // Maybe nicer exit - user has chosen not to proceed for now ...
-        throw new Error('Please, generate datapackage.json and push.')
+        throw new Error('Please, generate datapackage.json (you can use "data init") and push.')
       }
     }
   }
