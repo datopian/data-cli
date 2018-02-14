@@ -6,7 +6,7 @@ const path = require('path')
 const url = require('url')
 const mkdirp = require('mkdirp')
 const minimist = require('minimist')
-const {Dataset, File, isDataset, parseDatasetIdentifier, isFile} = require('data.js')
+const {Dataset, File, isDataset, parseDatasetIdentifier} = require('data.js')
 const {get} = require('datahub-client')
 
 // Ours
