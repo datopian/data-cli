@@ -146,7 +146,16 @@ const prepareDatasetFromFile = async filePath => {
   // List of formats that are known as tabular
   const knownTabularFormats = ['csv', 'tsv', 'dsv']
   if (knownTabularFormats.includes(file.descriptor.format)) {
-    await file.addSchema()
+    try {
+      await file.addSchema()
+    } catch(err){
+      error("tabular file is invalid: " + file.path)
+      if (argv.debug){
+        console.log('> [debug]\n' + err.stack)
+      }
+      process.exit(1)
+    }
+
     if (argv.interactive) {
       // Prompt user with headers and fieldTypes
       const headers = file.descriptor.schema.fields.map(field => field.name)
@@ -157,9 +166,9 @@ const prepareDatasetFromFile = async filePath => {
       ]
       const answers = await inquirer.prompt(questions)
 
-      if (answers.headers === 'n' & answers.types === 'n') {
+      if (answers.headers === 'n' || answers.types === 'n') {
         // Maybe nicer exit - user has chosen not to proceed for now ...
-        throw new Error('Please, generate datapackage.json and push.')
+        throw new Error('Please, generate datapackage.json (you can use "data init") and push.')
       }
     }
   }
