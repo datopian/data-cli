@@ -151,3 +151,105 @@ test('validate command - invalid dataset', async t => {
 module.exports = {
   runcli
 }
+
+// QA tests [Cat: basic csv]
+
+test('cat command - basic behaviour', async t => {
+  const path_ = 'test/fixtures/test-data/files/csv/all-schema-types.csv'
+  const results = await runcli('cat', path_)
+  const stdout = results.stdout.split('\n')
+  t.true(stdout[3].includes('│ 1.0  │'))
+})
+
+test('cat command - remote csv file', async t => {
+  const url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/csv/all-schema-types.csv'
+  const results = await runcli('cat', url_)
+  const stdout = results.stdout.split('\n')
+  t.true(stdout[3].includes('│ 1.0  │'))
+})
+
+test('cat command - remote non tabular file', async t => {
+  const url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/other/sample.txt'
+  const results = await runcli('cat', url_)
+  const stdout = results.stdout.split('\n')
+  t.true(stdout[1].includes('> Error! We do not have a parser for that format: txt'))
+})
+
+test('cat command - non-existing path', async t => {
+  const path_ = 'non/existing/path'
+  const results = await runcli('cat', path_)
+  const stdout = results.stdout.split('\n')
+  t.is(stdout[0], '> Error! ENOENT: no such file or directory, open \'non/existing/path\'')
+})
+
+test('cat command - URL that returns 404', async t => {
+  const url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/other/sampl.csv'
+  const results = await runcli('cat', url_)
+  const stdout = results.stdout.split('\n')
+  t.is(stdout[0], '> Error! Provided URL is invalid')
+  t.is(stdout[1], '> Error! Not Found')
+})
+
+// end of [Cat: basic csv]
+
+// QA tests [Cat: different separators]
+
+test('cat command - files with different separator', async t => {
+  // Local files:
+  let path_ = 'test/fixtures/test-data/files/csv/separators/semicolon.csv'
+  let results = await runcli('cat', path_)
+  let stdout = results.stdout.split('\n')
+  t.false(stdout[1].includes(';'))
+  t.true(stdout[1].includes('number'))
+
+  path_ = 'test/fixtures/test-data/files/csv/separators/carets.csv'
+  results = await runcli('cat', path_)
+  stdout = results.stdout.split('\n')
+  t.false(stdout[1].includes('^'))
+  t.true(stdout[1].includes('number'))
+
+  // Remote files:
+  let url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/csv/separators/semicolon.csv'
+  results = await runcli('cat', url_)
+  stdout = results.stdout.split('\n')
+  t.false(stdout[1].includes(';'))
+  t.true(stdout[1].includes('number'))
+
+  url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/csv/separators/carets.csv'
+  results = await runcli('cat', url_)
+  stdout = results.stdout.split('\n')
+  t.false(stdout[1].includes('^'))
+  t.true(stdout[1].includes('number'))
+})
+
+// end of [Cat: different separators]
+
+// QA test [Cat: different encodings]
+
+test.skip('cat command - different encodings', async t => {
+  const path_ = 'test/fixtures/test-data/files/csv/encodings/iso8859.csv'
+  let results = await runcli('cat', path_)
+  let stdout = results.stdout.split('\n')
+  t.true(stdout[3].includes('Réunion'))
+
+  const url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/csv/encodings/western-macos-roman.csv'
+  results = await runcli('cat', url_)
+  stdout = results.stdout.split('\n')
+  t.true(stdout[3].includes('Réunion'))
+})
+
+// end of [Cat: different encodings]
+
+test('cat command - inconsistent columns', async t => {
+  const path_ = 'test/fixtures/test-data/files/csv/inconsistent-column-number.csv'
+  const results = await runcli('cat', path_)
+  const stdout = results.stdout.split('\n')
+  t.is(stdout[0], '> Error! Number of columns is inconsistent on line 3')
+})
+
+test('cat command - remote excel file', async t => {
+  const url_ = 'https://github.com/frictionlessdata/test-data/raw/master/files/excel/sample-1-sheet.xls'
+  const results = await runcli('cat', url_)
+  const stdout = results.stdout.split('\n')
+  t.true(stdout[1].includes('number'))
+})
