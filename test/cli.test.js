@@ -99,33 +99,119 @@ test('"data help" prints help message', async t => {
   t.true(stdout[1].includes('❒ data [options] <command> <args>'))
 })
 
-test('info command with a dataset', async t => {
-  const identifier = 'test/fixtures/finance-vix'
-  const result = await runcli('info', identifier)
-  const stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('CBOE Volatility Index (VIX)'))
+// QA tests [Info: basic dataset]
+
+test('Info: basic dataset', async t => {
+  let identifier = 'test/fixtures/test-data/packages/basic-csv'
+  let result = await runcli('info', identifier)
+  let stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('No readme'))
+  t.true(stdout[7].includes('comma-separated'))
+
+  identifier = 'https://github.com/frictionlessdata/test-data/tree/master/packages/basic-csv'
+  result = await runcli('info', identifier)
+  stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('No readme'))
+  t.true(stdout[7].includes('comma-separated'))
 })
 
-test('info command with a file', async t => {
-  const identifier = 'test/fixtures/sample.csv'
-  const result = await runcli('info', identifier)
-  const stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('File descriptor:'))
+// end of [Info: basic dataset]
+
+// QA tests [Info: dataset with multiple resources]
+
+test('Info: dataset with multiple resources', async t => {
+  let identifier = 'test/fixtures/test-data/packages/different-separators'
+  let result = await runcli('info', identifier)
+  let stdout = result.stdout.split('\n')
+  let hasCaretsResource = stdout.find(item => item.includes('carets'))
+  let hasCommaResource = stdout.find(item => item.includes('comma'))
+  t.truthy(hasCaretsResource)
+  t.truthy(hasCommaResource)
+
+  identifier = 'https://github.com/frictionlessdata/test-data/tree/master/packages/different-separators'
+  result = await runcli('info', identifier)
+  stdout = result.stdout.split('\n')
+  hasCaretsResource = stdout.find(item => item.includes('carets'))
+  hasCommaResource = stdout.find(item => item.includes('comma'))
+  t.truthy(hasCaretsResource)
+  t.truthy(hasCommaResource)
 })
+
+// end if [Info: dataset with multiple resources]
+
+// QA tests [Info: basic CSV]
+
+test('Info: basic CSV', async t => {
+  let identifier = 'test/fixtures/test-data/files/csv/100kb.csv'
+  let result = await runcli('info', identifier)
+  let stdout = result.stdout.split('\n')
+  let hasDialect = stdout.find(item => item.includes('dialect'))
+  let hasSchema = stdout.find(item => item.includes('schema'))
+  let hasEncodings = stdout.find(item => item.includes('encoding'))
+  let hasCreatedDate = stdout.find(item => item.includes('created'))
+  let hasValueInTheTenthRow = stdout.find(item => item.includes('Sharlene'))
+  let hasValueInTheEleventhRow = stdout.find(item => item.includes('Misti'))
+  t.truthy(hasDialect)
+  t.truthy(hasSchema)
+  t.truthy(hasEncodings)
+  t.falsy(hasCreatedDate)
+  t.truthy(hasValueInTheTenthRow)
+  t.falsy(hasValueInTheEleventhRow)
+})
+
+// end of [Info: basic CSV]
+
+// QA tests [Info: non-tabular file]
+
+test('Info: non-tabular file', async t => {
+  let identifier = 'test/fixtures/test-data/files/other/sample.pdf'
+  let result = await runcli('info', identifier)
+  let stdout = result.stdout.split('\n')
+  let hasName = stdout.find(item => item.includes('name'))
+  let hasFormat = stdout.find(item => item.includes('format'))
+  let hasPath = stdout.find(item => item.includes('path'))
+  let hasDialect = stdout.find(item => item.includes('dialect'))
+  t.truthy(hasName)
+  t.truthy(hasFormat)
+  t.truthy(hasPath)
+  t.falsy(hasDialect)
+
+  identifier = 'https://github.com/frictionlessdata/test-data/raw/master/files/other/sample.pdf'
+  result = await runcli('info', identifier)
+  stdout = result.stdout.split('\n')
+  hasName = stdout.find(item => item.includes('name'))
+  hasFormat = stdout.find(item => item.includes('format'))
+  hasPath = stdout.find(item => item.includes('path'))
+  hasDialect = stdout.find(item => item.includes('dialect'))
+  t.truthy(hasName)
+  t.truthy(hasFormat)
+  t.truthy(hasPath)
+  t.falsy(hasDialect)
+})
+
+// QA tests [Info: from datahub and github]
 
 test('info command with a dataset from GitHub', async t => {
   const identifier = 'https://github.com/datasets/finance-vix'
   const result = await runcli('info', identifier)
   const stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('CBOE Volatility Index (VIX)'))
+  const hasReadme = stdout.find(item => item.includes('CBOE Volatility Index (VIX) time-series dataset including'))
+  const hasResource = stdout.find(item => item.includes('vix-daily'))
+  t.truthy(hasReadme)
+  t.truthy(hasResource)
 })
 
 test('info command with a dataset from DataHub', async t => {
   const identifier = 'https://datahub.io/core/finance-vix'
   const result = await runcli('info', identifier)
   const stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('CBOE Volatility Index (VIX)'))
+  const hasReadme = stdout.find(item => item.includes('CBOE Volatility Index (VIX) time-series dataset including'))
+  const hasResource = stdout.find(item => item.includes('vix-daily'))
+  t.truthy(hasReadme)
+  t.truthy(hasResource)
 })
+
+// end of [Info: from datahub and github]
 
 test('validate command - basic dataset', async t => {
   const path_ = 'test/fixtures/finance-vix/'
