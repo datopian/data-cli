@@ -127,13 +127,6 @@ test('info command with a dataset from DataHub', async t => {
   t.true(stdout[0].includes('CBOE Volatility Index (VIX)'))
 })
 
-test('push command with a inlined dataset', async t => {
-  const identifier = 'test/fixtures/test-data/packages/inlined-data'
-  const result = await runcli('push', identifier)
-  const stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('Unfortunately, we do not support inlined datasets'))
-})
-
 test('validate command - basic dataset', async t => {
   const path_ = 'test/fixtures/finance-vix/'
   const result = await runcli('validate', path_)
