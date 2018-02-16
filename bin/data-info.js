@@ -38,7 +38,10 @@ Promise.resolve().then(async () => {
       console.log(customMarked(out))
     } else {
       const file = data.File.load(fileOrDatasetIdentifier, {format: argv.format})
-      await file.addSchema()
+      const knownTabularFormats = ['csv', 'tsv', 'dsv']
+      if (knownTabularFormats.includes(file.descriptor.format)) {
+        await file.addSchema()
+      }
       const out = await info.infoResource(file)
       console.log(customMarked('**File descriptor:**'))
       console.log(JSON.stringify(file.descriptor, null, 2))
