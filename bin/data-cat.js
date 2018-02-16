@@ -3,12 +3,13 @@ const fs = require('fs')
 const path = require('path')
 
 const minimist = require('minimist')
-const {File} = require('data.js')
+const {File, isUrl} = require('data.js')
 const {writers} = require('datahub-client').cat
 
 // Ours
 const {customMarked} = require('../lib/utils/tools.js')
 const info = require('../lib/utils/output/info.js')
+const {handleError, error} = require('../lib/utils/error')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['cat'],
@@ -47,7 +48,16 @@ const writersDatabase = {
 const dumpIt = async (res) => {
   let stream
   if (outFormat in writersDatabase) {
-    stream = await writersDatabase[outFormat](res)
+    try {
+      stream = await writersDatabase[outFormat](res)
+    } catch (err) {
+      if (isUrl(argv._[0])) {
+        error('Provided URL is invalid')
+      }
+      handleError(err)
+      process.exit(1)
+    }
+
     if (outFormat === 'ascii') { // Write to stdout
       stream.pipe(process.stdout)
     } else { // Write to file
