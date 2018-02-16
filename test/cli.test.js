@@ -161,6 +161,34 @@ test('Info: basic CSV', async t => {
 
 // end of [Info: basic CSV]
 
+// QA tests [Info: non-tabular file]
+
+test('Info: non-tabular file', async t => {
+  let identifier = 'test/fixtures/test-data/files/other/sample.pdf'
+  let result = await runcli('info', identifier)
+  let stdout = result.stdout.split('\n')
+  let hasName = stdout.find(item => item.includes('name'))
+  let hasFormat = stdout.find(item => item.includes('format'))
+  let hasPath = stdout.find(item => item.includes('path'))
+  let hasDialect = stdout.find(item => item.includes('dialect'))
+  t.truthy(hasName)
+  t.truthy(hasFormat)
+  t.truthy(hasPath)
+  t.falsy(hasDialect)
+
+  identifier = 'https://github.com/frictionlessdata/test-data/raw/master/files/other/sample.pdf'
+  result = await runcli('info', identifier)
+  stdout = result.stdout.split('\n')
+  hasName = stdout.find(item => item.includes('name'))
+  hasFormat = stdout.find(item => item.includes('format'))
+  hasPath = stdout.find(item => item.includes('path'))
+  hasDialect = stdout.find(item => item.includes('dialect'))
+  t.truthy(hasName)
+  t.truthy(hasFormat)
+  t.truthy(hasPath)
+  t.falsy(hasDialect)
+})
+
 // QA tests [Info: from datahub and github]
 
 test('info command with a dataset from GitHub', async t => {

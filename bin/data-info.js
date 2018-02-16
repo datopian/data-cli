@@ -32,7 +32,8 @@ Promise.resolve().then(async () => {
   try {
     const parsedIdentifier = await data.parseDatasetIdentifier(fileOrDatasetIdentifier)
     const isdataset = data.isDataset(fileOrDatasetIdentifier)
-    if (isdataset || parsedIdentifier.type === "datahub" || parsedIdentifier.type === "github") {
+    const githubDataset = parsedIdentifier.type === 'github' && parsedIdentifier.name.slice((parsedIdentifier.name.lastIndexOf('.') - 1 >>> 0) + 2) === ''
+    if (isdataset || parsedIdentifier.type === "datahub" || githubDataset) {
       const dataset = await data.Dataset.load(fileOrDatasetIdentifier)
       const out = info.infoPackage(dataset)
       console.log(customMarked(out))
@@ -42,11 +43,18 @@ Promise.resolve().then(async () => {
       if (knownTabularFormats.includes(file.descriptor.format)) {
         await file.addSchema()
       }
-      const out = await info.infoResource(file)
+      // Only print table if resource is tabular:
+      let table
+      let tabularFormatsAndExcel = knownTabularFormats.concat(['xls', 'xlsx'])
+      if (tabularFormatsAndExcel.includes(file.descriptor.format)) {
+        table = await info.infoResource(file)
+      }
       console.log(customMarked('**File descriptor:**'))
       console.log(JSON.stringify(file.descriptor, null, 2))
-      console.log(out)
-      console.log(customMarked('*Only showing first 10 lines. There might be more data.*'))
+      if (table) {
+        console.log(table)
+        console.log(customMarked('*Only showing first 10 lines. There might be more data.*'))
+      }
     }
   } catch (err) {
     handleError(err)
