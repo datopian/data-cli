@@ -74,6 +74,13 @@ Promise.resolve().then(async () => {
     } else {
       dataset = await prepareDatasetFromFile(filePath)
     }
+    
+    dataset.resources.forEach(resource => {
+      if (resource.constructor.name === 'FileInline') {
+        throw new Error('Unfortunately, we do not support inlined datasets')
+      }
+    })
+    
     stopSpinner = wait('Commencing push ...')
 
     const datahubConfigs = {
