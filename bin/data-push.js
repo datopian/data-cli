@@ -75,7 +75,7 @@ Promise.resolve().then(async () => {
       dataset = await prepareDatasetFromFile(filePath)
     }
     
-    dataset._resources.forEach(resource => {
+    dataset.resources.forEach(resource => {
       if (resource.constructor.name === 'FileInline') {
         throw new Error('Unfortunately, we do not support inlined datasets')
       }
