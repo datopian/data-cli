@@ -77,7 +77,7 @@ Promise.resolve().then(async () => {
     
     dataset.resources.forEach(resource => {
       if (resource.constructor.name === 'FileInline') {
-        throw new Error('Unfortunately, we do not support inlined datasets')
+        throw new Error('We do not support dataset with inlined data')
       }
     })
     
