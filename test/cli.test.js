@@ -5,10 +5,9 @@ const path = require('path')
 const test = require('ava')
 const {spawn} = require('cross-spawn')
 const run = require('inquirer-test')
+const {ENTER} = require('inquirer-test')
 
 const {version} = require('../package.json')
-const cliPath = path.join(__dirname, '../bin/data-init.js')
-const {ENTER} = require('inquirer-test')
 
 const runcli = (...args) => {
   return new Promise((resolve, reject) => {
@@ -67,9 +66,8 @@ test('get command with file', async t => {
 })
 
 test('runs init command with data input', async t => {
-  const result = await (run(cliPath, [
-    'my-datapackage', ENTER
-  ]))
+  const cliPath = path.join(__dirname, '../bin/data-init.js')
+  const result = await run([cliPath], ['my-datapackage', ENTER])
   t.true(result.includes('? Enter Data Package name (scratchpad)'))
   t.true(result.includes('my-datapackage'))
 })
@@ -98,6 +96,91 @@ test('"data help" prints help message', async t => {
   t.true(stdout.length > 1)
   t.true(stdout[1].includes('❒ data [options] <command> <args>'))
 })
+
+// QA tests [Push: Invalid datapackage.json]
+
+test('push command fails with invalid JSON descriptor', async t => {
+  let path_ = 'test/fixtures/test-data/packages/invalid-json-single-quotes'
+  let result = await runcli('push', path_)
+  let stdout = result.stdout.split('\n')
+  t.is(stdout[0], '> Error! Unexpected token \' in JSON at position 27')
+  // Suggests running validate command:
+  t.is(stdout[2], '> \'data validate\' to check your data.')
+
+  path_ = 'test/fixtures/test-data/packages/invalid-json-missing-comma'
+  result = await runcli('push', path_)
+  stdout = result.stdout.split('\n')
+  t.is(stdout[0], '> Error! Unexpected string in JSON at position 113')
+})
+
+// end of [Push: Invalid datapackage.json]
+
+// QA tests [Push: Invalid descriptor metadata]
+
+test('push command fails with descriptor validation error', async t => {
+  let path_ = 'test/fixtures/test-data/packages/invalid-descriptor'
+  let result = await runcli('push', path_)
+  let stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('> Error! Error: Descriptor validation error:'))
+  t.true(stdout[1].includes('String does not match pattern: ^([-a-z0-9._/])+$'))
+  t.true(stdout[2].includes('at \"/name\" in descriptor'))
+})
+
+// end of [Push: Invalid descriptor metadata]
+
+// QA tests [Push: Missing descriptor]
+
+test('push command fails if descriptor is missing', async t => {
+  let path_ = 'test/fixtures/test-data/packages'
+  let result = await runcli('push', path_)
+  let stdout = result.stdout.split('\n')
+  t.is(stdout[0], '> Error! No datapackage.json at destination.')
+  let suggestsToDoValidate = stdout.find(item => item.includes('data validate'))
+  let suggestsToDoInit = stdout.find(item => item.includes('data init'))
+  t.truthy(suggestsToDoValidate)
+  t.truthy(suggestsToDoInit)
+})
+
+// end of [Push: Missing descriptor]
+
+// QA tests [Push: pushing remote data package]
+
+test('push command fails for remote datasets', async t => {
+  let path_ = 'https://github.com/frictionlessdata/test-data/blob/master/packages/basic-csv/datapackage.json'
+  let result = await runcli('push', path_)
+  let stdout = result.stdout.split('\n')
+  t.is(stdout[0], 'Error: You can push only local datasets.')
+})
+
+// end of [Push: pushing remote data package]
+
+// QA tests [Pushing invalid CSV file (irrespective of schema)]
+// Also includes [pushing invalid CSV from URL ]
+
+test('push command fails for invalid CSV file', async t => {
+  let path_ = 'test/fixtures/test-data/packages/invalid-data/extra-column.csv'
+  let result = await runcli('push', path_)
+  let stdout = result.stdout.split('\n')
+  t.is(stdout[0], '> Error! Number of columns is inconsistent on line 2')
+
+  path_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/packages/invalid-data/extra-column.csv'
+  result = await runcli('push', path_)
+  stdout = result.stdout.split('\n')
+  t.is(stdout[0], '> Error! Number of columns is inconsistent on line 2')
+})
+
+// end of [Pushing invalid CSV file (irrespective of schema)]
+
+// QA tests [Push non existing file]
+
+test('push command fails for non-existing file', async t => {
+  let path_ = 'non-existing.csv'
+  let result = await runcli('push', path_)
+  let stdout = result.stdout.split('\n')
+  t.is(stdout[0], '> Error! ENOENT: no such file or directory, lstat \'non-existing.csv\'')
+})
+
+// end of [Push non existing file]
 
 // QA tests [Info: basic dataset]
 
