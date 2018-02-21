@@ -23,7 +23,7 @@ const info = require('../lib/utils/output/info.js')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['push'],
-  boolean: ['help', 'debug', 'interactive', 'published', 'private', 'zip', 'sqlite'],
+  boolean: ['help', 'test', 'debug', 'interactive', 'published', 'private', 'zip', 'sqlite'],
   alias: {help: 'h', interactive: 'i'}
 })
 
@@ -42,12 +42,14 @@ Promise.resolve().then(async () => {
   // First check if user is authenticated
   const apiUrl = config.get('api')
   const token = config.get('token')
-  let out
-  try {
-    out = await authenticate(apiUrl, token)
-  } catch (err) {
-    handleError(err)
-    process.exit(1)
+  let out = {authenticated: true}
+  if (!argv.test) {
+    try {
+      out = await authenticate(apiUrl, token)
+    } catch (err) {
+      handleError(err)
+      process.exit(1)
+    }
   }
   if (!out.authenticated) {
     info('You need to login in order to push your data. Please, use `data login` command.')
