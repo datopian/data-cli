@@ -502,8 +502,8 @@ test('cat command - remote csv file', async t => {
 })
 
 test('cat command - local tsv file', async t => {
-  const url_ = 'test/fixtures/test-data/files/csv/separators/tab.tsv'
-  const results = await runcli('cat', url_)
+  const path_= 'test/fixtures/test-data/files/csv/separators/tab.tsv'
+  const results = await runcli('cat', path_)
   const stdout = results.stdout.split('\n')
   t.true(stdout[1].includes('number'))
 })
