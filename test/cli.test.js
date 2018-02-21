@@ -508,7 +508,7 @@ test('cat command - local tsv file', async t => {
   t.true(stdout[1].includes('number'))
 })
 
-test.only('cat command - remote tsv file', async t => {
+test('cat command - remote tsv file', async t => {
   const url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/csv/separators/tab.tsv'
   const results = await runcli('cat', url_)
   const stdout = results.stdout.split('\n')
