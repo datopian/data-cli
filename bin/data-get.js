@@ -43,34 +43,36 @@ const run = async () => {
     const githubDataset = parsedIdentifier.type === 'github' && parsedIdentifier.name.slice((parsedIdentifier.name.lastIndexOf('.') - 1 >>> 0) + 2) === ''
 
     if (itIsDataset || parsedIdentifier.type === "datahub" || githubDataset) {
-      const dataset = await Dataset.load(identifier)
-      const isEmpty = checkDestIsEmpty(dataset.identifier.owner || '', dataset.identifier.name)
-      pathToSave = path.join(dataset.identifier.owner || '', dataset.identifier.name)
+      const dataset = await Dataset.load(identifier),
+            owner = dataset.identifier.owner || '',
+            name = dataset.identifier.name;
 
-      if (isEmpty) {
-        if(parsedIdentifier.type === "datahub"){
-          /** For datasets from the datahub we get zipped version and unzip it.
-                  - less traffic
-                  - zipped version has a fancy file structure
-              #issue: https://github.com/datahq/datahub-qa/issues/86  */
-          const zipped_dataset_url  = dataset.resources.filter(res => res.path.endsWith('.zip'))[0].path
-          const archive_path = await saveFileFromUrl(zipped_dataset_url, 'zip')
-          // unzip archive into destination folder
-          fs.createReadStream(archive_path)
-            .pipe(unzip.Extract({ path: pathToSave }))
-            // removing the archive file once we extracted all the dataset files
-            .on('finish', () => {fs.unlinkSync(archive_path)})
-        } else {
-          /** usual dataset download */
-          const allResources = await get(dataset)
-          // Save all files on disk
-          const myPromises = allResources.map(async resource => {
-            return saveIt(dataset.identifier.owner || '', dataset.identifier.name, resource)
-          })
-          await Promise.all(myPromises)
-        }
-      } else { // If dest is not empty then error
-        throw new Error(`${dataset.identifier.owner}/${dataset.identifier.name} is not empty!`)
+      pathToSave = path.join(owner, name)
+
+      if (!checkDestIsEmpty(owner, name)) {
+        throw new Error(`${owner}/${name} is not empty!`)
+      }
+
+      if(parsedIdentifier.type === "datahub"){
+        /** For datasets from the datahub we get zipped version and unzip it.
+                - less traffic
+                - zipped version has a fancy file structure
+            #issue: https://github.com/datahq/datahub-qa/issues/86  */
+        const zipped_dataset_url  = dataset.resources.filter(res => res.path.endsWith('.zip'))[0].path
+        const archive_path = await saveFileFromUrl(zipped_dataset_url, 'zip')
+        // unzip archive into destination folder
+        fs.createReadStream(archive_path)
+          .pipe(unzip.Extract({ path: pathToSave }))
+          // removing the archive file once we extracted all the dataset files
+          .on('finish', () => {fs.unlinkSync(archive_path)})
+      } else {
+        /** usual dataset download */
+        const allResources = await get(dataset)
+        // Save all files on disk
+        const myPromises = allResources.map(async resource => {
+          return saveIt(owner, name, resource)
+        })
+        await Promise.all(myPromises)
       }
 
     // if it is not a dataset - download the file
