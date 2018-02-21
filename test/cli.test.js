@@ -501,6 +501,20 @@ test('cat command - remote csv file', async t => {
   t.true(stdout[3].includes('│ 1.0  │'))
 })
 
+test('cat command - local tsv file', async t => {
+  const url_ = 'test/fixtures/test-data/files/csv/separators/tab.tsv'
+  const results = await runcli('cat', url_)
+  const stdout = results.stdout.split('\n')
+  t.true(stdout[1].includes('number'))
+})
+
+test.only('cat command - remote tsv file', async t => {
+  const url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/csv/separators/tab.tsv'
+  const results = await runcli('cat', url_)
+  const stdout = results.stdout.split('\n')
+  t.true(stdout[1].includes('number'))
+})
+
 test('cat command - remote non tabular file', async t => {
   const url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/other/sample.txt'
   const results = await runcli('cat', url_)
