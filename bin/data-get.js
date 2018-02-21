@@ -37,66 +37,56 @@ const run = async () => {
   const stopSpinner = wait('Loading...')
   try {
     const start = new Date()
-    let savedPath
+    let pathToSave
     const parsedIdentifier = await parseDatasetIdentifier(identifier)
     const itIsDataset = isDataset(identifier)
     const githubDataset = parsedIdentifier.type === 'github' && parsedIdentifier.name.slice((parsedIdentifier.name.lastIndexOf('.') - 1 >>> 0) + 2) === ''
 
-    if(parsedIdentifier.type === "datahub"){
-      /**
-      https://github.com/datahq/datahub-qa/issues/86
-      For datasets from datahub we will get zipped version and unzip it.
-        - less traffic
-        - zipped version has a fancy file structure
-      */
-
-      // get zipped dataset archive
-      const dataset = await Dataset.load(identifier)
-      const zipped_dataset_resource = dataset.resources.filter(res => res.path.endsWith('.zip'))[0]
-      const zipped_dataset_url = zipped_dataset_resource.path
-      savedPath = path.join(dataset.identifier.owner || '', dataset.identifier.name)
-
-      //await unzipFromUrl(zipped_dataset_url, savedPath)
-      await saveFile(zipped_dataset_url, 'zip')
-
-      // unzip archive
-
-      //fs.createReadStream(archive_path).pipe(unzip.Extract({ path: savedPath }));
-
-    // usual dataset loading
-    } else if (itIsDataset || githubDataset) {
+    if (itIsDataset || parsedIdentifier.type === "datahub" || githubDataset) {
       const dataset = await Dataset.load(identifier)
       const isEmpty = checkDestIsEmpty(dataset.identifier.owner || '', dataset.identifier.name)
+      pathToSave = path.join(dataset.identifier.owner || '', dataset.identifier.name)
+
       if (isEmpty) {
-        const allResources = await get(dataset)
-        // Save all files on disk
-        const myPromises = allResources.map(async resource => {
-          return saveIt(dataset.identifier.owner || '', dataset.identifier.name, resource)
-        })
-        await Promise.all(myPromises)
-        savedPath = path.join(dataset.identifier.owner || '', dataset.identifier.name)
+        if(parsedIdentifier.type === "datahub"){
+          /** For datasets from the datahub we get zipped version and unzip it.
+                  - less traffic
+                  - zipped version has a fancy file structure
+              #issue: https://github.com/datahq/datahub-qa/issues/86  */
+          const zipped_dataset_url  = dataset.resources.filter(res => res.path.endsWith('.zip'))[0].path
+          const archive_path = await saveFileFromUrl(zipped_dataset_url, 'zip')
+          // unzip archive into destination folder
+          fs.createReadStream(archive_path)
+            .pipe(unzip.Extract({ path: pathToSave }))
+            // removing the archive file once we extracted all the dataset files
+            .on('finish', () => {fs.unlinkSync(archive_path)})
+        } else {
+          /** usual dataset download */
+          const allResources = await get(dataset)
+          // Save all files on disk
+          const myPromises = allResources.map(async resource => {
+            return saveIt(dataset.identifier.owner || '', dataset.identifier.name, resource)
+          })
+          await Promise.all(myPromises)
+        }
       } else { // If dest is not empty then error
         throw new Error(`${dataset.identifier.owner}/${dataset.identifier.name} is not empty!`)
       }
-      stopSpinner()
-      const end = new Date() - start
-      console.log(`Time elapsed: ${(end / 1000).toFixed(2)} s`)
-      console.log(`Dataset/file is saved in "${savedPath}"`)
-    // if not dataset - load file
+
+    // if it is not a dataset - download the file
     } else {
       if (parsedIdentifier.type === 'github' && !githubDataset) {
         identifier += `?raw=true`
       }
-      const file = await File.load(identifier, {format: argv.format})
-      const destPath = [file.descriptor.name, file.descriptor.format].join('.')
-      const stream = await file.stream()
-      stream.pipe(fs.createWriteStream(destPath)).on('finish', () => {
-        stopSpinner()
-        const end = new Date() - start
-        console.log(`Time elapsed: ${(end / 1000).toFixed(2)} s`)
-        console.log(`Dataset/file is saved in "${destPath}"`)
-      })
+      pathToSave = await saveFileFromUrl(identifier, argv.format)
     }
+
+    // show time statistic & success message
+    stopSpinner()
+    const end = new Date() - start
+    console.log(`Time elapsed: ${(end / 1000).toFixed(2)} s`)
+    console.log(`Dataset/file is saved in "${pathToSave}"`)
+
   } catch (err) {
     stopSpinner()
     handleError(err)
@@ -109,21 +99,22 @@ const run = async () => {
 
 run()
 
-const saveFile = async (url, format) => {
-  const file = await File.load(url, {format: format})
-  const destPath = [file.descriptor.name, file.descriptor.format].join('.')
-  const stream = await file.stream()
-  stream.pipe(fs.createWriteStream(destPath)).on('finish', () => {
-    console.log(`Dataset/file is saved in "${destPath}"`)
-    return destPath
-  })
-}
-
-const unzipFromUrl = async (url, destPath) => {
-  const file = await File.load(url, {format: 'zip'})
-  const stream = await file.stream()
-  stream.pipe(unzip.Extract({ path: destPath })).on('finish', () => {
-    console.log(`Dataset/file is saved in "${destPath}"`)
+/**
+ * Download file from url and save it locally using data.js 'File' object.
+ * returns path, where the file was saved ( ${filename}.${fileformat} )
+ * Using:  let savedPath = await saveFileFromUrl(url, format)
+ * @param url: url to get the file
+ * @param format: csv, json, zip, etc
+ * @returns {Promise}
+ */
+const saveFileFromUrl = (url, format) => {
+  return new Promise(async (resolve, reject) =>{
+    const file = await File.load(url, {format: format})
+    const destPath = [file.descriptor.name, file.descriptor.format].join('.')
+    const stream = await file.stream()
+    stream.pipe(fs.createWriteStream(destPath)).on('finish', () => {
+      resolve(destPath)
+    })
   })
 }
 
@@ -151,13 +142,7 @@ const saveIt = (owner, name, resource) => {
 // TODO: Move this somewhere to utils
 const checkDestIsEmpty = (owner, name) => {
   const dest = path.join(owner, name)
-  if (!fs.existsSync(dest)) {
-    return true
-  }
-  if (fs.readdirSync(dest).length === 0) {
-    return true
-  }
-  return false
+  return !fs.existsSync(dest) || fs.readdirSync(dest).length === 0;
 }
 
 module.exports = {
