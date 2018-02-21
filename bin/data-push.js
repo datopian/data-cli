@@ -74,13 +74,13 @@ Promise.resolve().then(async () => {
     } else {
       dataset = await prepareDatasetFromFile(filePath)
     }
-    
+
     dataset.resources.forEach(resource => {
       if (resource.constructor.name === 'FileInline') {
         throw new Error('We do not support dataset with inlined data')
       }
     })
-    
+
     stopSpinner = wait('Commencing push ...')
 
     const datahubConfigs = {
@@ -181,8 +181,11 @@ const prepareDatasetFromFile = async filePath => {
   }
 
   let dpName, dpTitle
-  if (argv.name) {
+  if (argv.name) { // If name is provided in args then no user prompting:
     dpName = argv.name
+    // Make unslugifies version for title:
+    dpTitle = dpName.replace(/-+/g, ' ')
+    dpTitle = dpTitle.charAt(0).toUpperCase() + dpTitle.slice(1)
   } else {
     dpName = file.descriptor.name.replace(/\s+/g, '-').toLowerCase()
     // Add human readable id so that this packge does not conflict with other
@@ -190,19 +193,19 @@ const prepareDatasetFromFile = async filePath => {
     // data.csv)
     dpName += '-' + hri.random()
     // Confirm dpName with user:
-    const answer = await inquirer.prompt([ask('name', dpName, dpName, 'nameValidation')])
+    let answer = await inquirer.prompt([ask('name', dpName, dpName, 'nameValidation')])
     dpName = answer.name
+    // Make unslugifies version for title:
+    dpTitle = dpName.replace(/-+/g, ' ')
+    dpTitle = dpTitle.charAt(0).toUpperCase() + dpTitle.slice(1)
+    // Confirm title with user:
+    answer = await inquirer.prompt([ask('title', dpTitle, dpTitle)])
+    dpTitle = answer.title
   }
-
-  // Make unslugifies version for title:
-  dpTitle = dpName.replace(/-+/g, ' ')
-  dpTitle = dpTitle.charAt(0).toUpperCase() + dpTitle.slice(1)
-  // Confirm title with user:
-  const answer = await inquirer.prompt([ask('title', dpTitle, dpTitle)])
 
   const metadata = {
     name: dpName,
-    title: answer.title,
+    title: dpTitle,
     resources: []
   }
   const dataset = await Dataset.load(metadata)
