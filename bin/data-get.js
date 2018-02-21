@@ -58,7 +58,7 @@ const run = async () => {
                 - less traffic
                 - zipped version has a fancy file structure
             #issue: https://github.com/datahq/datahub-qa/issues/86  */
-        const zipped_dataset_url  = dataset.resources.filter(res => res.path.endsWith('.zip'))[0].path
+        const zipped_dataset_url  = dataset.resources.find(res => res.path.endsWith('.zip')).path
         const archive_path = await saveFileFromUrl(zipped_dataset_url, 'zip')
         // unzip archive into destination folder
         fs.createReadStream(archive_path)
