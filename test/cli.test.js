@@ -6,12 +6,14 @@ const test = require('ava')
 const {spawn} = require('cross-spawn')
 const run = require('inquirer-test')
 const {ENTER} = require('inquirer-test')
+const clipboardy = require('clipboardy')
 
 const {version} = require('../package.json')
 
 const runcli = (...args) => {
   return new Promise((resolve, reject) => {
     const command = path.resolve(__dirname, '../bin/data.js')
+    args.push('--test')
     const data = spawn(command, args)
 
     let stdout = ''
@@ -97,6 +99,79 @@ test('"data help" prints help message', async t => {
   t.true(stdout[1].includes('❒ data [options] <command> <args>'))
 })
 
+// =====================
+// DATA-CLI PUSH correct
+
+// QA tests [pushing valid CSV file]
+
+test.serial('push command succeeds with regular CSV file', async t => {
+  const path_ = 'test/fixtures/test-data/files/csv/separators/comma.csv'
+  const args = '--name=comma-separated'
+  const result = await runcli('push', path_, args)
+  const stdout = result.stdout.split('\n')
+  const hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  const hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/comma-separated/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  const whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/comma-separated/v/'))
+})
+
+// end of [pushing valid CSV file]
+
+// QA tests [pushing valid dataset from path]
+
+test.serial('push command succeeds for valid dataset', async t => {
+  const path_ = 'test/fixtures/test-data/packages/basic-csv'
+  const result = await runcli('push', path_)
+  const stdout = result.stdout.split('\n')
+  const hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  const hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/basic-csv/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  const whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/basic-csv/v/'))
+})
+
+// end of [pushing valid dataset from path]
+
+// QA tests [pushing valid dataset with path to datapackage.json]
+
+test.serial('push command succeeds for valid dataset with path to dp.json', async t => {
+  const path_ = 'test/fixtures/test-data/packages/basic-csv/datapackage.json'
+  const result = await runcli('push', path_)
+  const stdout = result.stdout.split('\n')
+  const hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  const hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/basic-csv/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  const whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/basic-csv/v/'))
+})
+
+// end of [pushing valid dataset with path to datapackage.json]
+
+// QA tests [pushing valid CSV from URL]
+
+test.serial('push command succeeds with regular CSV file from URL', async t => {
+  const url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/csv/separators/comma.csv'
+  const args = '--name=comma-separated'
+  const result = await runcli('push', url_, args)
+  const stdout = result.stdout.split('\n')
+  const hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  const hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/comma-separated/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  const whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/comma-separated/v/'))
+})
+
+// end of [pushing valid CSV from URL]
+
+
+// ========================
+// Invalid metadata or data
+
 // QA tests [Push: Invalid datapackage.json]
 
 test('push command fails with invalid JSON descriptor', async t => {
@@ -171,6 +246,22 @@ test('push command fails for invalid CSV file', async t => {
 
 // end of [Pushing invalid CSV file (irrespective of schema)]
 
+// QA tests [Pushing packaged invalid CSV file (irrespective of schema)]
+
+test.serial('push command succeeds with packaged invalid CSV', async t => {
+  const path_ = 'test/fixtures/test-data/packages/invalid-data'
+  const result = await runcli('push', path_)
+  const stdout = result.stdout.split('\n')
+  const hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  const hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/basic-csv/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  const whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/basic-csv/v/'))
+})
+
+// end of [Pushing packaged invalid CSV file (irrespective of schema)]
+
 // QA tests [Push non existing file]
 
 test('push command fails for non-existing file', async t => {
@@ -181,6 +272,256 @@ test('push command fails for non-existing file', async t => {
 })
 
 // end of [Push non existing file]
+
+// QA tests [pushing 0 bytes files]
+
+test('push command fails for zero byte files', async t => {
+  let path_ = 'test/fixtures/test-data/files/zero-files/zero'
+  let args = '--name=zero'
+  let result = await runcli('push', path_, args)
+  let stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('> You can not push empty files, please add some data and try again'))
+
+  path_ = 'test/fixtures/test-data/files/zero-files/zero.csv'
+  result = await runcli('push', path_, args)
+  stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('> Error! tabular file is invalid:'))
+
+  path_ = 'test/fixtures/test-data/files/zero-files/zero.html'
+  result = await runcli('push', path_, args)
+  stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('> You can not push empty files, please add some data and try again'))
+
+  path_ = 'test/fixtures/test-data/files/zero-files/zero.txt'
+  result = await runcli('push', path_, args)
+  stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('> You can not push empty files, please add some data and try again'))
+
+  path_ = 'test/fixtures/test-data/files/zero-files/zero.json'
+  result = await runcli('push', path_, args)
+  stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('> You can not push empty files, please add some data and try again'))
+
+  path_ = 'test/fixtures/test-data/files/zero-files/zero.xls'
+  result = await runcli('push', path_, args)
+  stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('> You can not push empty files, please add some data and try again'))
+})
+
+// end of [pushing 0 bytes files]
+
+
+// ==========
+// Formatting
+
+// QA tests [pushing valid CSV with force formatting wrong extention (from path and URl)]
+
+test.serial('push command succeeds for CSV with wrong ext but force formatting', async t => {
+  const path_ = 'test/fixtures/test-data/files/wrong-extension-files/comma.txt'
+  let argName = '--name=comma-separated'
+  let argFormat = '--format=csv'
+  let result = await runcli('push', path_, argName, argFormat)
+  let stdout = result.stdout.split('\n')
+  let hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  let hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/comma-separated/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  let whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/comma-separated/v/'))
+
+  const url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/wrong-extension-files/comma.txt'
+  result = await runcli('push', path_, argName, argFormat)
+  stdout = result.stdout.split('\n')
+  hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/comma-separated/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/comma-separated/v/'))
+})
+
+// end of [pushing valid CSV with force formatting wrong extention (from path and URl)]
+
+// QA tests [pushing valid XLS and XLSX with force formatting]
+
+test.serial('push command succeeds for Excel with wrong ext but force formatting', async t => {
+  let path_ = 'test/fixtures/test-data/files/wrong-extension-files/sample-1-sheet.txt'
+  let argName = '--name=sample-excel-with-force-formatting'
+  let argFormat = '--format=xls'
+  let result = await runcli('push', path_, argName, argFormat)
+  let stdout = result.stdout.split('\n')
+  let hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  let hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/sample-excel-with-force-formatting/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  let whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/sample-excel-with-force-formatting/v/'))
+
+  path_ = 'test/fixtures/test-data/files/wrong-extension-files/sample-1-sheet.pdf'
+  argFormat = '--format=xlsx'
+  result = await runcli('push', path_, argName, argFormat)
+  stdout = result.stdout.split('\n')
+  hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/sample-excel-with-force-formatting/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/sample-excel-with-force-formatting/v/'))
+})
+
+// end of [pushing valid XLS and XLSX with force formatting]
+
+// QA test [pushing not CSV with force formatting]
+
+test('push command fails for non-CSV with force formatting', async t => {
+  let path_ = 'test/fixtures/test-data/files/excel/sample-1-sheet.xls'
+  const argName = '--name=not-csv-as-csv'
+  const argFormat = '--format=csv'
+  let result = await runcli('push', path_, argName, argFormat)
+  let stdout = result.stdout.split('\n')
+  let hasExpectedErrorMsg = stdout.find(item => item.includes('Error! Invalid opening quote at line 1'))
+  t.truthy(hasExpectedErrorMsg)
+
+  let url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/excel/sample-1-sheet.xls'
+  result = await runcli('push', path_, argName, argFormat)
+  stdout = result.stdout.split('\n')
+  hasExpectedErrorMsg = stdout.find(item => item.includes('Error! Invalid opening quote at line 1'))
+  t.truthy(hasExpectedErrorMsg)
+
+  path_ = 'test/fixtures/test-data/files/excel/sample-1-sheet.xlsx'
+  result = await runcli('push', path_, argName, argFormat)
+  stdout = result.stdout.split('\n')
+  hasExpectedErrorMsg = stdout.find(item => item.includes('Error! Invalid opening quote at line 1'))
+  t.truthy(hasExpectedErrorMsg)
+
+  url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/excel/sample-1-sheet.xlsx'
+  result = await runcli('push', path_, argName, argFormat)
+  stdout = result.stdout.split('\n')
+  hasExpectedErrorMsg = stdout.find(item => item.includes('Error! Invalid opening quote at line 1'))
+  t.truthy(hasExpectedErrorMsg)
+})
+
+// end of [pushing not CSV with force formatting]
+
+// QA test [pushing not CSV with force formatting (non tabular )]
+
+test('push command fails for non-CSV (non-tabular) files with force formatting', async t => {
+  let path_ = 'test/fixtures/test-data/files/other/sample.json'
+  const argName = '--name=not-csv-as-csv'
+  const argFormat = '--format=csv'
+  let result = await runcli('push', path_, argName, argFormat)
+  let stdout = result.stdout.split('\n')
+  let hasExpectedErrorMsg = stdout.find(item => item.includes('Error! Invalid closing quote at line 3; found ":" instead of delimiter ","'))
+  t.truthy(hasExpectedErrorMsg)
+
+  let url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/other/sample.json'
+  result = await runcli('push', path_, argName, argFormat)
+  stdout = result.stdout.split('\n')
+  hasExpectedErrorMsg = stdout.find(item => item.includes('Error! Invalid closing quote at line 3; found ":" instead of delimiter ","'))
+  t.truthy(hasExpectedErrorMsg)
+})
+
+// end of [pushing not CSV with force formatting (non tabular )]
+
+
+// ===========
+// Excel files
+
+// QA test [pushing excel file with 1 sheet]
+
+test.serial('push command succeeds for simple Excel with 1 sheet', async t => {
+  let path_ = 'test/fixtures/test-data/files/excel/sample-1-sheet.xls'
+  const argName = '--name=test-excel-1-sheet'
+  let result = await runcli('push', path_, argName, '--debug')
+  let stdout = result.stdout.split('\n')
+  // Check what's printed in console while in debug mode, e.g., if schema is included:
+  let hasSchemaForFirstSheet = stdout.find(item => item.includes('"name": "number"'))
+  t.truthy(hasSchemaForFirstSheet)
+  let hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  let hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/test-excel-1-sheet/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  let whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/test-excel-1-sheet/v/'))
+
+  path_ = 'test/fixtures/test-data/files/excel/sample-1-sheet.xlsx'
+  result = await runcli('push', path_, argName, '--debug')
+  stdout = result.stdout.split('\n')
+  hasSchemaForFirstSheet = stdout.find(item => item.includes('"name": "number"'))
+  t.truthy(hasSchemaForFirstSheet)
+  hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/test-excel-1-sheet/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/test-excel-1-sheet/v/'))
+})
+
+// end of [pushing excel file with 1 sheet]
+
+// QA test [pushing excel file with selected sheets]
+// also includes:
+// [pushing excel file with selected non existing sheet]
+// [pushing excel file with all sheets]
+// [pushing excel file with list of sheets]
+
+test.serial('push command succeeds for Excel with selected sheet', async t => {
+  let path_ = 'test/fixtures/test-data/files/excel/sample-2-sheets.xls'
+  const argName = '--name=test-excel-2-sheets'
+  let argSheets = '--sheets=2'
+  let result = await runcli('push', path_, argName, argSheets, '--debug')
+  let stdout = result.stdout.split('\n')
+  // Check what's printed in console while in debug mode, e.g., if schema is included:
+  let hasSchemaForSecondSheet = stdout.find(item => item.includes('"name": "header4"'))
+  t.truthy(hasSchemaForSecondSheet)
+  let hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  let hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/test-excel-2-sheets/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  let whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/test-excel-2-sheets/v/'))
+
+  path_ = 'test/fixtures/test-data/files/excel/sample-2-sheets.xlsx'
+  result = await runcli('push', path_, argName, argSheets, '--debug')
+  stdout = result.stdout.split('\n')
+  // Check what's printed in console while in debug mode, e.g., if schema is included:
+  hasSchemaForSecondSheet = stdout.find(item => item.includes('"name": "header4"'))
+  t.truthy(hasSchemaForSecondSheet)
+  hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/test-excel-2-sheets/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/test-excel-2-sheets/v/'))
+
+  argSheets = '--sheets=5'
+  result = await runcli('push', path_, argName, argSheets, '--debug')
+  stdout = result.stdout.split('\n')
+  let hasErrorMsg = stdout.find(item => item.includes('Error! sheet index 5 is out of range'))
+  t.truthy(hasErrorMsg)
+
+  argSheets = '--sheets=all'
+  result = await runcli('push', path_, argName, argSheets, '--debug')
+  stdout = result.stdout.split('\n')
+  let hasSchemaForFirstSheet = stdout.find(item => item.includes('"name": "header1"'))
+  hasSchemaForSecondSheet = stdout.find(item => item.includes('"name": "header4"'))
+  t.truthy(hasSchemaForFirstSheet)
+  t.truthy(hasSchemaForSecondSheet)
+
+  argSheets = '--sheets=1,2'
+  result = await runcli('push', path_, argName, argSheets, '--debug')
+  stdout = result.stdout.split('\n')
+  hasSchemaForFirstSheet = stdout.find(item => item.includes('"name": "header1"'))
+  hasSchemaForSecondSheet = stdout.find(item => item.includes('"name": "header4"'))
+  t.truthy(hasSchemaForFirstSheet)
+  t.truthy(hasSchemaForSecondSheet)
+})
+
+// end of [pushing excel file with selected sheets]
+
+
+// =======================================
+// CLI commands: validate, cat, info, init
 
 // QA tests [Info: basic dataset]
 
