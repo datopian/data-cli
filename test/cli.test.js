@@ -260,7 +260,7 @@ test('push command fails for non-existing file', async t => {
 
 // QA tests [Info: basic dataset]
 
-test.skip('Info: basic dataset', async t => {
+test('Info: basic dataset', async t => {
   let identifier = 'test/fixtures/test-data/packages/basic-csv'
   let result = await runcli('info', identifier)
   let stdout = result.stdout.split('\n')
