@@ -42,11 +42,39 @@ test.after('cleanup', t => {
     'sample.csv',
     'finance-vix/datapackage.json',
     'finance-vix/README.md',
-    'finance-vix/data/vix-daily.csv'
+    'finance-vix/data/vix-daily.csv',
+    'test/small-dataset-100kb/data/08be54e759d0fc95d6d43d154cc99643/validation_report.json',
+    'test/small-dataset-100kb/data/100kb_csv_preview.json',
+    'test/small-dataset-100kb/data/100kb_csv.csv',
+    'test/small-dataset-100kb/data/100kb_json.json',
+    'test/small-dataset-100kb/100kb.csv',
+    'test/small-dataset-100kb/datapackage.json',
+    'sample-1-sheet.xls',
+    'test/medium-dataset-1mb/data/4309e5597db1da7fec4aa98a5d0ea0ca/validation_report.json',
+    'test/medium-dataset-1mb/data/1mb_csv_preview.json',
+    'test/medium-dataset-1mb/data/1mb_csv.csv',
+    'test/medium-dataset-1mb/data/1mb_json.json',
+    'test/medium-dataset-1mb/1mb.csv',
+    'test/medium-dataset-1mb/datapackage.json',
+    'test/big-dataset-10mb/data/a398a86a9bd0de767155d79fab49ef21/validation_report.json',
+    'test/big-dataset-10mb/data/10mb_csv_preview.json',
+    'test/big-dataset-10mb/data/10mb_csv.csv',
+    'test/big-dataset-10mb/data/10mb_json.json',
+    'test/big-dataset-10mb/10mb.csv',
+    'test/big-dataset-10mb/datapackage.json'
   ]
   filesToRemove.forEach(fs.unlinkSync)
   fs.rmdirSync('finance-vix/data')
   fs.rmdirSync('finance-vix')
+  fs.rmdirSync('test/small-dataset-100kb/data/08be54e759d0fc95d6d43d154cc99643')
+  fs.rmdirSync('test/small-dataset-100kb/data')
+  fs.rmdirSync('test/small-dataset-100kb')
+  fs.rmdirSync('test/medium-dataset-1mb/data/4309e5597db1da7fec4aa98a5d0ea0ca')
+  fs.rmdirSync('test/medium-dataset-1mb/data')
+  fs.rmdirSync('test/medium-dataset-1mb')
+  fs.rmdirSync('test/big-dataset-10mb/data/a398a86a9bd0de767155d79fab49ef21')
+  fs.rmdirSync('test/big-dataset-10mb/data')
+  fs.rmdirSync('test/big-dataset-10mb')
 })
 
 test('get command with dataset', async t => {
@@ -96,6 +124,54 @@ test('"data help" prints help message', async t => {
   t.true(stdout.length > 1)
   t.true(stdout[1].includes('❒ data [options] <command> <args>'))
 })
+
+// QA tests [Get: Small dataset from DataHub]
+
+test('get command with small dataset from DataHub', async t => {
+  const identifier = 'https://datahub.io/test/small-dataset-100kb'
+  const result = await runcli('get', identifier)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('Time elapsed:'))
+  t.true(stdout[1].includes('Dataset/file is saved in "test/small-dataset-100kb"'))
+})
+
+// end of [Get: Small dataset from DataHub]
+
+// QA tests [Get: Medium dataset from DataHub]
+
+test('get command with medium dataset from DataHub', async t => {
+  const identifier = 'https://datahub.io/test/medium-dataset-1mb'
+  const result = await runcli('get', identifier)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('Time elapsed:'))
+  t.true(stdout[1].includes('Dataset/file is saved in "test/medium-dataset-1mb"'))
+})
+
+// end of [Get: Meduim dataset from DataHub]
+
+// QA tests [Get: Big dataset from DataHub]
+
+test('get command with big dataset from DataHub', async t => {
+  const identifier = 'https://datahub.io/test/big-dataset-10mb'
+  const result = await runcli('get', identifier)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('Time elapsed:'))
+  t.true(stdout[1].includes('Dataset/file is saved in "test/big-dataset-10mb"'))
+})
+
+// end of [Get: Big dataset from DataHub]
+
+// QA tests [Get: get excel file]
+
+test('get command with excel file', async t => {
+  const identifier = 'https://github.com/frictionlessdata/test-data/blob/master/files/excel/sample-1-sheet.xls'
+  const result = await runcli('get', identifier)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('Time elapsed:'))
+  t.true(stdout[1].includes('Dataset/file is saved in "sample-1-sheet.xls"'))
+})
+
+// end of [Get: get excel file]
 
 // QA tests [Push: Invalid datapackage.json]
 
@@ -184,7 +260,7 @@ test('push command fails for non-existing file', async t => {
 
 // QA tests [Info: basic dataset]
 
-test('Info: basic dataset', async t => {
+test.skip('Info: basic dataset', async t => {
   let identifier = 'test/fixtures/test-data/packages/basic-csv'
   let result = await runcli('info', identifier)
   let stdout = result.stdout.split('\n')
