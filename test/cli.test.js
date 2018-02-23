@@ -37,16 +37,27 @@ const runcli = (...args) => {
 
 
 
-test.after('cleanup', t => {
-  const filesToRemove = [
-    'sample.csv',
-    'finance-vix/datapackage.json',
-    'finance-vix/README.md',
-    'finance-vix/data/vix-daily.csv'
-  ]
-  filesToRemove.forEach(fs.unlinkSync)
-  fs.rmdirSync('finance-vix/data')
-  fs.rmdirSync('finance-vix')
+test.after('cleanup', t => {  
+  let deleteFolderRecursive = (path) => {
+    if (fs.existsSync(path)) {
+      fs.readdirSync(path).forEach((file, index) => {
+        let curPath = path + "/" + file;
+        if (fs.lstatSync(curPath).isDirectory()) { // recurse
+          deleteFolderRecursive(curPath);
+        } else { // delete file
+          fs.unlinkSync(curPath);
+        }
+      })
+      fs.rmdirSync(path);
+    }
+  }
+  deleteFolderRecursive('finance-vix')
+  deleteFolderRecursive('test/small-dataset-100kb')
+  deleteFolderRecursive('test/medium-dataset-1mb')
+  deleteFolderRecursive('test/big-dataset-10mb')
+  fs.unlinkSync('sample.csv')
+  fs.unlinkSync('sample-1-sheet.xls')
+  
 })
 
 test('get command with dataset', async t => {
@@ -96,6 +107,54 @@ test('"data help" prints help message', async t => {
   t.true(stdout.length > 1)
   t.true(stdout[1].includes('❒ data [options] <command> <args>'))
 })
+
+// QA tests [Get: Small dataset from DataHub]
+
+test('get command with small dataset from DataHub', async t => {
+  const identifier = 'https://datahub.io/test/small-dataset-100kb'
+  const result = await runcli('get', identifier)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('Time elapsed:'))
+  t.true(stdout[1].includes('Dataset/file is saved in "test/small-dataset-100kb"'))
+})
+
+// end of [Get: Small dataset from DataHub]
+
+// QA tests [Get: Medium dataset from DataHub]
+
+test('get command with medium dataset from DataHub', async t => {
+  const identifier = 'https://datahub.io/test/medium-dataset-1mb'
+  const result = await runcli('get', identifier)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('Time elapsed:'))
+  t.true(stdout[1].includes('Dataset/file is saved in "test/medium-dataset-1mb"'))
+})
+
+// end of [Get: Meduim dataset from DataHub]
+
+// QA tests [Get: Big dataset from DataHub]
+
+test('get command with big dataset from DataHub', async t => {
+  const identifier = 'https://datahub.io/test/big-dataset-10mb'
+  const result = await runcli('get', identifier)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('Time elapsed:'))
+  t.true(stdout[1].includes('Dataset/file is saved in "test/big-dataset-10mb"'))
+})
+
+// end of [Get: Big dataset from DataHub]
+
+// QA tests [Get: get excel file]
+
+test('get command with excel file', async t => {
+  const identifier = 'https://github.com/frictionlessdata/test-data/blob/master/files/excel/sample-1-sheet.xls'
+  const result = await runcli('get', identifier)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('Time elapsed:'))
+  t.true(stdout[1].includes('Dataset/file is saved in "sample-1-sheet.xls"'))
+})
+
+// end of [Get: get excel file]
 
 // QA tests [Push: Invalid datapackage.json]
 
