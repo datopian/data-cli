@@ -52,6 +52,12 @@ To run tests in watch mode:
 $ [sudo] npm run watch:test
 ```
 
+We also have tests for `push` command that publishes some of test datasets to DataHub. While Travis runs all tests on every commit, the `push` tests are run only on tagged commits. To run these tests locally you need to have credentials for 'test' user and use following command:
+
+```
+$ [sudo] npm test test/push/push.test.js
+```
+
 ## Lint
 
 We use XO for checking our code for JS standard/convention/style:
@@ -66,4 +72,3 @@ $ npm run lint # shows errors only
 # Fixing erros automatically:
 $ xo --fix
 ```
-
