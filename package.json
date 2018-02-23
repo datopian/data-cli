@@ -71,7 +71,7 @@
     "boxen": "^1.3.0",
     "chalk": "^2.3.0",
     "clipboardy": "^1.1.4",
-    "data.js": "^0.10.10",
+    "data.js": "^0.10.11",
     "datahub-client": "^0.2.7",
     "human-readable-ids": "^1.0.3",
     "inquirer": "^5.1.0",

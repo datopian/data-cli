@@ -37,44 +37,27 @@ const runcli = (...args) => {
 
 
 
-test.after('cleanup', t => {
-  const filesToRemove = [
-    'sample.csv',
-    'finance-vix/datapackage.json',
-    'finance-vix/README.md',
-    'finance-vix/data/vix-daily.csv',
-    'test/small-dataset-100kb/data/08be54e759d0fc95d6d43d154cc99643/validation_report.json',
-    'test/small-dataset-100kb/data/100kb_csv_preview.json',
-    'test/small-dataset-100kb/data/100kb_csv.csv',
-    'test/small-dataset-100kb/data/100kb_json.json',
-    'test/small-dataset-100kb/100kb.csv',
-    'test/small-dataset-100kb/datapackage.json',
-    'sample-1-sheet.xls',
-    'test/medium-dataset-1mb/data/4309e5597db1da7fec4aa98a5d0ea0ca/validation_report.json',
-    'test/medium-dataset-1mb/data/1mb_csv_preview.json',
-    'test/medium-dataset-1mb/data/1mb_csv.csv',
-    'test/medium-dataset-1mb/data/1mb_json.json',
-    'test/medium-dataset-1mb/1mb.csv',
-    'test/medium-dataset-1mb/datapackage.json',
-    'test/big-dataset-10mb/data/a398a86a9bd0de767155d79fab49ef21/validation_report.json',
-    'test/big-dataset-10mb/data/10mb_csv_preview.json',
-    'test/big-dataset-10mb/data/10mb_csv.csv',
-    'test/big-dataset-10mb/data/10mb_json.json',
-    'test/big-dataset-10mb/10mb.csv',
-    'test/big-dataset-10mb/datapackage.json'
-  ]
-  filesToRemove.forEach(fs.unlinkSync)
-  fs.rmdirSync('finance-vix/data')
-  fs.rmdirSync('finance-vix')
-  fs.rmdirSync('test/small-dataset-100kb/data/08be54e759d0fc95d6d43d154cc99643')
-  fs.rmdirSync('test/small-dataset-100kb/data')
-  fs.rmdirSync('test/small-dataset-100kb')
-  fs.rmdirSync('test/medium-dataset-1mb/data/4309e5597db1da7fec4aa98a5d0ea0ca')
-  fs.rmdirSync('test/medium-dataset-1mb/data')
-  fs.rmdirSync('test/medium-dataset-1mb')
-  fs.rmdirSync('test/big-dataset-10mb/data/a398a86a9bd0de767155d79fab49ef21')
-  fs.rmdirSync('test/big-dataset-10mb/data')
-  fs.rmdirSync('test/big-dataset-10mb')
+test.after('cleanup', t => {  
+  let deleteFolderRecursive = (path) => {
+    if (fs.existsSync(path)) {
+      fs.readdirSync(path).forEach((file, index) => {
+        let curPath = path + "/" + file;
+        if (fs.lstatSync(curPath).isDirectory()) { // recurse
+          deleteFolderRecursive(curPath);
+        } else { // delete file
+          fs.unlinkSync(curPath);
+        }
+      })
+      fs.rmdirSync(path);
+    }
+  }
+  deleteFolderRecursive('finance-vix')
+  deleteFolderRecursive('test/small-dataset-100kb')
+  deleteFolderRecursive('test/medium-dataset-1mb')
+  deleteFolderRecursive('test/big-dataset-10mb')
+  fs.unlinkSync('sample.csv')
+  fs.unlinkSync('sample-1-sheet.xls')
+  
 })
 
 test('get command with dataset', async t => {
