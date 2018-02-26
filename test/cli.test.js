@@ -38,7 +38,7 @@ const runcli = (...args) => {
 
 
 
-test.after('cleanup', t => {  
+test.after('cleanup', t => {
   let deleteFolderRecursive = (path) => {
     if (fs.existsSync(path)) {
       fs.readdirSync(path).forEach((file, index) => {
@@ -58,30 +58,7 @@ test.after('cleanup', t => {
   deleteFolderRecursive('test/big-dataset-10mb')
   fs.unlinkSync('sample.csv')
   fs.unlinkSync('sample-1-sheet.xls')
-  
-})
 
-test('get command with dataset', async t => {
-  const identifier = 'test/fixtures/finance-vix'
-  const result = await runcli('get', identifier)
-  const stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('Time elapsed:'))
-  t.true(stdout[1].includes('Dataset/file is saved in "finance-vix"'))
-})
-
-test('get command with file', async t => {
-  const identifier = 'test/fixtures/sample.csv'
-  const result = await runcli('get', identifier)
-  const stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('Time elapsed:'))
-  t.true(stdout[1].includes('Dataset/file is saved in "sample.csv"'))
-})
-
-test('runs init command with data input', async t => {
-  const cliPath = path.join(__dirname, '../bin/data-init.js')
-  const result = await run([cliPath], ['my-datapackage', ENTER])
-  t.true(result.includes('? Enter Data Package name (scratchpad)'))
-  t.true(result.includes('my-datapackage'))
 })
 
 test('"data -v --version" prints version', async t => {
@@ -109,6 +86,25 @@ test('"data help" prints help message', async t => {
   t.true(stdout[1].includes('❒ data [options] <command> <args>'))
 })
 
+
+// =======================================
+// DATA-CLI GET
+
+test('get command with local dataset', async t => {
+  const identifier = 'test/fixtures/finance-vix'
+  const result = await runcli('get', identifier)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('Time elapsed:'))
+  t.true(stdout[1].includes('Dataset/file is saved in "finance-vix"'))
+})
+
+test('get command with local file', async t => {
+  const identifier = 'test/fixtures/sample.csv'
+  const result = await runcli('get', identifier)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('Time elapsed:'))
+  t.true(stdout[1].includes('Dataset/file is saved in "sample.csv"'))
+})
 
 // QA tests [Get: Small dataset from DataHub]
 
@@ -161,6 +157,13 @@ test('get command with excel file', async t => {
 
 // =======================================
 // CLI commands: validate, cat, info, init
+
+test('runs init command with data input', async t => {
+  const cliPath = path.join(__dirname, '../bin/data-init.js')
+  const result = await run([cliPath], ['my-datapackage', ENTER])
+  t.true(result.includes('? Enter Data Package name (scratchpad)'))
+  t.true(result.includes('my-datapackage'))
+})
 
 // QA tests [Info: basic dataset]
 
