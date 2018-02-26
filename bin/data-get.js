@@ -7,7 +7,7 @@ const url = require('url')
 const mkdirp = require('mkdirp')
 const minimist = require('minimist')
 const {Dataset, File, isDataset, parseDatasetIdentifier} = require('data.js')
-const {get} = require('datahub-client')
+const {get, config} = require('datahub-client')
 const unzip = require('unzip')
 
 // Ours
@@ -42,10 +42,10 @@ const run = async () => {
     const itIsDataset = isDataset(identifier)
     const githubDataset = parsedIdentifier.type === 'github' && parsedIdentifier.name.slice((parsedIdentifier.name.lastIndexOf('.') - 1 >>> 0) + 2) === ''
 
-    if (itIsDataset || parsedIdentifier.type === "datahub" || githubDataset) {
-      const dataset = await Dataset.load(identifier),
-            owner = dataset.identifier.owner || '',
-            name = dataset.identifier.name;
+    if (itIsDataset || githubDataset) {
+      const dataset = await Dataset.load(identifier)
+      const owner = dataset.identifier.owner || ''
+      const name = dataset.identifier.name
 
       pathToSave = path.join(owner, name)
 
@@ -53,30 +53,40 @@ const run = async () => {
         throw new Error(`${owner}/${name} is not empty!`)
       }
 
-      if(parsedIdentifier.type === "datahub"){
-        /** For datasets from the datahub we get zipped version and unzip it.
-                - less traffic
-                - zipped version has a fancy file structure
-            #issue: https://github.com/datahq/datahub-qa/issues/86  */
-        const zipped_dataset_url  = dataset.resources.find(res => res.path.endsWith('.zip')).path
-        const archive_path = await saveFileFromUrl(zipped_dataset_url, 'zip')
-        // unzip archive into destination folder
-        fs.createReadStream(archive_path)
-          .pipe(unzip.Extract({ path: pathToSave }))
-          // removing the archive file once we extracted all the dataset files
-          .on('finish', () => {fs.unlinkSync(archive_path)})
-      } else {
-        /** usual dataset download */
-        const allResources = await get(dataset)
-        // Save all files on disk
-        const myPromises = allResources.map(async resource => {
-          return saveIt(owner, name, resource)
-        })
-        await Promise.all(myPromises)
+      /** usual dataset download */
+      const allResources = await get(dataset)
+      // Save all files on disk
+      const myPromises = allResources.map(async resource => {
+        return saveIt(owner, name, resource)
+      })
+      await Promise.all(myPromises)
+
+    } else if (parsedIdentifier.type === "datahub") {
+      // Try to guess owner and dataset name here. We're not loading Dataset object
+      // because we want to handle private datasets as well:
+      const idParts = identifier.split('/')
+      const owner = idParts[idParts.length - 2]
+      const name = idParts[idParts.length - 1]
+      const token = config.get('token')
+      pathToSave = path.join(owner, name)
+
+      if (!checkDestIsEmpty(owner, name)) {
+        throw new Error(`${owner}/${name} is not empty!`)
       }
 
-    // if it is not a dataset - download the file
-    } else {
+      /** For datasets from the datahub we get zipped version and unzip it.
+              - less traffic
+              - zipped version has a fancy file structure
+          #issue: https://github.com/datahq/datahub-qa/issues/86  */
+      const zipped_dataset_url  = `https://datahub.io/${owner}/${name}/r/${name}_zip.zip?jwt=${token}`
+      const archive_path = await saveFileFromUrl(zipped_dataset_url, 'zip')
+      // unzip archive into destination folder
+      fs.createReadStream(archive_path)
+        .pipe(unzip.Extract({ path: pathToSave }))
+        // removing the archive file once we extracted all the dataset files
+        .on('finish', () => {fs.unlinkSync(archive_path)})
+
+    } else { // If it is not a dataset - download the file
       if (parsedIdentifier.type === 'github' && !githubDataset) {
         identifier += `?raw=true`
       }
@@ -113,7 +123,16 @@ const saveFileFromUrl = (url, format) => {
   return new Promise(async (resolve, reject) =>{
     const file = await File.load(url, {format: format})
     const destPath = [file.descriptor.name, file.descriptor.format].join('.')
-    const stream = await file.stream()
+    let stream
+    try {
+      stream = await file.stream()
+    } catch (err) {
+      if (err.message === 'Not Found') {
+        err.message += ' or Forbidden.'
+      }
+      handleError(err)
+      process.exit(1)
+    }
     stream.pipe(fs.createWriteStream(destPath)).on('finish', () => {
       resolve(destPath)
     })
