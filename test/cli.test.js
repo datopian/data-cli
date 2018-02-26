@@ -56,6 +56,7 @@ test.after('cleanup', t => {
   deleteFolderRecursive('test/small-dataset-100kb')
   deleteFolderRecursive('test/medium-dataset-1mb')
   deleteFolderRecursive('test/big-dataset-10mb')
+  deleteFolderRecursive('test/private-cli-test')
   fs.unlinkSync('sample.csv')
   fs.unlinkSync('sample-1-sheet.xls')
 
@@ -114,6 +115,7 @@ test('get command with small dataset from DataHub', async t => {
   const stdout = result.stdout.split('\n')
   t.true(stdout[0].includes('Time elapsed:'))
   t.true(stdout[1].includes('Dataset/file is saved in "test/small-dataset-100kb"'))
+  // t.true(fs.)
 })
 
 // end of [Get: Small dataset from DataHub]
@@ -153,6 +155,25 @@ test('get command with excel file', async t => {
 })
 
 // end of [Get: get excel file]
+
+// QA tests [Get: get private dataset]
+
+test('get command with private dataset', async t => {
+  const identifier = 'https://datahub.io/test/private-cli-test'
+  // Note that token for test user is set in env var. First we pass wrong token
+  // as an argument and expect 404 or 403:
+  const token = 'non-owner-token'
+  let result = await runcli('get', identifier, `--token=${token}`)
+  let stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('Not Found or Forbidden'))
+
+  // Now use correct token from env var:
+  result = await runcli('get', identifier)
+  stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('Time elapsed:'))
+  t.true(stdout[1].includes('Dataset/file is saved in "test/private-cli-test"'))
+  t.true(fs.existsSync('test/private-cli-test/datapackage.json'))
+})
 
 
 // =======================================
