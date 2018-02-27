@@ -18,13 +18,13 @@ matrix:
     env: TEST=false
   - os: osx
     node_js: '8'
-    env: TEST=false
+    env: TEST=false DEPLOY=true
   - os: osx
     node_js: '9'
     env: TEST=false
 install: if $TEST; then npm install; else echo 'skipping this script...'; fi
 script: if $TEST; then npm test; else echo 'skipping this script...'; fi
-before_deploy: if $TEST; then sudo apt install xsel && npm run test test/push/push.test.js -m 'push*' && npm run pack; else echo 'skipping this script...'; fi
+before_deploy: if $DEPLOY; then npm run test test/push/push.test.js -m 'push*' && npm run pack; else echo 'skipping this script...'; fi
 deploy:
   - provider: releases
     api_key:
@@ -34,14 +34,14 @@ deploy:
     skip_cleanup: true
     on:
       tags: true
-      condition: $TEST = true
+      condition: $DEPLOY = true
   - provider: npm
     email: datahub@datopian.com
     api_key:
       secure: "riGRy8fqyJPXeTJulBENhxLLktvVimqTlyrjckdifenI8q0vxbTvw4fRep3fKQqgNFrh0dccIagtPO8RSuf0Se9dK+M6mBM2dc8W6t84i0jg+EDoavvhgHlVfXFNEx50lWz2H1EZH4I9MvFbAiXQm7svhaXSMwudzdlHFq/K+0xjDkVgnv4AWOnkezf8XqyOmBfVPcS6mvfEMZgtQPR41eaFM7GZ1hAwOZnOwLSTRMljBiDlBSKp89ahNsmoDua3JMZ8/5s5pp1fBzlHJx6knNF9lSTjXQtJEd1ZGZljdyjIawwCdohzcR37P6iRlCLVAOGKrbeFMUnprUk23HFg3eD86cUtly+jdZd7YqBTSBQ4m9r+3G5YKbUdCbavC0pnc3/cKwP3tYRnLN5PPxo9pTypHwvVzADgG4XBnvXsE07k8F+QBdIJce7JpM1QjDi5xiqJyOEW1YIpVnxOBtO6qc/w+cmlZzcBcdbOfss0+mEU0WHJFj+FE8jDGtt3TJK9PvkV5EKo0KtDGmZVrOeW63CJ3SE47jOcS0GwtxdlSzTsKK9Ic3b9s1pHAoqHy0n/PJEXAJ6NcS0MyeHPPwg1NWWQMIXEt1JQf6iXdcWVVCZBBXShdX4KUUQLkOHXSNv1vIKgE/5UP3bjJ+FHazLQjPjquMIRuGmy6yAwD/GaaLI="
     on:
       tags: true
-      condition: $TEST = true
+      condition: $DEPLOY = true
 after_script:
   - chmod ugo+x test-script.sh
   - ./test-script.sh
