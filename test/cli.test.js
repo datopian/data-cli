@@ -192,14 +192,14 @@ test('Info: basic dataset', async t => {
   let identifier = 'test/fixtures/test-data/packages/basic-csv'
   let result = await runcli('info', identifier)
   let stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('No readme'))
-  t.true(stdout[7].includes('comma-separated'))
+  t.true(stdout[0].includes('# basic-csv'))
+  t.true(stdout[9].includes('comma-separated'))
 
   identifier = 'https://github.com/frictionlessdata/test-data/tree/master/packages/basic-csv'
   result = await runcli('info', identifier)
   stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('No readme'))
-  t.true(stdout[7].includes('comma-separated'))
+  t.true(stdout[0].includes('# basic-csv'))
+  t.true(stdout[9].includes('comma-separated'))
 })
 
 // end of [Info: basic dataset]
