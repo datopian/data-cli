@@ -73,8 +73,7 @@ const dumpIt = async (res) => {
 }
 
 if (pathParts.name === '_' || (!pathParts.name && process.stdin.constructor.name === 'Socket')) {
-  // TODO: atm, it is just passing stdin to stout. Fix it to process stdin to available writers.
-  process.stdin.pipe(process.stdout)
+  dumpIt(process.stdin)
 } else if (pathParts.name) {
   const res = File.load(argv._[0], {format: argv.format})
   dumpIt(res)
