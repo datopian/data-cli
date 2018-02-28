@@ -39,6 +39,8 @@ Promise.resolve().then(async () => {
       console.log(customMarked(out))
     } else {
       const file = data.File.load(fileOrDatasetIdentifier, {format: argv.format})
+      // Use stream() for checking invalid url
+      await file.stream()
       const knownTabularFormats = ['csv', 'tsv', 'dsv']
       if (knownTabularFormats.includes(file.descriptor.format)) {
         await file.addSchema()
