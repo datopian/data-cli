@@ -1,22 +1,10 @@
-const http = require('http')
-
 const test = require('ava')
+const whatStatusCode = require('../lib/utils/helpers')
 
 // ==========================
 // USER RIGHTS & RESTRICTIONS
 
-const whatStatusCode = (path) => {
-  const options = {method: 'HEAD', host: 'datahub.io', port: 80, path: path}
-  return new Promise((resolve, reject) => {
-    const req = http.request(options, (res) => {
-        resolve(res.statusCode)
-      }
-    )
-    req.end()
-  })
-}
-
-const path = '/anuveyatsu/finance-vix'
+const path = 'http://datahub.io/anuveyatsu/finance-vix'
 const dpJsonPath = path + '/datapackage.json'
 const resourceCsvPath = path + '/r/vix-daily.csv'
 const resourceJsonPath = path + '/r/vix-daily.json'

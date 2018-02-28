@@ -9,6 +9,7 @@ const {info} = require('datahub-client')
 const {customMarked} = require('../lib/utils/tools.js')
 const {handleError} = require('../lib/utils/error')
 const printInfo = require('../lib/utils/output/info')
+const whatStatusCode = require('../lib/utils/helpers')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['info'],
@@ -29,6 +30,14 @@ if (argv.help) {
 const fileOrDatasetIdentifier = argv._[0] ? argv._[0] : './'
 
 Promise.resolve().then(async () => {
+  // If given path is a URL then fetch headers and check if status is OK:
+  if (data.isUrl(fileOrDatasetIdentifier)) {
+    const statusCode = await whatStatusCode(fileOrDatasetIdentifier)
+    if (statusCode >= 400) {
+      throw new Error(`Provided URL returns ${statusCode} status code.`)
+    }
+  }
+
   try {
     const parsedIdentifier = await data.parseDatasetIdentifier(fileOrDatasetIdentifier)
     const isdataset = data.isDataset(fileOrDatasetIdentifier)
