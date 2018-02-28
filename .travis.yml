@@ -18,7 +18,7 @@ matrix:
     env: TEST=false
   - os: osx
     node_js: '8'
-    env: TEST=false DEPLOY=true
+    env: TEST=true DEPLOY=true
   - os: osx
     node_js: '9'
     env: TEST=false
