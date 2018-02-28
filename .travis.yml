@@ -24,7 +24,7 @@ matrix:
     env: TEST=false
 install: if $TEST; then npm install; else echo 'skipping this script...'; fi
 script: if $TEST; then npm test; else echo 'skipping this script...'; fi
-before_deploy: if $DEPLOY; then npm run test test/push/push.test.js -m 'push*' && npm run pack; else echo 'skipping this script...'; fi
+before_deploy: if $DEPLOY; then npm run push:test && npm run pack; else echo 'skipping this script...'; fi
 deploy:
   - provider: releases
     api_key:

@@ -57,8 +57,12 @@ test.after('cleanup', t => {
   deleteFolderRecursive('test/medium-dataset-1mb')
   deleteFolderRecursive('test/big-dataset-10mb')
   deleteFolderRecursive('test/private-cli-test')
-  fs.unlinkSync('sample.csv')
-  fs.unlinkSync('sample-1-sheet.xls')
+  try {
+    fs.unlinkSync('sample.csv')
+    fs.unlinkSync('sample-1-sheet.xls')
+  } catch (err) {
+    console.log('Finished cleanup without deleting some files.')
+  }
 
 })
 

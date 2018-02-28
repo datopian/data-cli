@@ -1,6 +1,6 @@
 {
   "name": "data-cli",
-  "version": "0.7.13",
+  "version": "0.7.14",
   "description": "CLI for working with data packages",
   "main": "./lib/index.js",
   "bin": {
@@ -11,6 +11,7 @@
   },
   "scripts": {
     "test": "ava -v",
+    "push:test": "ava -v test/push/ -m 'push*'",
     "watch:test": "npm t -- --watch",
     "lint": "xo --quiet",
     "data": "node bin/data.js",
@@ -71,8 +72,8 @@
     "boxen": "^1.3.0",
     "chalk": "^2.3.0",
     "clipboardy": "^1.1.4",
-    "data.js": "^0.10.12",
-    "datahub-client": "^0.2.8",
+    "data.js": "^0.10.13",
+    "datahub-client": "^0.2.9",
     "human-readable-ids": "^1.0.3",
     "inquirer": "^5.1.0",
     "inquirer-test": "^2.0.1",
