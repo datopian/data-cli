@@ -45,11 +45,11 @@ const writersDatabase = {
   html: writers.html
 }
 
-const dumpIt = async (res) => {
+const dumpIt = async (res, {sheet}={}) => {
   let stream
   if (outFormat in writersDatabase) {
     try {
-      stream = await writersDatabase[outFormat](res)
+      stream = await writersDatabase[outFormat](res, {sheet})
     } catch (err) {
       if (isUrl(argv._[0])) {
         error('Provided URL is invalid')
@@ -75,8 +75,12 @@ const dumpIt = async (res) => {
 if (pathParts.name === '_' || (!pathParts.name && process.stdin.constructor.name === 'Socket')) {
   dumpIt(process.stdin)
 } else if (pathParts.name) {
+  // Check both 'sheet' and 'sheets' args as users can use both of them:
+  let sheet = argv.sheet || argv.sheets
+  // Check if it can be coerced to integer, if so we assume it's sheet index:
+  sheet = !!parseInt(sheet) ? parseInt(sheet) - 1 : sheet
   const res = File.load(argv._[0], {format: argv.format})
-  dumpIt(res)
+  dumpIt(res, {sheet})
 } else {
   info('No input is provided. Please, run "data cat --help" for usage information.')
 }

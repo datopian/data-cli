@@ -627,6 +627,24 @@ test('cat command - remote excel file', async t => {
   t.true(stdout[1].includes('number'))
 })
 
+test('cat command - specific excel sheet', async t => {
+  const path_ = 'test/fixtures/test-data/files/excel/sample-2-sheets.xlsx'
+  // With sheet name:
+  let results = await runcli('cat', path_, '--sheet=Sheet2')
+  let stdout = results.stdout.split('\n')
+  let hasHeaderFrom2ndSheet = stdout.find(item => item.includes('header4'))
+  t.truthy(hasHeaderFrom2ndSheet)
+  // With sheet index:
+  results = await runcli('cat', path_, '--sheet=2')
+  stdout = results.stdout.split('\n')
+  hasHeaderFrom2ndSheet = stdout.find(item => item.includes('header4'))
+  t.truthy(hasHeaderFrom2ndSheet)
+  // When sheet doesn't exist:
+  results = await runcli('cat', path_, '--sheet=3')
+  stdout = results.stdout.split('\n')
+  t.is(stdout[0], '> Error! Input source is empty or doesn\'t exist.')
+})
+
 module.exports = {
   runcli
 }
