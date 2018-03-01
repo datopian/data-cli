@@ -304,6 +304,24 @@ test('info command with a dataset from DataHub', async t => {
 
 // end of [Info: from datahub and github]
 
+// QA tests [Proper error messages]
+
+test('info command - no dataset or descriptor at URL', async t => {
+  const url_ = 'https://datahub.io'
+  const result = await runcli('info', url_)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('Expected URL to a dataset or descriptor.'))
+})
+
+test('get command - no dataset or descriptor at URL', async t => {
+  const url_ = 'https://datahub.io'
+  const result = await runcli('get', url_)
+  const stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('Expected URL to a dataset or descriptor.'))
+})
+
+// end of [Proper error messages]
+
 // QA tests [Validate: basic csv resource]
 
 test('validate command - basic dataset', async t => {
