@@ -38,7 +38,7 @@ const runcli = (...args) => {
 
 
 
-test.after('cleanup', t => {
+test.after.always('cleanup', t => {
   let deleteFolderRecursive = (path) => {
     if (fs.existsSync(path)) {
       fs.readdirSync(path).forEach((file, index) => {
@@ -169,7 +169,7 @@ test('get command with private dataset', async t => {
   const token = 'non-owner-token'
   let result = await runcli('get', identifier, `--token=${token}`)
   let stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('Not Found or Forbidden'))
+  t.true(stdout[0].includes('> Error! 404: Not Found. Requested URL'))
 
   // Now use correct token from env var:
   result = await runcli('get', identifier)
@@ -546,7 +546,7 @@ test('cat command - URL that returns 404', async t => {
   const results = await runcli('cat', url_)
   const stdout = results.stdout.split('\n')
   t.is(stdout[0], '> Error! Provided URL is invalid')
-  t.is(stdout[1], '> Error! Not Found')
+  t.is(stdout[1], '> Error! 404: Not Found. Requested URL: https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/other/sampl.csv')
 })
 
 // end of [Cat: basic csv]
@@ -585,7 +585,7 @@ test('cat command - files with different separator', async t => {
 
 // QA test [Cat: different encodings]
 
-test.skip('cat command - different encodings', async t => {
+test.failing('cat command - different encodings', async t => {
   const path_ = 'test/fixtures/test-data/files/csv/encodings/iso8859.csv'
   let results = await runcli('cat', path_)
   let stdout = results.stdout.split('\n')
@@ -625,6 +625,24 @@ test('cat command - remote excel file', async t => {
   const results = await runcli('cat', url_)
   const stdout = results.stdout.split('\n')
   t.true(stdout[1].includes('number'))
+})
+
+test('cat command - specific excel sheet', async t => {
+  const path_ = 'test/fixtures/test-data/files/excel/sample-2-sheets.xlsx'
+  // With sheet name:
+  let results = await runcli('cat', path_, '--sheet=Sheet2')
+  let stdout = results.stdout.split('\n')
+  let hasHeaderFrom2ndSheet = stdout.find(item => item.includes('header4'))
+  t.truthy(hasHeaderFrom2ndSheet)
+  // With sheet index:
+  results = await runcli('cat', path_, '--sheet=2')
+  stdout = results.stdout.split('\n')
+  hasHeaderFrom2ndSheet = stdout.find(item => item.includes('header4'))
+  t.truthy(hasHeaderFrom2ndSheet)
+  // When sheet doesn't exist:
+  results = await runcli('cat', path_, '--sheet=3')
+  stdout = results.stdout.split('\n')
+  t.is(stdout[0], '> Error! Input source is empty or doesn\'t exist.')
 })
 
 module.exports = {
