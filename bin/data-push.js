@@ -159,6 +159,7 @@ const prepareDatasetFromFile = async filePath => {
       await file.addSchema()
     } catch(err){
       error("tabular file is invalid: " + file.path)
+      error(err.message)
       if (argv.debug){
         console.log('> [debug]\n' + err.stack)
       }

@@ -538,7 +538,7 @@ test('cat command - non-existing path', async t => {
   const path_ = 'non/existing/path'
   const results = await runcli('cat', path_)
   const stdout = results.stdout.split('\n')
-  t.is(stdout[0], '> Error! ENOENT: no such file or directory, open \'non/existing/path\'')
+  t.true(stdout[0].includes('> Error! ENOENT: no such file or directory'))
 })
 
 test('cat command - URL that returns 404', async t => {
