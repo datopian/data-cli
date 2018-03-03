@@ -139,15 +139,10 @@ test('push command fails for remote datasets', async t => {
 // QA tests [Pushing invalid CSV file (irrespective of schema)]
 // Also includes [pushing invalid CSV from URL ]
 
-test('push command fails for invalid CSV file', async t => {
-  let path_ = 'test/fixtures/test-data/packages/invalid-data/extra-column.csv'
-  let result = await runcli('push', path_)
-  let stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! Number of columns is inconsistent on line 2')
-
-  path_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/packages/invalid-data/extra-column.csv'
-  result = await runcli('push', path_)
-  stdout = result.stdout.split('\n')
+test('push command fails for invalid local CSV file', async t => {
+  const path_ = 'test/fixtures/test-data/packages/invalid-data/extra-column.csv'
+  const result = await runcli('push', path_)
+  const stdout = result.stdout.split('\n')
   t.is(stdout[0], '> Error! Number of columns is inconsistent on line 2')
 })
 
@@ -251,7 +246,7 @@ test.serial('push command succeeds for CSV with wrong ext but force formatting',
 
 // QA tests [pushing valid XLS and XLSX with force formatting]
 
-test.failing('push command succeeds for Excel with wrong ext but force formatting', async t => {
+test('push command succeeds for Excel with wrong ext but force formatting', async t => {
   let path_ = 'test/fixtures/test-data/files/wrong-extension-files/sample-1-sheet.txt'
   let argName = '--name=sample-excel-with-force-formatting'
   let argFormat = '--format=xls'
