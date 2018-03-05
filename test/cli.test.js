@@ -411,14 +411,24 @@ test('validate command - invalid remote path for resource', async t => {
   const path_ = 'test/fixtures/test-data/packages/invalid-remote-path'
   const result = await runcli('validate', path_)
   const stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('> Error! Request failed with status code 404'))
+  const hasErrorMsg = stdout.find(item => item.includes('> Error! Request failed with status code 404'))
+  const hasResourceName = stdout.find(item => item.includes('> Error! Resource: invalid-remote-path'))
+  const hasResourcePath = stdout.find(item => item.includes('> Error! Path: https://raw.githubusercontent.com/frictionlessdata/there/is/no/such/file.csv'))
+  t.truthy(hasErrorMsg)
+  t.truthy(hasResourceName)
+  t.truthy(hasResourcePath)
 })
 
 test('validate command - remote dataset with invalid remote path for resource', async t => {
   const url_ = 'https://github.com/frictionlessdata/test-data/tree/master/packages/invalid-remote-path'
   const result = await runcli('validate', url_)
   const stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('> Error! Request failed with status code 404'))
+  const hasErrorMsg = stdout.find(item => item.includes('> Error! Request failed with status code 404'))
+  const hasResourceName = stdout.find(item => item.includes('> Error! Resource: invalid-remote-path'))
+  const hasResourcePath = stdout.find(item => item.includes('> Error! Path: https://raw.githubusercontent.com/frictionlessdata/there/is/no/such/file.csv'))
+  t.truthy(hasErrorMsg)
+  t.truthy(hasResourceName)
+  t.truthy(hasResourcePath)
 })
 
 // end of [Validate: invalid remote path to resource]
