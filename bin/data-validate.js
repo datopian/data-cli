@@ -36,31 +36,33 @@ if (!path_) {
 
 Dataset.load(path_).then(dataset => {
   // Validate
-  try {
-    validate(dataset).then(result => {
-      if (result === true) {
-        console.log('Your Data Package is valid!')
-      } else {
-        // console.log(JSON.stringify(result))
-        // result is a TableSchemaError with attributes: message, rowNumber, and errors
-        // each error in errors is of form { message, rowNumber, columnNumber }
+  validate(dataset).then(result => {
+    if (result === true) {
+      console.log('Your Data Package is valid!')
+    } else {
+      // console.log(JSON.stringify(result))
+      // result is a TableSchemaError with attributes: message, rowNumber, and errors
+      // each error in errors is of form { message, rowNumber, columnNumber }
 
-        // HACK: strip out confusing "(see 'error.errors')" in error message
-        if (result.message) {
-          const msg = result.message.replace(" (see 'error.errors')", '') + ' on line ' + result.rowNumber
-          error(msg)
-          result.errors.forEach(err => {
-            error(err.message)
-          })
-        }
-        else {
-          error(result)
-        }
+      // HACK: strip out confusing "(see 'error.errors')" in error message
+      if (result.message) {
+        const msg = result.message.replace(" (see 'error.errors')", '') + ' on line ' + result.rowNumber
+        error(msg)
+        result.errors.forEach(err => {
+          error(err.message)
+        })
       }
-    })
-  } catch (err) {
+      else {
+        error(result)
+      }
+    }
+  }).catch(err => {
     error(err.message)
-  }
+    if (err.resource) {
+      error(`Resource: ${err.resource}`)
+      error(`Path: ${err.path}`)
+    }
+  })
 }).catch(err => { // If 'Dataset.load' throws error then let's try to identify what's wrong with descriptor:
   error(err.message)
   // Get path to datapackage.json
