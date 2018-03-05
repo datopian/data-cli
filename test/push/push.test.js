@@ -420,3 +420,20 @@ test.serial('push command succeeds for Excel with selected sheet', async t => {
 })
 
 // end of [pushing excel file with selected sheets]
+
+
+test('push command fails for resources with invalid URL as path', async t => {
+  const url_ = 'https://github.com/datasets/testtest'
+  const argName = '--name=test'
+  let result = await runcli('push', url_, argName)
+  let stdout = result.stdout.split('\n')
+  let hasErrorMsg = stdout.find(item => item.includes('> Error! Invalid URL. 404 Not Found: https://github.com/datasets/testtest'))
+  t.truthy(hasErrorMsg)
+
+  // Pushing a dataset with remote resource:
+  const path_ = 'test/fixtures/test-data/packages/invalid-remote-path/'
+  result = await runcli('push', path_, argName)
+  stdout = result.stdout.split('\n')
+  hasErrorMsg = stdout.find(item => item.includes('> Error! '))
+  t.truthy(hasErrorMsg)
+})
