@@ -4,7 +4,6 @@ const path = require('path')
 
 const minimist = require('minimist')
 const urljoin = require('url-join')
-const {Dataset} = require('data.js')
 const {DataHub} = require('datahub-client')
 const {authenticate} = require('datahub-client')
 const {config} = require('datahub-client')
@@ -51,7 +50,6 @@ Promise.resolve().then(async () => {
   }
   try {
     const datasetPath = argv._[0] || process.cwd()
-    dataset = await Dataset.load(datasetPath)
     stopSpinner = wait('Commencing push ...')
 
     const datahubConfigs = {
