@@ -62,6 +62,10 @@ const run = async () => {
       await Promise.all(myPromises)
 
     } else if (parsedIdentifier.type === "datahub") {
+      // Remove trailing slash:
+      if(identifier.substr(-1) === '/' && identifier.length > 1) {
+        identifier = identifier.slice(0, identifier.length - 1)
+      }
       // Try to guess owner and dataset name here. We're not loading Dataset object
       // because we want to handle private datasets as well:
       const idParts = identifier.split('/')
