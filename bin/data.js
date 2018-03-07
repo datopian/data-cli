@@ -9,6 +9,11 @@ const {error} = require('../lib/utils/error')
 const {handleError} = require('../lib/utils/error')
 const updateNotifier = require('../lib/utils/update')
 
+// Increase MaxListenersExceededWarning level for cases when the remote dataset has a lot of resources,
+// to avoid: Warning: Possible EventEmitter memory leak detected. X end listeners added.
+// ~11 requests is required to validate remote 1 tabular resource, so I set a limit to match a dataset with 10 files.
+require('events').EventEmitter.defaultMaxListeners = 120;
+
 // Handle all uncaught exceptions and unhandled rejections
 process.on('uncaughtException', (err) => {
   handleError(err)

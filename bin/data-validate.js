@@ -8,11 +8,6 @@ const jsonlint = require('jsonlint')
 const {validate} = require('datahub-client').validate
 const {Dataset} = require('data.js')
 
-// increase MaxListenersExceededWarning level for cases when the remote dataset has a lot of resources,
-// to avoid: Warning: Possible EventEmitter memory leak detected. X end listeners added.
-// ~11 requests is required to validate remote 1 tabular resource, so I set a limit to match a dataset with 10 files.
-require('events').EventEmitter.defaultMaxListeners = 120;
-
 // Ours
 const {customMarked} = require('../lib/utils/tools')
 const {error} = require('../lib/utils/error')
