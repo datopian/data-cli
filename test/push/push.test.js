@@ -42,6 +42,28 @@ test.serial('push command succeeds for valid dataset', async t => {
 
 // end of [pushing valid dataset from path]
 
+// QA tests [pushing valid dataset from working directory]
+test.serial('pushing valid dataset from working directory', async t =>{
+  const path_ = 'test/fixtures/test-data/packages/basic-csv'
+  const usualWorkingDir = process.cwd()
+  process.chdir(path_)
+  console.log('Working directory changed: ' + process.cwd())
+  // push test
+  const result = await runcli('push')
+  const stdout = result.stdout.split('\n')
+  const hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  const hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/basic-csv/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  const whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/basic-csv/v/'))
+  // change working dir to default, so other tests will not fail
+  process.chdir(usualWorkingDir)
+  console.log('Working directory restored: ' + process.cwd())
+})
+
+
+
 // QA tests [pushing valid dataset with path to datapackage.json]
 
 test.serial('push command succeeds for valid dataset with path to dp.json', async t => {
