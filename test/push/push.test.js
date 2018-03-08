@@ -62,6 +62,23 @@ test.serial('pushing valid dataset from working directory', async t =>{
   console.log('Working directory restored: ' + process.cwd())
 })
 
+// QA tests [pushing multiple CSV files together] - should push only one file and show a WARNING message
+// https://datahub.io/test/zero/v/87
+test.serial.failing('pushing multiple CSV files Warning message', async t => {
+  const path_ = 'test/fixtures/test-data/files/csv/separators/comma.csv'
+  const path2_ = 'test/fixtures/test-data/files/csv/separators/colon.csv'
+  const args = '--name=comma-separated'
+  const result = await runcli('push', path_, path2_, args)
+  const stdout = result.stdout.split('\n')
+  const hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  const hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/comma-separated/v/'))
+  const hasWarningMessage = stdout.find(item => item.includes(`Warning: pushing only the ${path_} file.`))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  t.truthy(hasWarningMessage)
+  const whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/comma-separated/v/'))
+})
 
 
 // QA tests [pushing valid dataset with path to datapackage.json]
