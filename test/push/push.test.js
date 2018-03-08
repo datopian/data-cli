@@ -175,6 +175,22 @@ test('push command fails for remote datasets', async t => {
 
 // end of [Push: pushing remote data package]
 
+// QA tests [Push: pushing valid dataset with remote resource]
+
+test('push command succeeds for valid dataset with remote resource', async t => {
+  let path_ = 'test/fixtures/test-data/packages/remote-csv'
+  let result = await runcli('push', path_)
+  let stdout = result.stdout.split('\n')
+  const hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  const hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/remote-resource/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  const whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/remote-resource/v/'))
+})
+
+// end of [Push: pushing valid dataset with remote resource]
+
 // QA tests [Pushing invalid CSV file (irrespective of schema)]
 // Also includes [pushing invalid CSV from URL ]
 
@@ -213,6 +229,70 @@ test('push command fails for non-existing file', async t => {
 })
 
 // end of [Push non existing file]
+
+// QA tests [pushing empty but correct files]
+
+test('push command succeeds for empty files except tabular ones such as csv,xls,xlsx', async t => {
+  let path_ = 'test/fixtures/test-data/files/empty-files/empty'
+  let args = '--name=empty-no-extension'
+  let result = await runcli('push', path_, args)
+  let stdout = result.stdout.split('\n')
+  let hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  let hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/empty-no-extension/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  let whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/empty-no-extension/v/'))
+
+  path_ = 'test/fixtures/test-data/files/empty-files/empty.html'
+  args = '--name=empty-html'
+  result = await runcli('push', path_, args)
+  stdout = result.stdout.split('\n')
+  hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/empty-html/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/empty-html/v/'))
+
+  path_ = 'test/fixtures/test-data/files/empty-files/empty.txt'
+  args = '--name=empty-txt'
+  result = await runcli('push', path_, args)
+  stdout = result.stdout.split('\n')
+  hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/empty-txt/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/empty-txt/v/'))
+
+  path_ = 'test/fixtures/test-data/files/empty-files/empty.json'
+  args = '--name=empty-json'
+  result = await runcli('push', path_, args)
+  stdout = result.stdout.split('\n')
+  hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/empty-json/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
+  whatsInClipboard = await clipboardy.read()
+  t.true(whatsInClipboard.includes('https://datahub.io/test/empty-json/v/'))
+})
+
+test.failing('push command fails for empty files tabular files such as csv,xls', async t => {
+  let path_ = 'test/fixtures/test-data/files/empty-files/empty.csv'
+  let args = '--name=empty-csv'
+  let result = await runcli('push', path_, args)
+  let stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('tabular file is invalid: test/fixtures/test-data/files/empty-files/empty.csv'))
+
+  path_ = 'test/fixtures/test-data/files/empty-files/empty.xls'
+  result = await runcli('push', path_, args)
+  args = '--name=empty-xls'
+  stdout = result.stdout.split('\n')
+  t.true(stdout[0].includes('You cannot push an empty sheet. Please, add some data and try again.'))
+})
+
+// end of [pushing empty but correct files]
 
 // QA tests [pushing 0 bytes files]
 
