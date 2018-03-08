@@ -114,7 +114,7 @@ test('get command with local file', async t => {
 // QA tests [Get: Small dataset from DataHub]
 
 test('get command with small dataset from DataHub', async t => {
-  const identifier = 'https://datahub.io/test/small-dataset-100kb'
+  const identifier = 'https://datahub.io/test/small-dataset-100kb/'
   const result = await runcli('get', identifier)
   const stdout = result.stdout.split('\n')
   t.true(stdout[0].includes('Time elapsed:'))
@@ -178,6 +178,8 @@ test('get command with private dataset', async t => {
   t.true(stdout[1].includes('Dataset/file is saved in "test/private-cli-test"'))
   t.true(fs.existsSync('test/private-cli-test/datapackage.json'))
 })
+
+// end of QA tests [Get: get private dataset]
 
 
 // =======================================
