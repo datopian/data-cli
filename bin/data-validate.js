@@ -5,12 +5,15 @@ const fs = require('fs')
 const path = require('path')
 const minimist = require('minimist')
 const jsonlint = require('jsonlint')
-const {validate} = require('datahub-client').validate
+const {Validator} = require('datahub-client')
 const {Dataset} = require('data.js')
+const {eraseLines} = require('ansi-escapes')
 
 // Ours
 const {customMarked} = require('../lib/utils/tools')
 const {error} = require('../lib/utils/error')
+const wait = require('../lib/utils/output/wait')
+const info = require('../lib/utils/output/info')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['validate'],
@@ -34,37 +37,51 @@ if (!path_) {
   path_ = process.cwd()
 }
 
-Dataset.load(path_).then(dataset => {
-  // Validate
-  validate(dataset).then(result => {
-    if (result === true) {
-      console.log('Your Data Package is valid!')
-    } else {
-      // console.log(JSON.stringify(result))
-      // result is a TableSchemaError with attributes: message, rowNumber, and errors
-      // each error in errors is of form { message, rowNumber, columnNumber }
+const validator = new Validator({identifier: path_})
+const stopSpinner = wait('')
 
-      // HACK: strip out confusing "(see 'error.errors')" in error message
-      if (result.message) {
-        const msg = result.message.replace(" (see 'error.errors')", '') + ' on line ' + result.rowNumber
-        error(msg)
-        result.errors.forEach(err => {
-          error(err.message)
-        })
-      }
-      else {
-        error(result)
-      }
+validator.on('message', (message) => {
+  if (message.constructor.name === 'String') {
+    process.stdout.write(eraseLines(1))
+    info(message)
+  } else {
+    process.stdout.write(eraseLines(2))
+    info(message.name + ': ' + message.status)
+  }
+})
+
+validator.validate().then(result => {
+  if (result === true) {
+    stopSpinner()
+    process.stdout.write(eraseLines(2))
+    info('Your Data Package is valid!')
+  } else {
+    stopSpinner()
+    process.stdout.write(eraseLines(2))
+    // console.log(JSON.stringify(result))
+    // result is a TableSchemaError with attributes: message, rowNumber, and errors
+    // each error in errors is of form { message, rowNumber, columnNumber }
+
+    // HACK: strip out confusing "(see 'error.errors')" in error message
+    if (result.message) {
+      const msg = result.message.replace(" (see 'error.errors')", '') + ' on line ' + result.rowNumber
+      error(msg)
+      result.errors.forEach(err => {
+        error(err.message)
+      })
     }
-  }).catch(err => {
-    error(err.message)
-    if (err.resource) {
-      error(`Resource: ${err.resource}`)
-      error(`Path: ${err.path}`)
+    else {
+      error(result)
     }
-  })
-}).catch(err => { // If 'Dataset.load' throws error then let's try to identify what's wrong with descriptor:
+  }
+}).catch(err => {
+  stopSpinner()
+  process.stdout.write(eraseLines(2))
   error(err.message)
+  if (err.resource) {
+    error(`Resource: ${err.resource}`)
+    error(`Path: ${err.path}`)
+  }
   // Get path to datapackage.json
   if (fs.lstatSync(path_).isDirectory()) {
     // Check datapackage.json in this dir and if doesn't exist then throw error:
