@@ -330,14 +330,16 @@ test('validate command - basic dataset', async t => {
   const path_ = 'test/fixtures/test-data/packages/basic-csv'
   const result = await runcli('validate', path_)
   const stdout = result.stdout.split('\n')
-  t.is(stdout[0], 'Your Data Package is valid!')
+  const hasValidMessage = stdout.find(item => item.includes('Your Data Package is valid!'))
+  t.truthy(hasValidMessage)
 })
 
-test('validate command - remote basic dataset', async t => {
+test.serial('validate command - remote basic dataset', async t => {
   const url_ = 'https://github.com/frictionlessdata/test-data/tree/master/packages/basic-csv'
   const result = await runcli('validate', url_)
   const stdout = result.stdout.split('\n')
-  t.is(stdout[0], 'Your Data Package is valid!')
+  const hasValidMessage = stdout.find(item => item.includes('Your Data Package is valid!'))
+  t.truthy(hasValidMessage)
 })
 
 // end of [Validate: basic csv resource]
@@ -348,14 +350,16 @@ test('validate command - non-tabular resource', async t => {
   const path_ = 'test/fixtures/test-data/packages/non-tabular-resource'
   const result = await runcli('validate', path_)
   const stdout = result.stdout.split('\n')
-  t.is(stdout[0], 'Your Data Package is valid!')
+  const hasValidMessage = stdout.find(item => item.includes('Your Data Package is valid!'))
+  t.truthy(hasValidMessage)
 })
 
-test('validate command - remote dataset with non-tabular resource', async t => {
+test.serial('validate command - remote dataset with non-tabular resource', async t => {
   const url_ = 'https://github.com/frictionlessdata/test-data/tree/master/packages/non-tabular-resource'
   const result = await runcli('validate', url_)
   const stdout = result.stdout.split('\n')
-  t.is(stdout[0], 'Your Data Package is valid!')
+  const hasValidMessage = stdout.find(item => item.includes('Your Data Package is valid!'))
+  t.truthy(hasValidMessage)
 })
 
 // end of [Validate: non-tabular resource LOCALLY]
@@ -366,14 +370,16 @@ test('validate command - remote resource', async t => {
   const path_ = 'test/fixtures/test-data/packages/remote-csv'
   const result = await runcli('validate', path_)
   const stdout = result.stdout.split('\n')
-  t.is(stdout[0], 'Your Data Package is valid!')
+  const hasValidMessage = stdout.find(item => item.includes('Your Data Package is valid!'))
+  t.truthy(hasValidMessage)
 })
 
-test('validate command - remote dataset with remote resource', async t => {
+test.serial('validate command - remote dataset with remote resource', async t => {
   const url_ = 'https://github.com/frictionlessdata/test-data/tree/master/packages/remote-csv'
   const result = await runcli('validate', url_)
   const stdout = result.stdout.split('\n')
-  t.is(stdout[0], 'Your Data Package is valid!')
+  const hasValidMessage = stdout.find(item => item.includes('Your Data Package is valid!'))
+  t.truthy(hasValidMessage)
 })
 
 // end of [Validate: remote resource]
@@ -384,14 +390,16 @@ test('validate command - csv with different separators', async t => {
   const path_ = 'test/fixtures/test-data/packages/different-separators'
   const result = await runcli('validate', path_)
   const stdout = result.stdout.split('\n')
-  t.is(stdout[0], 'Your Data Package is valid!')
+  const hasValidMessage = stdout.find(item => item.includes('Your Data Package is valid!'))
+  t.truthy(hasValidMessage)
 })
 
-test('validate command - remote dataset with csv with different separators', async t => {
+test.serial('validate command - remote dataset with csv with different separators', async t => {
   const url_ = 'https://github.com/frictionlessdata/test-data/tree/master/packages/different-separators'
   const result = await runcli('validate', url_)
   const stdout = result.stdout.split('\n')
-  t.is(stdout[0], 'Your Data Package is valid!')
+  const hasValidMessage = stdout.find(item => item.includes('Your Data Package is valid!'))
+  t.truthy(hasValidMessage)
 })
 
 // end of [Validate: csv with different separators]
@@ -402,14 +410,15 @@ test('validate command - invalid local path', async t => {
   const path_ = 'test/fixtures/test-data/packages/invalid-local-path'
   const result = await runcli('validate', path_)
   const stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('> Error! ENOENT: no such file or directory'))
+  const hasErrorMsg = stdout.find(item => item.includes('> Error! ENOENT: no such file or directory'))
+  t.truthy(hasErrorMsg)
 })
 
 // end of [Validate: invalid path to resource]
 
 // QA tests [Validate: invalid remote path to resource]
 
-test('validate command - invalid remote path for resource', async t => {
+test.serial('validate command - invalid remote path for resource', async t => {
   const path_ = 'test/fixtures/test-data/packages/invalid-remote-path'
   const result = await runcli('validate', path_)
   const stdout = result.stdout.split('\n')
@@ -421,7 +430,7 @@ test('validate command - invalid remote path for resource', async t => {
   t.truthy(hasResourcePath)
 })
 
-test('validate command - remote dataset with invalid remote path for resource', async t => {
+test.serial('validate command - remote dataset with invalid remote path for resource', async t => {
   const url_ = 'https://github.com/frictionlessdata/test-data/tree/master/packages/invalid-remote-path'
   const result = await runcli('validate', url_)
   const stdout = result.stdout.split('\n')
@@ -437,88 +446,102 @@ test('validate command - remote dataset with invalid remote path for resource', 
 
 // QA tests [Validate: csv with different field types, formats and constraints]
 
-test('validate command - wrong constraints', async t => {
+test.serial('validate command - wrong constraints', async t => {
   const path_ = 'test/fixtures/test-data/packages/types-formats-and-constraints/constraints'
   let result = await runcli('validate', path_)
   let stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! There are 7 type and format mismatch errors on line 3')
+  let hasErrorMsg = stdout.find(item => item.includes('> Error! There are 7 type and format mismatch errors on line 3'))
+  t.truthy(hasErrorMsg)
 
   const url_ = 'https://github.com/frictionlessdata/test-data/tree/master/packages/types-formats-and-constraints/constraints'
   result = await runcli('validate', url_)
   stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! There are 7 type and format mismatch errors on line 3')
+  hasErrorMsg = stdout.find(item => item.includes('> Error! There are 7 type and format mismatch errors on line 3'))
+  t.truthy(hasErrorMsg)
 })
 
-test('validate command - wrong "date" type/format', async t => {
+test.serial('validate command - wrong "date" type/format', async t => {
   const path_ = 'test/fixtures/test-data/packages/types-formats-and-constraints/date'
   let result = await runcli('validate', path_)
   let stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! There are 2 type and format mismatch errors on line 3')
+  let hasErrorMsg = stdout.find(item => item.includes('> Error! There are 2 type and format mismatch errors on line 3'))
+  t.truthy(hasErrorMsg)
 
   const url_ = 'https://github.com/frictionlessdata/test-data/tree/master/packages/types-formats-and-constraints/date'
   result = await runcli('validate', url_)
   stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! There are 2 type and format mismatch errors on line 3')
+  hasErrorMsg = stdout.find(item => item.includes('> Error! There are 2 type and format mismatch errors on line 3'))
+  t.truthy(hasErrorMsg)
 })
 
-test('validate command - wrong "datetime" type/format', async t => {
+test.serial('validate command - wrong "datetime" type/format', async t => {
   const path_ = 'test/fixtures/test-data/packages/types-formats-and-constraints/datetime'
   let result = await runcli('validate', path_)
   let stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! There are 3 type and format mismatch errors on line 3')
+  let hasErrorMsg = stdout.find(item => item.includes('> Error! There are 3 type and format mismatch errors on line 3'))
+  t.truthy(hasErrorMsg)
 
   const url_ = 'https://github.com/frictionlessdata/test-data/tree/master/packages/types-formats-and-constraints/datetime'
   result = await runcli('validate', url_)
   stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! There are 3 type and format mismatch errors on line 3')
+  hasErrorMsg = stdout.find(item => item.includes('> Error! There are 3 type and format mismatch errors on line 3'))
+  t.truthy(hasErrorMsg)
 })
 
-test('validate command - wrong "string" type/format', async t => {
+test.serial('validate command - wrong "string" type/format', async t => {
   const path_ = 'test/fixtures/test-data/packages/types-formats-and-constraints/string'
   let result = await runcli('validate', path_)
   let stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! There are 3 type and format mismatch errors on line 3')
+  let hasErrorMsg = stdout.find(item => item.includes('> Error! There are 3 type and format mismatch errors on line 3'))
+  t.truthy(hasErrorMsg)
 
   const url_ = 'https://github.com/frictionlessdata/test-data/tree/master/packages/types-formats-and-constraints/string'
   result = await runcli('validate', url_)
   stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! There are 3 type and format mismatch errors on line 3')
+  hasErrorMsg = stdout.find(item => item.includes('> Error! There are 3 type and format mismatch errors on line 3'))
+  t.truthy(hasErrorMsg)
 })
 
-test('validate command - wrong "time" type/format', async t => {
+test.serial('validate command - wrong "time" type/format', async t => {
   const path_ = 'test/fixtures/test-data/packages/types-formats-and-constraints/time'
   let result = await runcli('validate', path_)
   let stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! There are 3 type and format mismatch errors on line 3')
+  let hasErrorMsg = stdout.find(item => item.includes('> Error! There are 3 type and format mismatch errors on line 3'))
+  t.truthy(hasErrorMsg)
 
   const url_ = 'https://github.com/frictionlessdata/test-data/tree/master/packages/types-formats-and-constraints/time'
   result = await runcli('validate', url_)
   stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! There are 3 type and format mismatch errors on line 3')
+  hasErrorMsg = stdout.find(item => item.includes('> Error! There are 3 type and format mismatch errors on line 3'))
+  t.truthy(hasErrorMsg)
 })
 
-test('validate command - wrong "year" type/format', async t => {
+test.serial('validate command - wrong "year" type/format', async t => {
   const path_ = 'test/fixtures/test-data/packages/types-formats-and-constraints/year'
   let result = await runcli('validate', path_)
   let stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! There are 1 type and format mismatch errors on line 2')
+  let hasErrorMsg = stdout.find(item => item.includes('> Error! There are 1 type and format mismatch errors on line 2'))
+  t.truthy(hasErrorMsg)
 
   const url_ = 'https://github.com/frictionlessdata/test-data/tree/master/packages/types-formats-and-constraints/year'
   result = await runcli('validate', url_)
   stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! There are 1 type and format mismatch errors on line 2')
+  hasErrorMsg = stdout.find(item => item.includes('> Error! There are 1 type and format mismatch errors on line 2'))
+  t.truthy(hasErrorMsg)
 })
 
-test('validate command - wrong "yearmonth" type/format', async t => {
+test.serial('validate command - wrong "yearmonth" type/format', async t => {
   const path_ = 'test/fixtures/test-data/packages/types-formats-and-constraints/yearmonth'
   let result = await runcli('validate', path_)
   let stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! There are 1 type and format mismatch errors on line 2')
+  let hasErrorMsg = stdout.find(item => item.includes('> Error! There are 1 type and format mismatch errors on line 2'))
+  t.truthy(hasErrorMsg)
 
   const url_ = 'https://github.com/frictionlessdata/test-data/tree/master/packages/types-formats-and-constraints/yearmonth'
   result = await runcli('validate', url_)
   stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! There are 1 type and format mismatch errors on line 2')
+  hasErrorMsg = stdout.find(item => item.includes('> Error! There are 1 type and format mismatch errors on line 2'))
+  t.truthy(hasErrorMsg)
 })
 
 // end of [Validate: csv with different field types, formats and constraints]
