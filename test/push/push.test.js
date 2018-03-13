@@ -278,7 +278,7 @@ test('push command succeeds for empty files except tabular ones such as csv,xls,
   t.true(whatsInClipboard.includes('https://datahub.io/test/empty-json/v/'))
 })
 
-test.failing('push command fails for empty files tabular files such as csv,xls', async t => {
+test('push command fails for empty files tabular files such as csv,xls', async t => {
   let path_ = 'test/fixtures/test-data/files/empty-files/empty.csv'
   let args = '--name=empty-csv'
   let result = await runcli('push', path_, args)
