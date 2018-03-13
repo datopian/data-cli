@@ -58,12 +58,12 @@ validator.validate().then(result => {
   } else {
     stopSpinner()
     process.stdout.write(eraseLines(2))
-    // console.log(JSON.stringify(result))
     // result is a TableSchemaError with attributes: message, rowNumber, and errors
     // each error in errors is of form { message, rowNumber, columnNumber }
 
     // HACK: strip out confusing "(see 'error.errors')" in error message
     if (result.message) {
+      error(`Validation has failed for "${result.resource}"`)
       const msg = result.message.replace(" (see 'error.errors')", '') + ' on line ' + result.rowNumber
       error(msg)
       result.errors.forEach(err => {
