@@ -72,6 +72,10 @@ validator.validate().then(result => {
     }
     else {
       error(result)
+      // Show more details of error when `path` property doesn't match the pattern:
+      if (result[0].toString().includes('/resources/0/path')) {
+        error('`path` property does not match pattern "^(?=^[^./~])(^((?!\\.{2}).)*$).*$"')
+      }
     }
   }
 }).catch(err => {

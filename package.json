@@ -1,6 +1,6 @@
 {
   "name": "data-cli",
-  "version": "0.8.5",
+  "version": "0.8.6",
   "description": "CLI for working with data packages",
   "main": "./lib/index.js",
   "bin": {
@@ -72,8 +72,8 @@
     "boxen": "^1.3.0",
     "chalk": "^2.3.0",
     "clipboardy": "^1.1.4",
-    "data.js": "^0.11.0",
-    "datahub-client": "^0.4.1",
+    "data.js": "^0.11.1",
+    "datahub-client": "^0.4.2",
     "human-readable-ids": "^1.0.3",
     "inquirer": "^5.1.0",
     "inquirer-test": "^2.0.1",
