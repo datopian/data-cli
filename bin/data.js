@@ -2,6 +2,9 @@
 // Native
 const {resolve} = require('path')
 
+// Packages
+const ua = require('universal-analytics')
+
 const {version} = require('../package.json')
 
 // Ours
@@ -92,6 +95,12 @@ if (index > -1) {
 }
 
 const bin = resolve(__dirname, 'data-' + cmd + '.js')
+
+// Track events using GA:
+// Developers should set 'GA' env var so their usage doesn't get tracked:
+const visitor = process.env.GA === 'data-dev-team' ? ua('UA-XXXX-XX') : ua('UA-80458846-4')
+// Event category is 'cli', action is the command and label is all arguments:
+visitor.event('cli', cmd, process.argv.slice(3, process.argv.length).toString()).send()
 
 // Prepare process.argv for subcommand
 process.argv = process.argv.slice(0, 2).concat(args)

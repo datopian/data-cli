@@ -32,6 +32,17 @@ export DATAHUB_JSON=~/.config/datahub/my-special-config.json
 
 *You need to have Node.js version >7.6*
 
+**NOTE:** if you're a developer, you need to set `GA` environment variable so your usage of the CLI isn't tracked in the analytics:
+
+It is recommended that you set this up permanently, e.g., MacOS users need to edit `~/.bash_profile` file - add this script in your `~/.bash_profile`:
+
+```bash
+# The next line sets 'GA' env var so data-cli doesn't send tracking data to Analytics
+export GA=data-dev-team
+```
+
+and then restart your terminal.
+
 ## Install
 
 ```
