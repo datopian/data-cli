@@ -74,7 +74,11 @@ validator.validate().then(result => {
       error(result)
       // Show more details of error when `path` property doesn't match the pattern:
       if (result[0].toString().includes('/resources/0/path')) {
-        error('`path` property does not match pattern "^(?=^[^./~])(^((?!\\.{2}).)*$).*$"')
+        error(`Because of security reasons 'path' property cannot:
+        - have backwards path '../'
+        - start from filesystem root '/'
+        - start from user root '~/'
+        - start with '.'`)
       }
     }
   }
