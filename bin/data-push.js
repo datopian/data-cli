@@ -48,7 +48,6 @@ Promise.resolve().then(async () => {
       out = await authenticate(apiUrl, token)
     } catch (err) {
       handleError(err)
-      process.exit(1)
     }
   }
   if (!out.authenticated) {
@@ -66,12 +65,11 @@ Promise.resolve().then(async () => {
       try {
         dataset = await Dataset.load(filePath)
       } catch(err){
-        error(err.message)
         info("You can run:")
         info("'data validate' to check your data.")
         info("'data init' to create a datapackage.")
         info("'data help push' to get more info.")
-        process.exit(1)
+        handleError(err)
       }
     } else {
       dataset = await prepareDatasetFromFile(filePath)
@@ -136,11 +134,10 @@ Promise.resolve().then(async () => {
     console.log(message + '🔗  ' + url + copied)
   } catch (err) {
     stopSpinner()
-    handleError(err)
     if (argv.debug) {
       console.log('> [debug]\n' + err.stack)
     }
-    process.exit(1)
+    handleError(err)
   }
 })
 

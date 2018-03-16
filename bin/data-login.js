@@ -38,7 +38,6 @@ Promise.resolve().then(async () => {
     out = await authenticate(apiUrl, token)
   } catch (err) {
     handleError(err)
-    process.exit(1)
   }
   if (out.authenticated) {
     stopSpinner()

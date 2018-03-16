@@ -66,10 +66,9 @@ Promise.resolve().then(async () => {
       }
     }
   } catch (err) {
-    handleError(err)
     if (!argv._[0]) {
       printInfo('Running `data info` without an argument will search a `datapackage.json` file in the current working directory.')
     }
-    process.exit(1)
+    handleError(err)
   }
 })

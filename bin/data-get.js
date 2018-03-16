@@ -105,11 +105,10 @@ const run = async () => {
 
   } catch (err) {
     stopSpinner()
-    handleError(err)
     if (argv.debug) {
       console.log('> [debug]\n' + err.stack)
     }
-    process.exit(1)
+    handleError(err)
   }
 }
 
@@ -135,7 +134,6 @@ const saveFileFromUrl = (url, format) => {
         err.message += ' or Forbidden.'
       }
       handleError(err)
-      process.exit(1)
     }
     stream.pipe(fs.createWriteStream(destPath)).on('finish', () => {
       resolve(destPath)

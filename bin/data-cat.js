@@ -55,7 +55,6 @@ const dumpIt = async (res, {sheet}={}) => {
         error('Provided URL is invalid')
       }
       handleError(err)
-      process.exit(1)
     }
 
     if (outFormat === 'ascii') { // Write to stdout
