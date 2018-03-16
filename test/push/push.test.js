@@ -124,14 +124,17 @@ test('push command fails with invalid JSON descriptor', async t => {
   let path_ = 'test/fixtures/test-data/packages/invalid-json-single-quotes'
   let result = await runcli('push', path_)
   let stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! Unexpected token \' in JSON at position 27')
+  let hasErrorMsg = stdout.find(item => item.includes('> Error! Unexpected token \' in JSON at position 27'))
+  t.truthy(hasErrorMsg)
   // Suggests running validate command:
-  t.is(stdout[2], '> \'data validate\' to check your data.')
+  const hasSuggestionMsg = stdout.find(item => item.includes('> \'data validate\' to check your data.'))
+  t.truthy(hasSuggestionMsg)
 
   path_ = 'test/fixtures/test-data/packages/invalid-json-missing-comma'
   result = await runcli('push', path_)
   stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! Unexpected string in JSON at position 113')
+  hasErrorMsg = stdout.find(item => item.includes('> Error! Unexpected string in JSON at position 113'))
+  t.truthy(hasErrorMsg)
 })
 
 // end of [Push: Invalid datapackage.json]
@@ -142,9 +145,12 @@ test('push command fails with descriptor validation error', async t => {
   let path_ = 'test/fixtures/test-data/packages/invalid-descriptor'
   let result = await runcli('push', path_)
   let stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('> Error! Error: Descriptor validation error:'))
-  t.true(stdout[1].includes('String does not match pattern: ^([-a-z0-9._/])+$'))
-  t.true(stdout[2].includes('at \"/name\" in descriptor'))
+  const hasErrorMsg = stdout.find(item => item.includes('> Error! Error: Descriptor validation error:'))
+  t.truthy(hasErrorMsg)
+  let hasErrorDetails = stdout.find(item => item.includes('String does not match pattern: ^([-a-z0-9._/])+$'))
+  t.truthy(hasErrorDetails)
+  hasErrorDetails = stdout.find(item => item.includes('at \"/name\" in descriptor'))
+  t.truthy(hasErrorDetails)
 })
 
 // end of [Push: Invalid descriptor metadata]
@@ -155,7 +161,8 @@ test('push command fails if descriptor is missing', async t => {
   let path_ = 'test/fixtures/test-data/packages'
   let result = await runcli('push', path_)
   let stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! No datapackage.json at destination.')
+  const hasErrorMsg = stdout.find(item => item.includes('> Error! No datapackage.json at destination.'))
+  t.truthy(hasErrorMsg)
   let suggestsToDoValidate = stdout.find(item => item.includes('data validate'))
   let suggestsToDoInit = stdout.find(item => item.includes('data init'))
   t.truthy(suggestsToDoValidate)
@@ -170,7 +177,8 @@ test('push command fails for remote datasets', async t => {
   let path_ = 'https://github.com/frictionlessdata/test-data/blob/master/packages/basic-csv/datapackage.json'
   let result = await runcli('push', path_)
   let stdout = result.stdout.split('\n')
-  t.is(stdout[0], 'Error: You can push only local datasets.')
+  const hasErrorMsg = stdout.find(item => item.includes('Error: You can push only local datasets.'))
+  t.truthy(hasErrorMsg)
 })
 
 // end of [Push: pushing remote data package]
@@ -198,7 +206,8 @@ test('push command fails for invalid local CSV file', async t => {
   const path_ = 'test/fixtures/test-data/packages/invalid-data/extra-column.csv'
   const result = await runcli('push', path_)
   const stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! Number of columns is inconsistent on line 2')
+  const hasErrorMsg = stdout.find(item => item.includes('> Error! Number of columns is inconsistent on line 2'))
+  t.truthy(hasErrorMsg)
 })
 
 // end of [Pushing invalid CSV file (irrespective of schema)]
@@ -225,7 +234,8 @@ test('push command fails for non-existing file', async t => {
   let path_ = 'non-existing.csv'
   let result = await runcli('push', path_)
   let stdout = result.stdout.split('\n')
-  t.is(stdout[0], '> Error! ENOENT: no such file or directory, lstat \'non-existing.csv\'')
+  const hasErrorMsg = stdout.find(item => item.includes('> Error! ENOENT: no such file or directory, lstat \'non-existing.csv\''))
+  t.truthy(hasErrorMsg)
 })
 
 // end of [Push non existing file]
@@ -283,13 +293,15 @@ test('push command fails for empty files tabular files such as csv,xls', async t
   let args = '--name=empty-csv'
   let result = await runcli('push', path_, args)
   let stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('tabular file is invalid: test/fixtures/test-data/files/empty-files/empty.csv'))
+  let hasErrorMsg = stdout.find(item => item.includes('tabular file is invalid: test/fixtures/test-data/files/empty-files/empty.csv'))
+  t.truthy(hasErrorMsg)
 
   path_ = 'test/fixtures/test-data/files/empty-files/empty.xls'
   result = await runcli('push', path_, args)
   args = '--name=empty-xls'
   stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('You cannot push an empty sheet. Please, add some data and try again.'))
+  hasErrorMsg = stdout.find(item => item.includes('You cannot push an empty sheet. Please, add some data and try again.'))
+  t.truthy(hasErrorMsg)
 })
 
 // end of [pushing empty but correct files]
@@ -301,7 +313,8 @@ test.failing('push command fails for zero byte files', async t => {
   let args = '--name=zero'
   let result = await runcli('push', path_, args)
   let stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('> You can not push empty files, please add some data and try again'))
+  let hasErrorMsg = stdout.find(item => item.includes('> You can not push empty files, please add some data and try again'))
+  t.truthy(hasErrorMsg)
 
   path_ = 'test/fixtures/test-data/files/zero-files/zero.csv'
   result = await runcli('push', path_, args)
@@ -311,22 +324,26 @@ test.failing('push command fails for zero byte files', async t => {
   path_ = 'test/fixtures/test-data/files/zero-files/zero.html'
   result = await runcli('push', path_, args)
   stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('> You can not push empty files, please add some data and try again'))
+  hasErrorMsg = stdout.find(item => item.includes('> You can not push empty files, please add some data and try again'))
+  t.truthy(hasErrorMsg)
 
   path_ = 'test/fixtures/test-data/files/zero-files/zero.txt'
   result = await runcli('push', path_, args)
   stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('> You can not push empty files, please add some data and try again'))
+  hasErrorMsg = stdout.find(item => item.includes('> You can not push empty files, please add some data and try again'))
+  t.truthy(hasErrorMsg)
 
   path_ = 'test/fixtures/test-data/files/zero-files/zero.json'
   result = await runcli('push', path_, args)
   stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('> You can not push empty files, please add some data and try again'))
+  hasErrorMsg = stdout.find(item => item.includes('> You can not push empty files, please add some data and try again'))
+  t.truthy(hasErrorMsg)
 
   path_ = 'test/fixtures/test-data/files/zero-files/zero.xls'
   result = await runcli('push', path_, args)
   stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('> You can not push empty files, please add some data and try again'))
+  hasErrorMsg = stdout.find(item => item.includes('> You can not push empty files, please add some data and try again'))
+  t.truthy(hasErrorMsg)
 })
 
 // end of [pushing 0 bytes files]

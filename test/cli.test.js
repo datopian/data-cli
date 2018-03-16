@@ -88,7 +88,8 @@ test('"data help" prints help message', async t => {
   t.is(result.code, 0)
   const stdout = result.stdout.split('\n')
   t.true(stdout.length > 1)
-  t.true(stdout[1].includes('❒ data [options] <command> <args>'))
+  const hasExpectedMsg = stdout.find(item => item.includes('❒ data [options] <command> <args>'))
+  t.truthy(hasExpectedMsg)
 })
 
 
@@ -99,16 +100,20 @@ test('get command with local dataset', async t => {
   const identifier = 'test/fixtures/finance-vix'
   const result = await runcli('get', identifier)
   const stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('Time elapsed:'))
-  t.true(stdout[1].includes('Dataset/file is saved in "finance-vix"'))
+  const hasTimeElapsedMsg = stdout.find(item => item.includes('Time elapsed:'))
+  const hasSuccessMsg = stdout.find(item => item.includes('Dataset/file is saved in "finance-vix"'))
+  t.truthy(hasTimeElapsedMsg)
+  t.truthy(hasSuccessMsg)
 })
 
 test('get command with local file', async t => {
   const identifier = 'test/fixtures/sample.csv'
   const result = await runcli('get', identifier)
   const stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('Time elapsed:'))
-  t.true(stdout[1].includes('Dataset/file is saved in "sample.csv"'))
+  const hasTimeElapsedMsg = stdout.find(item => item.includes('Time elapsed:'))
+  const hasSuccessMsg = stdout.find(item => item.includes('Dataset/file is saved in "sample.csv"'))
+  t.truthy(hasTimeElapsedMsg)
+  t.truthy(hasSuccessMsg)
 })
 
 // QA tests [Get: Small dataset from DataHub]
@@ -117,9 +122,10 @@ test('get command with small dataset from DataHub', async t => {
   const identifier = 'https://datahub.io/test/small-dataset-100kb/'
   const result = await runcli('get', identifier)
   const stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('Time elapsed:'))
-  t.true(stdout[1].includes('Dataset/file is saved in "test/small-dataset-100kb"'))
-  // t.true(fs.)
+  const hasTimeElapsedMsg = stdout.find(item => item.includes('Time elapsed:'))
+  const hasSuccessMsg = stdout.find(item => item.includes('Dataset/file is saved in "test/small-dataset-100kb"'))
+  t.truthy(hasTimeElapsedMsg)
+  t.truthy(hasSuccessMsg)
 })
 
 // end of [Get: Small dataset from DataHub]
@@ -130,8 +136,10 @@ test('get command with medium dataset from DataHub', async t => {
   const identifier = 'https://datahub.io/test/medium-dataset-1mb'
   const result = await runcli('get', identifier)
   const stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('Time elapsed:'))
-  t.true(stdout[1].includes('Dataset/file is saved in "test/medium-dataset-1mb"'))
+  const hasTimeElapsedMsg = stdout.find(item => item.includes('Time elapsed:'))
+  const hasSuccessMsg = stdout.find(item => item.includes('Dataset/file is saved in "test/medium-dataset-1mb"'))
+  t.truthy(hasTimeElapsedMsg)
+  t.truthy(hasSuccessMsg)
 })
 
 // end of [Get: Meduim dataset from DataHub]
@@ -142,8 +150,10 @@ test('get command with big dataset from DataHub', async t => {
   const identifier = 'https://datahub.io/test/big-dataset-10mb'
   const result = await runcli('get', identifier)
   const stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('Time elapsed:'))
-  t.true(stdout[1].includes('Dataset/file is saved in "test/big-dataset-10mb"'))
+  const hasTimeElapsedMsg = stdout.find(item => item.includes('Time elapsed:'))
+  const hasSuccessMsg = stdout.find(item => item.includes('Dataset/file is saved in "test/big-dataset-10mb"'))
+  t.truthy(hasTimeElapsedMsg)
+  t.truthy(hasSuccessMsg)
 })
 
 // end of [Get: Big dataset from DataHub]
@@ -154,8 +164,10 @@ test('get command with excel file', async t => {
   const identifier = 'https://github.com/frictionlessdata/test-data/blob/master/files/excel/sample-1-sheet.xls'
   const result = await runcli('get', identifier)
   const stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('Time elapsed:'))
-  t.true(stdout[1].includes('Dataset/file is saved in "sample-1-sheet.xls"'))
+  const hasTimeElapsedMsg = stdout.find(item => item.includes('Time elapsed:'))
+  const hasSuccessMsg = stdout.find(item => item.includes('Dataset/file is saved in "sample-1-sheet.xls"'))
+  t.truthy(hasTimeElapsedMsg)
+  t.truthy(hasSuccessMsg)
 })
 
 // end of [Get: get excel file]
@@ -169,13 +181,14 @@ test('get command with private dataset', async t => {
   const token = 'non-owner-token'
   let result = await runcli('get', identifier, `--token=${token}`)
   let stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('> Error! 404: Not Found. Requested URL'))
+  const hasErrorMsg = stdout.find(item => item.includes('> Error! 404: Not Found. Requested URL'))
+  t.truthy(hasErrorMsg)
 
   // Now use correct token from env var:
   result = await runcli('get', identifier)
   stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('Time elapsed:'))
-  t.true(stdout[1].includes('Dataset/file is saved in "test/private-cli-test"'))
+  const hasTimeElapsedMsg = stdout.find(item => item.includes('Time elapsed:'))
+  t.truthy(hasTimeElapsedMsg)
   t.true(fs.existsSync('test/private-cli-test/datapackage.json'))
 })
 
@@ -198,14 +211,18 @@ test('Info: basic dataset', async t => {
   let identifier = 'test/fixtures/test-data/packages/basic-csv'
   let result = await runcli('info', identifier)
   let stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('# basic-csv'))
-  t.true(stdout[9].includes('comma-separated'))
+  let hasMsg = stdout.find(item => item.includes('# basic-csv'))
+  t.truthy(hasMsg)
+  hasMsg = stdout.find(item => item.includes('comma-separated'))
+  t.truthy(hasMsg)
 
   identifier = 'https://github.com/frictionlessdata/test-data/tree/master/packages/basic-csv'
   result = await runcli('info', identifier)
   stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('# basic-csv'))
-  t.true(stdout[9].includes('comma-separated'))
+  hasMsg = stdout.find(item => item.includes('# basic-csv'))
+  t.truthy(hasMsg)
+  hasMsg = stdout.find(item => item.includes('comma-separated'))
+  t.truthy(hasMsg)
 })
 
 // end of [Info: basic dataset]
@@ -312,14 +329,16 @@ test('info command - no dataset or descriptor at URL', async t => {
   const url_ = 'https://datahub.io'
   const result = await runcli('info', url_)
   const stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('Expected URL to a dataset or descriptor.'))
+  const hasErrorMsg = stdout.find(item => item.includes('Expected URL to a dataset or descriptor.'))
+  t.truthy(hasErrorMsg)
 })
 
 test('get command - no dataset or descriptor at URL', async t => {
   const url_ = 'https://datahub.io'
   const result = await runcli('get', url_)
   const stdout = result.stdout.split('\n')
-  t.true(stdout[0].includes('Expected URL to a dataset or descriptor.'))
+  const hasErrorMsg = stdout.find(item => item.includes('Expected URL to a dataset or descriptor.'))
+  t.truthy(hasErrorMsg)
 })
 
 // end of [Proper error messages]
@@ -552,36 +571,42 @@ test('cat command - basic behaviour', async t => {
   const path_ = 'test/fixtures/test-data/files/csv/all-schema-types.csv'
   const results = await runcli('cat', path_)
   const stdout = results.stdout.split('\n')
-  t.true(stdout[3].includes('│ 1.0  │'))
+  const hasMsg = stdout.find(item => item.includes('│ 1.0  │'))
+  t.truthy(hasMsg)
 })
 
 test('cat command - remote csv file', async t => {
   const url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/csv/all-schema-types.csv'
   const results = await runcli('cat', url_)
   const stdout = results.stdout.split('\n')
-  t.true(stdout[3].includes('│ 1.0  │'))
+  const hasMsg = stdout.find(item => item.includes('│ 1.0  │'))
+  t.truthy(hasMsg)
 })
 
 test('cat command - remote non tabular file', async t => {
   const url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/other/sample.txt'
   const results = await runcli('cat', url_)
   const stdout = results.stdout.split('\n')
-  t.true(stdout[1].includes('> Error! We do not have a parser for that format: txt'))
+  const hasErrorMsg = stdout.find(item => item.includes('> Error! We do not have a parser for that format: txt'))
+  t.truthy(hasErrorMsg)
 })
 
 test('cat command - non-existing path', async t => {
   const path_ = 'non/existing/path'
   const results = await runcli('cat', path_)
   const stdout = results.stdout.split('\n')
-  t.true(stdout[0].includes('> Error! ENOENT: no such file or directory'))
+  const hasErrorMsg = stdout.find(item => item.includes('> Error! ENOENT: no such file or directory'))
+  t.truthy(hasErrorMsg)
 })
 
 test('cat command - URL that returns 404', async t => {
   const url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/other/sampl.csv'
   const results = await runcli('cat', url_)
   const stdout = results.stdout.split('\n')
-  t.is(stdout[0], '> Error! Provided URL is invalid')
-  t.is(stdout[1], '> Error! 404: Not Found. Requested URL: https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/other/sampl.csv')
+  let hasErrorMsg = stdout.find(item => item.includes('> Error! Provided URL is invalid'))
+  t.truthy(hasErrorMsg)
+  hasErrorMsg = stdout.find(item => item.includes('> Error! 404: Not Found. Requested URL: https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/other/sampl.csv'))
+  t.truthy(hasErrorMsg)
 })
 
 // end of [Cat: basic csv]
@@ -593,27 +618,35 @@ test('cat command - files with different separator', async t => {
   let path_ = 'test/fixtures/test-data/files/csv/separators/semicolon.csv'
   let results = await runcli('cat', path_)
   let stdout = results.stdout.split('\n')
-  t.false(stdout[1].includes(';'))
-  t.true(stdout[1].includes('number'))
+  let delimiterWasntRecognized = stdout.find(item => item.includes(';'))
+  t.falsy(delimiterWasntRecognized)
+  let hasCorrectPrint = stdout.find(item => item.includes('number'))
+  t.truthy(hasCorrectPrint)
 
   path_ = 'test/fixtures/test-data/files/csv/separators/carets.csv'
   results = await runcli('cat', path_)
   stdout = results.stdout.split('\n')
-  t.false(stdout[1].includes('^'))
-  t.true(stdout[1].includes('number'))
+  delimiterWasntRecognized = stdout.find(item => item.includes('^'))
+  t.falsy(delimiterWasntRecognized)
+  hasCorrectPrint = stdout.find(item => item.includes('number'))
+  t.truthy(hasCorrectPrint)
 
   // Remote files:
   let url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/csv/separators/semicolon.csv'
   results = await runcli('cat', url_)
   stdout = results.stdout.split('\n')
-  t.false(stdout[1].includes(';'))
-  t.true(stdout[1].includes('number'))
+  delimiterWasntRecognized = stdout.find(item => item.includes(';'))
+  t.falsy(delimiterWasntRecognized)
+  hasCorrectPrint = stdout.find(item => item.includes('number'))
+  t.truthy(hasCorrectPrint)
 
   url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/csv/separators/carets.csv'
   results = await runcli('cat', url_)
   stdout = results.stdout.split('\n')
-  t.false(stdout[1].includes('^'))
-  t.true(stdout[1].includes('number'))
+  delimiterWasntRecognized = stdout.find(item => item.includes('^'))
+  t.falsy(delimiterWasntRecognized)
+  hasCorrectPrint = stdout.find(item => item.includes('number'))
+  t.truthy(hasCorrectPrint)
 })
 
 // end of [Cat: different separators]
@@ -624,12 +657,14 @@ test.failing('cat command - different encodings', async t => {
   const path_ = 'test/fixtures/test-data/files/csv/encodings/iso8859.csv'
   let results = await runcli('cat', path_)
   let stdout = results.stdout.split('\n')
-  t.true(stdout[3].includes('Réunion'))
+  let hasCorrectPrint = stdout.find(item => item.includes('Réunion'))
+  t.truthy(hasCorrectPrint)
 
   const url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/csv/encodings/western-macos-roman.csv'
   results = await runcli('cat', url_)
   stdout = results.stdout.split('\n')
-  t.true(stdout[3].includes('Réunion'))
+  hasCorrectPrint = stdout.find(item => item.includes('Réunion'))
+  t.truthy(hasCorrectPrint)
 })
 
 // end of [Cat: different encodings]
@@ -638,28 +673,32 @@ test('cat command - local tsv file', async t => {
   const path_= 'test/fixtures/test-data/files/csv/separators/tab.tsv'
   const results = await runcli('cat', path_)
   const stdout = results.stdout.split('\n')
-  t.true(stdout[1].includes('number'))
+  const hasCorrectPrint = stdout.find(item => item.includes('number'))
+  t.truthy(hasCorrectPrint)
 })
 
 test('cat command - remote tsv file', async t => {
   const url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/csv/separators/tab.tsv'
   const results = await runcli('cat', url_)
   const stdout = results.stdout.split('\n')
-  t.true(stdout[1].includes('number'))
+  const hasCorrectPrint = stdout.find(item => item.includes('number'))
+  t.truthy(hasCorrectPrint)
 })
 
 test('cat command - inconsistent columns', async t => {
   const path_ = 'test/fixtures/test-data/files/csv/inconsistent-column-number.csv'
   const results = await runcli('cat', path_)
   const stdout = results.stdout.split('\n')
-  t.is(stdout[0], '> Error! Number of columns is inconsistent on line 3')
+  const hasErrorMsg = stdout.find(item => item.includes('> Error! Number of columns is inconsistent on line 3'))
+  t.truthy(hasErrorMsg)
 })
 
 test('cat command - remote excel file', async t => {
   const url_ = 'https://github.com/frictionlessdata/test-data/raw/master/files/excel/sample-1-sheet.xls'
   const results = await runcli('cat', url_)
   const stdout = results.stdout.split('\n')
-  t.true(stdout[1].includes('number'))
+  const hasCorrectPrint = stdout.find(item => item.includes('number'))
+  t.truthy(hasCorrectPrint)
 })
 
 test('cat command - specific excel sheet', async t => {
