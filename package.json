@@ -74,6 +74,7 @@
     "clipboardy": "^1.1.4",
     "data.js": "^0.11.1",
     "datahub-client": "^0.4.2",
+    "global-packages": "^1.0.2",
     "human-readable-ids": "^1.0.3",
     "inquirer": "^5.1.0",
     "inquirer-test": "^2.0.1",
