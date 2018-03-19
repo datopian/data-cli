@@ -22,9 +22,9 @@ const info = require('../lib/utils/output/info.js')
 
 
 const argv = minimist(process.argv.slice(2), {
-  string: ['push'],
+  string: ['push', 'sheets'],
   boolean: ['help', 'test', 'debug', 'interactive', 'published', 'private', 'zip', 'sqlite'],
-  alias: {help: 'h', interactive: 'i'}
+  alias: {help: 'h', interactive: 'i', sheets: 'sheet'}
 })
 
 const pushMarkdown = fs.readFileSync(path.join(__dirname, '../docs/push.md'), 'utf8')
