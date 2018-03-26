@@ -11,7 +11,7 @@ const {eraseLines} = require('ansi-escapes')
 
 // Ours
 const {customMarked} = require('../lib/utils/tools')
-const {error} = require('../lib/utils/error')
+const {handleError, error} = require('../lib/utils/error')
 const wait = require('../lib/utils/output/wait')
 const info = require('../lib/utils/output/info')
 
@@ -71,15 +71,7 @@ validator.validate().then(result => {
       })
     }
     else {
-      error(result)
-      // Show more details of error when `path` property doesn't match the pattern:
-      if (result[0].toString().includes('/resources/0/path')) {
-        error(`Because of security reasons 'path' property cannot:
-        - have backwards path '../'
-        - start from filesystem root '/'
-        - start from user root '~/'
-        - start with '.'`)
-      }
+      handleError(result)
     }
   }
 }).catch(err => {
