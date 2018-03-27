@@ -69,27 +69,30 @@ const run = async () => {
       // Try to guess owner and dataset name here. We're not loading Dataset object
       // because we want to handle private datasets as well:
       const idParts = identifier.split('/')
-      const owner = idParts[idParts.length - 2]
-      const name = idParts[idParts.length - 1]
-      const token = config.get('token')
-      pathToSave = path.join(owner, name)
+      if (idParts.length === 5) {
+        const owner = idParts[idParts.length - 2]
+        const name = idParts[idParts.length - 1]
+        const token = config.get('token')
+        pathToSave = path.join(owner, name)
 
-      if (!checkDestIsEmpty(owner, name)) {
-        throw new Error(`${owner}/${name} is not empty!`)
+        if (!checkDestIsEmpty(owner, name)) {
+          throw new Error(`${owner}/${name} is not empty!`)
+        }
+        
+        /** For datasets from the datahub we get zipped version and unzip it.
+                - less traffic
+                - zipped version has a fancy file structure
+            #issue: https://github.com/datahq/datahub-qa/issues/86  */
+        const zipped_dataset_url  = `https://datahub.io/${owner}/${name}/r/${name}_zip.zip?jwt=${token}`
+        const archive_path = await saveFileFromUrl(zipped_dataset_url, 'zip')
+        // unzip archive into destination folder
+        fs.createReadStream(archive_path)
+          .pipe(unzip.Extract({ path: pathToSave }))
+          // removing the archive file once we extracted all the dataset files
+          .on('finish', () => {fs.unlinkSync(archive_path)})
+      } else {
+        pathToSave = await saveFileFromUrl(identifier, argv.format)
       }
-
-      /** For datasets from the datahub we get zipped version and unzip it.
-              - less traffic
-              - zipped version has a fancy file structure
-          #issue: https://github.com/datahq/datahub-qa/issues/86  */
-      const zipped_dataset_url  = `https://datahub.io/${owner}/${name}/r/${name}_zip.zip?jwt=${token}`
-      const archive_path = await saveFileFromUrl(zipped_dataset_url, 'zip')
-      // unzip archive into destination folder
-      fs.createReadStream(archive_path)
-        .pipe(unzip.Extract({ path: pathToSave }))
-        // removing the archive file once we extracted all the dataset files
-        .on('finish', () => {fs.unlinkSync(archive_path)})
-
     } else { // If it is not a dataset - download the file
       if (parsedIdentifier.type === 'github' && !githubDataset) {
         identifier += `?raw=true`
@@ -134,6 +137,7 @@ const saveFileFromUrl = (url, format) => {
         err.message += ' or Forbidden.'
       }
       handleError(err)
+      process.exit(1)
     }
     stream.pipe(fs.createWriteStream(destPath)).on('finish', () => {
       resolve(destPath)
