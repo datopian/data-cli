@@ -145,7 +145,7 @@ test('push command fails with descriptor validation error', async t => {
   let path_ = 'test/fixtures/test-data/packages/invalid-descriptor'
   let result = await runcli('push', path_)
   let stdout = result.stdout.split('\n')
-  const hasErrorMsg = stdout.find(item => item.includes('> Error! Error: Descriptor validation error:'))
+  const hasErrorMsg = stdout.find(item => item.includes('Descriptor validation error:'))
   t.truthy(hasErrorMsg)
   let hasErrorDetails = stdout.find(item => item.includes('String does not match pattern: ^([-a-z0-9._/])+$'))
   t.truthy(hasErrorDetails)
