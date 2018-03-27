@@ -5,6 +5,7 @@ const {resolve} = require('path')
 // Packages
 const ua = require('universal-analytics')
 const {config} = require('datahub-client')
+const firstRun = require('first-run')
 
 const {version} = require('../package.json')
 
@@ -105,6 +106,10 @@ if (process.env.datahub !== 'dev') {
   const userid = config.get('profile') ? config.get('profile').id : config.get('id')
   if (userid) {
     visitor.set('uid', userid)
+  }
+  // If this is the first run of the app, then track it in GA:
+  if (firstRun()) {
+    visitor.event('cli', 'first-run').send()
   }
   // Event category is 'cli', action is the command and label is all arguments:
   visitor.event('cli', cmd, process.argv.slice(3, process.argv.length).toString()).send()
