@@ -60,6 +60,7 @@ test.after.always('cleanup', t => {
   try {
     fs.unlinkSync('sample.csv')
     fs.unlinkSync('sample-1-sheet.xls')
+    fs.unlinkSync('0.csv')
   } catch (err) {
     console.log('Finished cleanup without deleting some files.')
   }
@@ -115,6 +116,20 @@ test('get command with local file', async t => {
   t.truthy(hasTimeElapsedMsg)
   t.truthy(hasSuccessMsg)
 })
+
+// QA tests [Get: r links from DataHub]
+
+test('get command with r links from DataHub', async t => {
+  const identifier = 'https://datahub.io/test/small-dataset-100kb/r/0.csv'
+  const result = await runcli('get', identifier)
+  const stdout = result.stdout.split('\n')
+  const hasTimeElapsedMsg = stdout.find(item => item.includes('Time elapsed:'))
+  const hasSuccessMsg = stdout.find(item => item.includes('Dataset/file is saved in "0.csv"'))
+  t.truthy(hasTimeElapsedMsg)
+  t.truthy(hasSuccessMsg)
+})
+
+// end of [Get: r links from DataHub]
 
 // QA tests [Get: Small dataset from DataHub]
 
