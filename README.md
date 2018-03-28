@@ -4,15 +4,18 @@
 
 # Usage
 
+`data` is the command-line tool to prepare, push and get data. With `data` you will be able to:
+
+* Push data online
+* Get data from online sources
+* Get information about particular data files and datasets both locally and remotely including those on the DataHub
+* Validate your data to ensure its quality
+
+You can read more about `data` tool here - http://datahub.io/docs/features/data-cli
+
 ## Install
 
-To install `data`, you need to download the package from the [releases section](https://github.com/datahq/data-cli/releases).
-
-Once it is downloaded and installed run the following command to see all available options:
-
-```
-$ data --help
-```
+Please, follow these instructions on how to install `data` tool - http://datahub.io/docs/getting-started/installing-data
 
 ## Configuration
 
