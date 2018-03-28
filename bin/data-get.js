@@ -66,12 +66,13 @@ const run = async () => {
       if(identifier.substr(-1) === '/' && identifier.length > 1) {
         identifier = identifier.slice(0, identifier.length - 1)
       }
-      // Try to guess owner and dataset name here. We're not loading Dataset object
-      // because we want to handle private datasets as well:
-      const idParts = identifier.split('/')
+      // We assume that if /r/ is in identifier then it's r link.
       if (identifier.includes('/r/')) {
         pathToSave = await saveFileFromUrl(identifier, argv.format)
       } else {
+        // Try to guess owner and dataset name here. We're not loading Dataset object
+        // because we want to handle private datasets as well:
+        const idParts = identifier.split('/')
         const owner = idParts[idParts.length - 2]
         const name = idParts[idParts.length - 1]
         const token = config.get('token')
