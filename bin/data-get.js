@@ -69,7 +69,9 @@ const run = async () => {
       // Try to guess owner and dataset name here. We're not loading Dataset object
       // because we want to handle private datasets as well:
       const idParts = identifier.split('/')
-      if (idParts.length === 5) {
+      if (identifier.includes('/r/')) {
+        pathToSave = await saveFileFromUrl(identifier, argv.format)
+      } else {
         const owner = idParts[idParts.length - 2]
         const name = idParts[idParts.length - 1]
         const token = config.get('token')
@@ -90,8 +92,6 @@ const run = async () => {
           .pipe(unzip.Extract({ path: pathToSave }))
           // removing the archive file once we extracted all the dataset files
           .on('finish', () => {fs.unlinkSync(archive_path)})
-      } else {
-        pathToSave = await saveFileFromUrl(identifier, argv.format)
       }
     } else { // If it is not a dataset - download the file
       if (parsedIdentifier.type === 'github' && !githubDataset) {
@@ -137,7 +137,6 @@ const saveFileFromUrl = (url, format) => {
         err.message += ' or Forbidden.'
       }
       handleError(err)
-      process.exit(1)
     }
     stream.pipe(fs.createWriteStream(destPath)).on('finish', () => {
       resolve(destPath)
