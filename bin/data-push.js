@@ -182,7 +182,7 @@ const prepareDatasetFromFile = async filePath => {
 
   let dpName, dpTitle
   if (argv.name) { // If name is provided in args then no user prompting:
-    dpName = argv.name
+    dpName = argv.name.toString()
     // Make unslugifies version for title:
     dpTitle = dpName.replace(/-+/g, ' ')
     dpTitle = dpTitle.charAt(0).toUpperCase() + dpTitle.slice(1)
