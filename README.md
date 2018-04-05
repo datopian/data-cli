@@ -1,9 +1,3 @@
-[![Build Status](https://travis-ci.org/datahq/data-cli.svg?branch=master)](https://travis-ci.org/datahq/data-cli)
-[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
-[![Issues](https://img.shields.io/badge/issue-tracker-orange.svg)](https://github.com/datahq/data-cli/issues)
-
-# Usage
-
 `data` is the command-line tool to prepare, push and get data. With `data` you will be able to:
 
 * Push data online
@@ -12,6 +6,10 @@
 * Validate your data to ensure its quality
 
 You can read more about `data` tool here - http://datahub.io/docs/features/data-cli
+
+[![Build Status](https://travis-ci.org/datahq/data-cli.svg?branch=master)](https://travis-ci.org/datahq/data-cli)
+[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
+[![Issues](https://img.shields.io/badge/issue-tracker-orange.svg)](https://github.com/datahq/data-cli/issues)
 
 ## Install
 
