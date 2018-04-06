@@ -30,9 +30,8 @@ This options define the dataset visibility on the DataHub.io site:
                            You will see the dataset in the search results.
                            Everybody can access the dataset by the URL link.
 
-  --published,             Everybody can see the dataset in the search results.
-  --publish,               Everybody can access the dataset by the URL link.
-  --public
+  --public                 Everybody can see the dataset in the search results.
+                           Everybody can access the dataset by the URL link.
 
   --private                Other users cannot access the dataset.
                            Other users will not see the dataset in the search results.
