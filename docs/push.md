@@ -12,8 +12,6 @@
   
   -i, --interactive        Enable interactive mode. Useful when pushing a single file.
   
-  --published              Make a dataset "published" so it is public on the website (default is "unlisted").
-  
   --schedule               Setup a schedule so the DataHub will automatically re-import the remote file on 
                            a regular basis. E.g., `every 90s`, `every 5m`, `every 2d`. The number is always 
                            an integer, selector is `s/m/h/d/w` (second -> week) and you can’t schedule for 
@@ -23,6 +21,21 @@
                            the first sheet is processed. You can use `--sheets=all` option to push "all" sheets.
                            You also can list sheet numbers, e.g., `--sheets=1,2`. If you wanted to push only 
                            the second sheet, you would do `--sheets=2`. Sheet number starts from 1.
+
+### findability options:
+
+This options define the dataset visibility on the DataHub.io site:
+
+  --unlisted (default)     Other users will not see the dataset in the search results.
+                           You will see the dataset in the search results.
+                           Everybody can access the dataset by the URL link.
+
+  --public                 Everybody can see the dataset in the search results.
+                           Everybody can access the dataset by the URL link.
+
+  --private                Other users cannot access the dataset.
+                           Other users will not see the dataset in the search results.
+                           You will see the dataset in the search results.
 
 ## Examples:
 

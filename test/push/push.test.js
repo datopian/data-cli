@@ -26,6 +26,14 @@ test.serial('push command succeeds with regular CSV file', async t => {
 
 // end of [pushing valid CSV file]
 
+test.serial('push --public', async t => {
+  const path_ = 'test/fixtures/test-data/files/csv/separators/comma.csv'
+  const args = ['--name=public-test', '--public', '--debug']
+  const result = await runcli('push', path_, ...args)
+
+  t.truthy(result.stdout.includes('"findability": "published"'))
+})
+
 // QA tests [pushing valid dataset from path]
 
 test.serial('push command succeeds for valid dataset', async t => {
