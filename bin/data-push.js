@@ -91,7 +91,7 @@ Promise.resolve().then(async () => {
       owner: config.get('profile') ? config.get('profile').username : config.get('username')
     }
     let findability = 'unlisted'
-    if (argv.published) {
+    if (argv.published || argv.publish || argv.public) {
       findability = 'published'
     }
     if (argv.private) {
