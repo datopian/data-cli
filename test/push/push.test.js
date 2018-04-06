@@ -28,13 +28,10 @@ test.serial('push command succeeds with regular CSV file', async t => {
 
 test.serial('push --public', async t => {
   const path_ = 'test/fixtures/test-data/files/csv/separators/comma.csv'
-  const args = '--public --name=findablility_test --debug' // --debug is to see the flow-spec
-  const result = await runcli('push', path_, args)
-  const stdout = result.stdout.split('\n')
+  const args = ['--name=public-test', '--public', '--debug']
+  const result = await runcli('push', path_, ...args)
 
-  /** before we used 'published' keyword, but it could be 'public' in the future */
-  const findabilityIsPublished = stdout.find(item => item.includes('"findability": "published"'))
-  t.truthy(findabilityIsPublished)
+  t.truthy(result.stdout.includes('"findability": "published"'))
 })
 
 // QA tests [pushing valid dataset from path]
