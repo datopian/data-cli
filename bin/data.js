@@ -109,8 +109,10 @@ if (process.env.datahub !== 'dev') {
   }
   // If this is the first run of the app, then track it in GA:
   if (firstRun()) {
-    visitor.event('cli', 'first-run').send()
+    visitor.event('cli', 'first-run', process.platform).send()
   }
+  // Track which version is run and on which OS:
+  visitor.event('cli-usage-by-os-and-version', process.platform, version).send()
   // Event category is 'cli', action is the command and label is all arguments:
   visitor.event('cli', cmd, process.argv.slice(3, process.argv.length).toString()).send()
 }
