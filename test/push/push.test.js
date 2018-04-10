@@ -480,12 +480,11 @@ test.serial('push command succeeds for simple Excel with 1 sheet', async t => {
   let path_ = 'test/fixtures/test-data/files/excel/sample-1-sheet.xls'
   const argName = '--name=test-excel-1-sheet'
   let result = await runcli('push', path_, argName, '--debug')
-  let stdout = result.stdout.split('\n')
   // Check what's printed in console while in debug mode, e.g., if schema is included:
-  let hasSchemaForFirstSheet = stdout.find(item => item.includes('"name": "number"'))
+  let hasSchemaForFirstSheet = result.stdout.includes('"name": "number"')
   t.truthy(hasSchemaForFirstSheet)
-  let hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
-  let hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/test-excel-1-sheet/v/'))
+  let hasPublishedMessage = result.stdout.includes('your data is published!')
+  let hasURLtoShowcase = result.stdout.includes('https://datahub.io/test/test-excel-1-sheet/v/')
   t.truthy(hasPublishedMessage)
   t.truthy(hasURLtoShowcase)
   let whatsInClipboard = await clipboardy.read()
@@ -493,11 +492,10 @@ test.serial('push command succeeds for simple Excel with 1 sheet', async t => {
 
   path_ = 'test/fixtures/test-data/files/excel/sample-1-sheet.xlsx'
   result = await runcli('push', path_, argName, '--debug')
-  stdout = result.stdout.split('\n')
-  hasSchemaForFirstSheet = stdout.find(item => item.includes('"name": "number"'))
+  hasSchemaForFirstSheet = result.stdout.includes('"name": "number"')
   t.truthy(hasSchemaForFirstSheet)
-  hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
-  hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/test-excel-1-sheet/v/'))
+  hasPublishedMessage = result.stdout.includes('your data is published!')
+  hasURLtoShowcase = result.stdout.includes('https://datahub.io/test/test-excel-1-sheet/v/')
   t.truthy(hasPublishedMessage)
   t.truthy(hasURLtoShowcase)
   whatsInClipboard = await clipboardy.read()
@@ -517,12 +515,11 @@ test.serial('push command succeeds for Excel with selected sheet', async t => {
   const argName = '--name=test-excel-2-sheets'
   let argSheets = '--sheets=2'
   let result = await runcli('push', path_, argName, argSheets, '--debug')
-  let stdout = result.stdout.split('\n')
   // Check what's printed in console while in debug mode, e.g., if schema is included:
-  let hasSchemaForSecondSheet = stdout.find(item => item.includes('"name": "header4"'))
+  let hasSchemaForSecondSheet = result.stdout.includes('"name": "header4"')
   t.truthy(hasSchemaForSecondSheet)
-  let hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
-  let hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/test-excel-2-sheets/v/'))
+  let hasPublishedMessage = result.stdout.includes('your data is published!')
+  let hasURLtoShowcase = result.stdout.includes('https://datahub.io/test/test-excel-2-sheets/v/')
   t.truthy(hasPublishedMessage)
   t.truthy(hasURLtoShowcase)
   let whatsInClipboard = await clipboardy.read()
@@ -530,12 +527,11 @@ test.serial('push command succeeds for Excel with selected sheet', async t => {
 
   path_ = 'test/fixtures/test-data/files/excel/sample-2-sheets.xlsx'
   result = await runcli('push', path_, argName, argSheets, '--debug')
-  stdout = result.stdout.split('\n')
   // Check what's printed in console while in debug mode, e.g., if schema is included:
-  hasSchemaForSecondSheet = stdout.find(item => item.includes('"name": "header4"'))
+  hasSchemaForSecondSheet = result.stdout.includes('"name": "header4"')
   t.truthy(hasSchemaForSecondSheet)
-  hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
-  hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/test-excel-2-sheets/v/'))
+  hasPublishedMessage = result.stdout.includes('your data is published!')
+  hasURLtoShowcase = result.stdout.includes('https://datahub.io/test/test-excel-2-sheets/v/')
   t.truthy(hasPublishedMessage)
   t.truthy(hasURLtoShowcase)
   whatsInClipboard = await clipboardy.read()
@@ -543,23 +539,20 @@ test.serial('push command succeeds for Excel with selected sheet', async t => {
 
   argSheets = '--sheets=5'
   result = await runcli('push', path_, argName, argSheets, '--debug')
-  stdout = result.stdout.split('\n')
-  let hasErrorMsg = stdout.find(item => item.includes('Error! sheet index 5 is out of range'))
+  let hasErrorMsg = result.stdout.includes('Error! sheet index 5 is out of range')
   t.truthy(hasErrorMsg)
 
   argSheets = '--sheets=all'
   result = await runcli('push', path_, argName, argSheets, '--debug')
-  stdout = result.stdout.split('\n')
-  let hasSchemaForFirstSheet = stdout.find(item => item.includes('"name": "header1"'))
-  hasSchemaForSecondSheet = stdout.find(item => item.includes('"name": "header4"'))
+  let hasSchemaForFirstSheet = result.stdout.includes('"name": "header1"')
+  hasSchemaForSecondSheet = result.stdout.includes('"name": "header4"')
   t.truthy(hasSchemaForFirstSheet)
   t.truthy(hasSchemaForSecondSheet)
 
   argSheets = '--sheets=1,2'
   result = await runcli('push', path_, argName, argSheets, '--debug')
-  stdout = result.stdout.split('\n')
-  hasSchemaForFirstSheet = stdout.find(item => item.includes('"name": "header1"'))
-  hasSchemaForSecondSheet = stdout.find(item => item.includes('"name": "header4"'))
+  hasSchemaForFirstSheet = result.stdout.includes('"name": "header1"')
+  hasSchemaForSecondSheet = result.stdout.includes('"name": "header4"')
   t.truthy(hasSchemaForFirstSheet)
   t.truthy(hasSchemaForSecondSheet)
 })
