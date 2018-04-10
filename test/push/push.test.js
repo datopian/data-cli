@@ -210,9 +210,10 @@ test('push command succeeds for valid dataset with remote resource', async t => 
 // QA tests [Pushing invalid CSV file (irrespective of schema)]
 // Also includes [pushing invalid CSV from URL ]
 
-test('push command fails for invalid local CSV file', async t => {
+test.failing('push command fails for invalid local CSV file', async t => {
   const path_ = 'test/fixtures/test-data/packages/invalid-data/extra-column.csv'
-  const result = await runcli('push', path_)
+  const args = '--name=extra-column'
+  const result = await runcli('push', path_, args)
   const stdout = result.stdout.split('\n')
   const hasErrorMsg = stdout.find(item => item.includes('> Error! Number of columns is inconsistent on line 2'))
   t.truthy(hasErrorMsg)
@@ -425,25 +426,25 @@ test('push command fails for non-CSV with force formatting', async t => {
   const argFormat = '--format=csv'
   let result = await runcli('push', path_, argName, argFormat)
   let stdout = result.stdout.split('\n')
-  let hasExpectedErrorMsg = stdout.find(item => item.includes('Error! Invalid opening quote at line 1'))
+  let hasExpectedErrorMsg = stdout.find(item => item.includes('> Error! tabular file is invalid'))
   t.truthy(hasExpectedErrorMsg)
 
   let url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/excel/sample-1-sheet.xls'
   result = await runcli('push', path_, argName, argFormat)
   stdout = result.stdout.split('\n')
-  hasExpectedErrorMsg = stdout.find(item => item.includes('Error! Invalid opening quote at line 1'))
+  hasExpectedErrorMsg = stdout.find(item => item.includes('> Error! tabular file is invalid'))
   t.truthy(hasExpectedErrorMsg)
 
   path_ = 'test/fixtures/test-data/files/excel/sample-1-sheet.xlsx'
   result = await runcli('push', path_, argName, argFormat)
   stdout = result.stdout.split('\n')
-  hasExpectedErrorMsg = stdout.find(item => item.includes('Error! Invalid opening quote at line 1'))
+  hasExpectedErrorMsg = stdout.find(item => item.includes('> Error! tabular file is invalid'))
   t.truthy(hasExpectedErrorMsg)
 
   url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/excel/sample-1-sheet.xlsx'
   result = await runcli('push', path_, argName, argFormat)
   stdout = result.stdout.split('\n')
-  hasExpectedErrorMsg = stdout.find(item => item.includes('Error! Invalid opening quote at line 1'))
+  hasExpectedErrorMsg = stdout.find(item => item.includes('> Error! tabular file is invalid'))
   t.truthy(hasExpectedErrorMsg)
 })
 
@@ -457,13 +458,13 @@ test('push command fails for non-CSV (non-tabular) files with force formatting',
   const argFormat = '--format=csv'
   let result = await runcli('push', path_, argName, argFormat)
   let stdout = result.stdout.split('\n')
-  let hasExpectedErrorMsg = stdout.find(item => item.includes('Error! Invalid closing quote at line 3; found ":" instead of delimiter ","'))
+  let hasExpectedErrorMsg = stdout.find(item => item.includes('> Error! tabular file is invalid'))
   t.truthy(hasExpectedErrorMsg)
 
   let url_ = 'https://raw.githubusercontent.com/frictionlessdata/test-data/master/files/other/sample.json'
   result = await runcli('push', path_, argName, argFormat)
   stdout = result.stdout.split('\n')
-  hasExpectedErrorMsg = stdout.find(item => item.includes('Error! Invalid closing quote at line 3; found ":" instead of delimiter ","'))
+  hasExpectedErrorMsg = stdout.find(item => item.includes('> Error! tabular file is invalid'))
   t.truthy(hasExpectedErrorMsg)
 })
 
