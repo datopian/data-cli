@@ -11,7 +11,7 @@ const {eraseLines} = require('ansi-escapes')
 
 // Ours
 const {customMarked} = require('../lib/utils/tools')
-const {handleError, error} = require('../lib/utils/error')
+const {error} = require('../lib/utils/error')
 const wait = require('../lib/utils/output/wait')
 const info = require('../lib/utils/output/info')
 
@@ -71,7 +71,11 @@ validator.validate().then(result => {
       })
     }
     else {
-      handleError(result)
+      if (result.constructor.name === 'Array') {
+        result.forEach(err => error(err.message))
+      } else {
+        error(result)
+      }
     }
   }
 }).catch(err => {
