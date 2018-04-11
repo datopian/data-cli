@@ -116,7 +116,8 @@ if (process.env.datahub !== 'dev') {
   // Track which version is run and on which OS:
   visitor.event('cli-usage-by-os-and-version', process.platform, version).send()
   // Event category is 'cli', action is the command and label is all arguments:
-  visitor.event('cli', cmd, process.argv.slice(3, process.argv.length).toString()).send()
+  const commandToTrack = args.length === 0 ? 'noArgs' : cmd
+  visitor.event('cli', commandToTrack, process.argv.slice(3, process.argv.length).toString()).send()
 }
 
 // Prepare process.argv for subcommand
