@@ -41,7 +41,8 @@ Promise.resolve().then(async () => {
   try {
     out = await authenticate(apiUrl, token)
   } catch (err) {
-    handleError(err)
+    await handleError(err)
+    process.exit(1)
   }
   if (!out.authenticated) {
     info('You need to login in order to push your data. Please, use `data login` command.')
@@ -75,6 +76,7 @@ Promise.resolve().then(async () => {
     if (argv.debug) {
       console.log('> [debug]\n' + err.stack)
     }
-    handleError(err)
+    await handleError(err)
+    process.exit(1)
   }
 })

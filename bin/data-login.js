@@ -37,7 +37,8 @@ Promise.resolve().then(async () => {
   try {
     out = await authenticate(apiUrl, token)
   } catch (err) {
-    handleError(err)
+    await handleError(err)
+    process.exit(1)
   }
   if (out.authenticated) {
     stopSpinner()
@@ -67,7 +68,8 @@ Promise.resolve().then(async () => {
   try {
     await login(apiUrl, authUrl, config.get('domain'))
   } catch (err) {
-    handleError(err)
+    await handleError(err)
+    process.exit(1)
   }
   info('You are logged in!')
   process.exit(0)
