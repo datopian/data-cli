@@ -81,7 +81,7 @@ const run = async () => {
         if (!checkDestIsEmpty(owner, name)) {
           throw new Error(`${owner}/${name} is not empty!`)
         }
-        
+
         /** For datasets from the datahub we get zipped version and unzip it.
                 - less traffic
                 - zipped version has a fancy file structure
@@ -112,7 +112,8 @@ const run = async () => {
     if (argv.debug) {
       console.log('> [debug]\n' + err.stack)
     }
-    handleError(err)
+    await handleError(err)
+    process.exit(1)
   }
 }
 
@@ -137,7 +138,8 @@ const saveFileFromUrl = (url, format) => {
       if (err.message === 'Not Found') {
         err.message += ' or Forbidden.'
       }
-      handleError(err)
+      await handleError(err)
+      process.exit(1)
     }
     stream.pipe(fs.createWriteStream(destPath)).on('finish', () => {
       resolve(destPath)

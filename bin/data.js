@@ -19,12 +19,14 @@ const updateNotifier = require('../lib/utils/update')
 require('events').EventEmitter.defaultMaxListeners = 120;
 
 // Handle all uncaught exceptions and unhandled rejections
-process.on('uncaughtException', (err) => {
-  handleError(err)
+process.on('uncaughtException', async (err) => {
+  await handleError(err)
+  process.exit(1)
 })
 
-process.on('unhandledRejection', (err) => {
-  handleError(err)
+process.on('unhandledRejection', async (err) => {
+  await handleError(err)
+  process.exit(1)
 })
 
 // Check and notify if any updates are available:

@@ -47,7 +47,8 @@ Promise.resolve().then(async () => {
     try {
       out = await authenticate(apiUrl, token)
     } catch (err) {
-      handleError(err)
+      await handleError(err)
+      process.exit(1)
     }
   }
   if (!out.authenticated) {
@@ -69,7 +70,8 @@ Promise.resolve().then(async () => {
         info("'data validate' to check your data.")
         info("'data init' to create a datapackage.")
         info("'data help push' to get more info.")
-        handleError(err)
+        await handleError(err)
+        process.exit(1)
       }
     } else {
       dataset = await prepareDatasetFromFile(filePath)
@@ -137,7 +139,8 @@ Promise.resolve().then(async () => {
     if (argv.debug) {
       console.log('> [debug]\n' + err.stack)
     }
-    handleError(err)
+    await handleError(err)
+    process.exit(1)
   }
 })
 
