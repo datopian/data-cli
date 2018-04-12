@@ -1,19 +1,62 @@
-`data` is the command-line tool to prepare, push and get data. With `data` you will be able to:
+## Overview
 
-* Push data online
+**"Data-cli"** is an important part of the [DataHub](https://datahub.io/docs/about) project. This is a command line tool, that helps you to manipulate your data (as `git` manipulates the code).
+
+For example you have a set of data as a result of your work, let it be few data-files and a description. And you want to share it with your colleagues. With the **"data-cli"** you just need to:
+```shell
+cd data-folder
+data init  # convent my data files into the data-package
+> "Answer a few questions here, e.g. dataset name, files to include, etc"
+data push  # upload the dataset onto a DataHub
+> "As a result you'll got a link to share:
+http://datahub.io/user-name/data-package-name
+```
+That's it! Your data is online. You can make your data public or private, add some pretty graphics, and many more. Please read http://datahub.io/docs for details.
+
+With `data-cli` you can also:
 * Get data from online sources
-* Get information about particular data files and datasets both locally and remotely including those on the DataHub
+* Get info about data files and datasets (local and remote)
 * Validate your data to ensure its quality
+* init a new dataset
 
-You can read more about `data` tool here - http://datahub.io/docs/features/data-cli
+## List of the `data-cli` commands
+
+Full description for each command ([help pages](https://github.com/datahq/data-cli/tree/master/docs)):
+- [data push](https://github.com/datahq/data-cli/blob/master/docs/push.md)
+- [data get](https://github.com/datahq/data-cli/blob/master/docs/get.md)
+- [data info](https://github.com/datahq/data-cli/blob/master/docs/info.md)
+- [data cat](https://github.com/datahq/data-cli/blob/master/docs/cat.md)
+- [data init](https://github.com/datahq/data-cli/blob/master/docs/init.md)
+- [data validate](https://github.com/datahq/data-cli/blob/master/docs/validate.md)
+
+
+Also you can run "help" command in your terminal to see command docs:
+```shell
+data help
+> 'General description'
+data help push
+> 'push command description'
+# etc...
+```
+
+## Installation
+
+```
+npm install data-cli --global
+```
+After installation you can run `data-cli` by the name `data`:
+```
+data --version
+> 0.8.9
+```
+
+If you're not using NPM you can install `data-cli` binaries following [this instructions](https://datahub.io/docs/getting-started/installing-data#installing-binaries).
+
+# For developers
 
 [![Build Status](https://travis-ci.org/datahq/data-cli.svg?branch=master)](https://travis-ci.org/datahq/data-cli)
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 [![Issues](https://img.shields.io/badge/issue-tracker-orange.svg)](https://github.com/datahq/data-cli/issues)
-
-## Install
-
-Please, follow these instructions on how to install `data` tool - http://datahub.io/docs/getting-started/installing-data
 
 ## Configuration
 
@@ -29,7 +72,7 @@ NB: you can set a custom location for the `config.json` config file using the `D
 export DATAHUB_JSON=~/.config/datahub/my-special-config.json
 ```
 
-# For developers
+## Environment
 
 *You need to have Node.js version >7.6*
 
