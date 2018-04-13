@@ -24,6 +24,7 @@ With `data-cli` you can also:
 Here we show examples of usage for common `data` commands. To see the full command documentation - click on the command name, or proceed to the [help pages](https://github.com/datahq/data-cli/tree/master/docs).
 
 ### data login
+
 You should login at the first use of data-cli:
 ```bash
 $ data login
@@ -33,6 +34,7 @@ $ data login
 ```
 
 ### [data push](https://github.com/datahq/data-cli/blob/master/docs/push.md)
+
 Upload a dataset or a separate file on the DataHub:
 ```bash
 $ data push mydata.csv
@@ -47,6 +49,7 @@ Mydataset Mydataset
 **Note:** by default, findability flag for your dataset is set to `--unlisted`, meaning nobody else is able to see it, except you. Use `--public` flag to make it publicly available
 
 ### [data get](https://github.com/datahq/data-cli/blob/master/docs/get.md)
+
 Get a dataset from the DataHub or GitHub:
 ```bash
 $ data get http://datahub.io/core/gold-prices
@@ -55,6 +58,7 @@ Dataset/file is saved in "core/gold-prices"
 ```
 
 ### [data info](https://github.com/datahq/data-cli/blob/master/docs/info.md)
+
 Shows info about the dataset (local or remote):
 ```bash
 $ data info http://datahub.io/core/gold-prices
@@ -87,7 +91,8 @@ Monthly gold prices since 1950 in USD (London market). Data is sourced from the 
 ```
 
 ### [data cat](https://github.com/datahq/data-cli/blob/master/docs/cat.md)
-Works similar as Unix `cat` command but works with remote resources and can convert tabular data into different formats: 
+
+Works similar as Unix `cat` command but works with remote resources and can convert tabular data into different formats:
 ```bash
 $ data cat http://datahub.io/core/gold-prices/r/0.csv
 ┌──────────────────────────────────────┬──────────────────────────────────────┐
@@ -156,7 +161,7 @@ prices.xls is just added to resources
       "encoding": "windows-1250"
     }
   ]
-} 
+}
 
 
 Is that OK - y/n? y
@@ -164,6 +169,7 @@ datapackage.json file is saved in /home/user/Downloads/datapackage.json
 ```
 
 ### [data validate](https://github.com/datahq/data-cli/blob/master/docs/validate.md)
+
 ```bash
 $ data validate path/to/correct/datapackage
 > Your Data Package is valid!
@@ -176,6 +182,7 @@ $ data validate path/to/invalid-data
 ```
 
 ### data help
+
 Also you can run "help" command in your terminal to see command docs:
 ```shell
 $ data help
