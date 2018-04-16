@@ -38,7 +38,7 @@ const checkDpIsThere = (path_ = process.cwd()) => {
 
 (async() => {
 
-  const initializer = new Init({interactive: argv.interactive})
+  const initializer = new Init({interactive: argv.interactive, path_: argv._[0]})
   // Listen for events:
   initializer.on('message', (message) => {
     if (message.constructor.name === 'String') {
@@ -50,19 +50,19 @@ const checkDpIsThere = (path_ = process.cwd()) => {
 
   // Get a descriptor generated:
   let descriptor = {}
-  if (checkDpIsThere()) {
+  if (checkDpIsThere(argv._[0])) {
     descriptor = await initializer.updateDataset()
   } else {
     descriptor = await initializer.createDataset()
   }
   // Now save the generated descriptor:
   const content = JSON.stringify(descriptor, null, 2)
-  fs.writeFile('./datapackage.json', content, 'utf8', err => {
+  const dest = path.join(argv._[0] || '', 'datapackage.json')
+  fs.writeFile(dest, content, 'utf8', err => {
     if (err) {
       throw new Error(err)
     }
-    const cwd = path.join(process.cwd(), 'datapackage.json')
-    info(`datapackage.json file is saved in ${cwd}`)
+    info(`datapackage.json file is saved in ${dest}`)
   })
 
 })()
