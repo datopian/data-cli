@@ -58,6 +58,7 @@ test.after.always('cleanup', t => {
   deleteFolderRecursive('test/big-dataset-10mb')
   deleteFolderRecursive('test/private-cli-test')
   try {
+    fs.unlinkSync('test/fixtures/test-data/files/geo/datapackage.json')
     fs.unlinkSync('sample.csv')
     fs.unlinkSync('sample-1-sheet.xls')
     fs.unlinkSync('0.csv')
@@ -213,11 +214,10 @@ test('get command with private dataset', async t => {
 // =======================================
 // CLI commands: validate, cat, info, init
 
-test('runs init command with data input', async t => {
-  const cliPath = path.join(__dirname, '../bin/data-init.js')
-  const result = await run([cliPath], ['my-datapackage', ENTER])
-  t.true(result.includes('? Enter Data Package name (scratchpad)'))
-  t.true(result.includes('my-datapackage'))
+test('Init command in non-interactive mode', async t => {
+  const result = await runcli('init', 'test/fixtures/test-data/files/geo/')
+  t.true(result.stdout.includes('This process initializes a new datapackage.json file'))
+  t.true(result.stdout.includes('datapackage.json file is saved in'))
 })
 
 // QA tests [Info: basic dataset]
