@@ -217,7 +217,7 @@ test('get command with private dataset', async t => {
 test('Init command in non-interactive mode', async t => {
   const result = await runcli('init', 'test/fixtures/test-data/files/geo/')
   t.true(result.stdout.includes('This process initializes a new datapackage.json file'))
-  t.true(result.stdout.includes('datapackage.json file is saved in'))
+  t.true(result.stdout.includes('Descriptor is saved in'))
 })
 
 // QA tests [Info: basic dataset]
