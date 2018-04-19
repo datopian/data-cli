@@ -40,13 +40,14 @@ const checkDpIsThere = (path_ = process.cwd()) => {
 
   const initializer = new Init({interactive: argv.interactive, path_: argv._[0]})
   // Listen for events:
-  initializer.on('message', (message) => {
-    if (message.constructor.name === 'String') {
+  initializer
+    .on('message', (message) => {
       info(message)
-    } else {
-      info(message.name + ': ' + message.status)
-    }
-  })
+    })
+    .on('exit', (message) => {
+      info(message)
+      process.exit(0)
+    })
 
   // Get a descriptor generated:
   let descriptor = {}
@@ -61,8 +62,9 @@ const checkDpIsThere = (path_ = process.cwd()) => {
   fs.writeFile(dest, content, 'utf8', err => {
     if (err) {
       throw new Error(err)
+    } else {
+      info(`\n💾 Descriptor is saved in "${dest}"`)
     }
-    info(`datapackage.json file is saved in ${dest}`)
   })
 
 })()
