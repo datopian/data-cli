@@ -9,10 +9,8 @@ const hri = require('human-readable-ids').hri
 const {Dataset, File, xlsxParser, isDataset, isUrl} = require('data.js')
 const { write: copyToClipboard } = require('clipboardy')
 const toArray = require('stream-to-array')
-const {config} = require('datahub-client')
-const {DataHub} = require('datahub-client')
-const {authenticate} = require('datahub-client')
-const {Validator} = require('datahub-client')
+const {DataHub, Validator, authenticate, config, Agent} = require('datahub-client')
+const ua = require('universal-analytics')
 
 // Ours
 const {customMarked} = require('../lib/utils/tools.js')
@@ -123,6 +121,24 @@ Promise.resolve().then(async () => {
     await validator.validateMetadata(dataset.descriptor)
     stopSpinner()
     const res = await datahub.push(dataset, options)
+    // Analytics:
+    if (process.env.datahub !== 'dev') {
+      const visitor = ua('UA-80458846-4')
+      visitor.set('uid', datahubConfigs.ownerid)
+      // Check if it's the first push:
+      const agent = new Agent(datahubConfigs.apiUrl, {debug: argv.debug})
+      let response = await agent.fetch(
+        `/metastore/search/events?owner="${datahubConfigs.owner}"&size=0`,
+        {headers: {'Auth-Token': token}}
+      )
+      response = await response.json()
+      if (response.summary.total === 0) { // It's the first push
+        visitor.event('cli', 'push-first').send()
+      }
+      // Count sucessful pushes:
+      visitor.event('cli', 'push-success').send()
+    }
+    // Print success message and provide URL to showcase page:
     let revisionId = res.flow_id.split('/').pop()
     const message = '🙌  your data is published!\n'
     const url = urljoin(config.get('domain'), datahubConfigs.owner, dataset.descriptor.name,'v',revisionId)
