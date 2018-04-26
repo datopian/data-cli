@@ -1,6 +1,6 @@
 {
   "name": "data-cli",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "CLI for working with data packages",
   "main": "./lib/index.js",
   "bin": {
@@ -73,7 +73,7 @@
     "chalk": "^2.3.0",
     "clipboardy": "^1.1.4",
     "data.js": "^0.11.4",
-    "datahub-client": "^0.5.3",
+    "datahub-client": "^0.5.4",
     "first-run": "^1.2.0",
     "global-packages": "^1.0.2",
     "human-readable-ids": "^1.0.3",
