@@ -11,7 +11,7 @@ data push  # upload the dataset onto a DataHub
 > "As a result you'll got a link to share:
 http://datahub.io/user-name/data-package-name
 ```
-That's it! Your data is online. You can make your data public or private, add some pretty graphics, and many more. Please read http://datahub.io/docs for details.
+That's it! Your data is online. You can make your data unlisted or private, add some pretty graphics, and many more. Please read http://datahub.io/docs for details.
 
 With `data-cli` you can also:
 * Get data from online sources
@@ -46,7 +46,7 @@ Mydataset Mydataset
   your data is published!
 🔗  https://datahub.io/myname/mydataset/v/1 (copied to clipboard)
 ```
-**Note:** by default, findability flag for your dataset is set to `--unlisted`, meaning nobody else is able to see it, except you. Use `--public` flag to make it publicly available
+**Note:** by default, findability flag for your dataset is set to `--public`. Use `--unlisted` flag if you want it to not appear in the search results.
 
 ### [data get](https://github.com/datahq/data-cli/blob/master/docs/get.md)
 
