@@ -256,17 +256,17 @@ test('push command for empty files: no ext, html, txt, json', async t => {
   let args = '--name=empty-no-extension'
   let result = await runcli('push', path_, args)
   let stdout = result.stdout.split('\n')
-  let hasErrorMessage = stdout.find(item => item.includes('You can not push empty files, please add some data and try again'))
-  let hasPathToFile = stdout.find(item => item.includes('test/fixtures/test-data/files/empty-files/'))
-  t.truthy(hasErrorMessage)
-  t.truthy(hasPathToFile)
+  let hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  let hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/empty-no-extension/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
 
   path_ = 'test/fixtures/test-data/files/empty-files/empty.html'
   args = '--name=empty-html'
   result = await runcli('push', path_, args)
   stdout = result.stdout.split('\n')
-  let hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
-  let hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/empty-html/v/'))
+  hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/empty-html/v/'))
   t.truthy(hasPublishedMessage)
   t.truthy(hasURLtoShowcase)
   let whatsInClipboard = await clipboardy.read()
@@ -276,10 +276,10 @@ test('push command for empty files: no ext, html, txt, json', async t => {
   args = '--name=empty-txt'
   result = await runcli('push', path_, args)
   stdout = result.stdout.split('\n')
-  hasErrorMessage = stdout.find(item => item.includes('You can not push empty files, please add some data and try again'))
-  hasPathToFile = stdout.find(item => item.includes('test/fixtures/test-data/files/empty-files/'))
-  t.truthy(hasErrorMessage)
-  t.truthy(hasPathToFile)
+  hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/empty-txt/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
 
   path_ = 'test/fixtures/test-data/files/empty-files/empty.json'
   args = '--name=empty-json'
@@ -318,8 +318,10 @@ test('push command fails for zero byte files', async t => {
   let args = '--name=zero'
   let result = await runcli('push', path_, args)
   let stdout = result.stdout.split('\n')
-  let hasErrorMsg = stdout.find(item => item.includes('> You can not push empty files, please add some data and try again'))
-  t.truthy(hasErrorMsg)
+  let hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  let hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/zero/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
 
   path_ = 'test/fixtures/test-data/files/zero-files/zero.csv'
   result = await runcli('push', path_, args)
@@ -329,25 +331,31 @@ test('push command fails for zero byte files', async t => {
   path_ = 'test/fixtures/test-data/files/zero-files/zero.html'
   result = await runcli('push', path_, args)
   stdout = result.stdout.split('\n')
-  hasErrorMsg = stdout.find(item => item.includes('> You can not push empty files, please add some data and try again'))
-  t.truthy(hasErrorMsg)
+  hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/zero/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
 
   path_ = 'test/fixtures/test-data/files/zero-files/zero.txt'
   result = await runcli('push', path_, args)
   stdout = result.stdout.split('\n')
-  hasErrorMsg = stdout.find(item => item.includes('> You can not push empty files, please add some data and try again'))
-  t.truthy(hasErrorMsg)
+  hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/zero/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
 
   path_ = 'test/fixtures/test-data/files/zero-files/zero.json'
   result = await runcli('push', path_, args)
   stdout = result.stdout.split('\n')
-  hasErrorMsg = stdout.find(item => item.includes('> You can not push empty files, please add some data and try again'))
-  t.truthy(hasErrorMsg)
+  hasPublishedMessage = stdout.find(item => item.includes('your data is published!'))
+  hasURLtoShowcase = stdout.find(item => item.includes('https://datahub.io/test/zero/v/'))
+  t.truthy(hasPublishedMessage)
+  t.truthy(hasURLtoShowcase)
 
   path_ = 'test/fixtures/test-data/files/zero-files/zero.xls'
   result = await runcli('push', path_, args)
   stdout = result.stdout.split('\n')
-  hasErrorMsg = stdout.find(item => item.includes('> You can not push empty files, please add some data and try again'))
+  let hasErrorMsg = stdout.find(item => item.includes('You can not push empty files, please add some data and try again'))
   t.truthy(hasErrorMsg)
 })
 
