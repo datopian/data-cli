@@ -141,7 +141,7 @@ Promise.resolve().then(async () => {
     // Print success message and provide URL to showcase page:
     let revisionId = res.flow_id.split('/').pop()
     const message = '🙌  your data is published!\n'
-    const url = urljoin(config.get('domain'), datahubConfigs.owner, dataset.descriptor.name,'v',revisionId,'?source=cli')
+    const url = urljoin(config.get('domain'), datahubConfigs.owner, dataset.descriptor.name, 'v', revisionId)
     let copied = ' (copied to clipboard)'
     try {
       await copyToClipboard(url)
