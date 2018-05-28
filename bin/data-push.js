@@ -22,7 +22,7 @@ const info = require('../lib/utils/output/info.js')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['push', 'sheets'],
-  boolean: ['help', 'test', 'debug', 'interactive', 'published', 'private', 'zip', 'sqlite'],
+  boolean: ['help', 'test', 'debug', 'interactive', 'unlisted', 'private', 'zip', 'sqlite'],
   alias: {help: 'h', interactive: 'i', sheets: 'sheet'}
 })
 
@@ -91,9 +91,9 @@ Promise.resolve().then(async () => {
       ownerid: config.get('profile') ? config.get('profile').id : config.get('id'),
       owner: config.get('profile') ? config.get('profile').username : config.get('username')
     }
-    let findability = 'unlisted'
-    if (argv.published || argv.publish || argv.public) {
-      findability = 'published'
+    let findability = 'published'
+    if (argv.unlisted) {
+      findability = 'unlisted'
     }
     if (argv.private) {
       findability = 'private'
@@ -146,7 +146,7 @@ Promise.resolve().then(async () => {
         })
       }
     })
-    
+
     const res = await datahub.push(dataset, options)
     // Analytics:
     if (process.env.datahub !== 'dev') {
@@ -168,7 +168,7 @@ Promise.resolve().then(async () => {
     // Print success message and provide URL to showcase page:
     let revisionId = res.flow_id.split('/').pop()
     const message = '\n🙌  your data is published!\n'
-    const url = urljoin(config.get('domain'), datahubConfigs.owner, dataset.descriptor.name,'v',revisionId,'?source=cli')
+    const url = urljoin(config.get('domain'), datahubConfigs.owner, dataset.descriptor.name, 'v', revisionId)
     let copied = ' (copied to clipboard)'
     try {
       await copyToClipboard(url)
