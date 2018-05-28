@@ -11,6 +11,7 @@ const { write: copyToClipboard } = require('clipboardy')
 const toArray = require('stream-to-array')
 const {DataHub, Validator, authenticate, config, Agent} = require('datahub-client')
 const ua = require('universal-analytics')
+const ProgressBar = require('progress')
 
 // Ours
 const {customMarked} = require('../lib/utils/tools.js')
@@ -120,6 +121,32 @@ Promise.resolve().then(async () => {
     const validator = new Validator()
     await validator.validateMetadata(dataset.descriptor)
     stopSpinner()
+    // Show the progress bars for each file being uploaded:
+    const progressBars = []
+    // Listen for 'upload' events being emited from the DataHub class:
+    datahub.on('upload', (message) => {
+      // Check if a bar is already initiated:
+      const barItem = progressBars.find(item => item.file === message.file)
+      if (barItem) {
+        if (message.completed) {
+          barItem.bar.interrupt('Completed: ' + message.file)
+        } else {
+          barItem.bar.tick(message.chunk.length)
+        }
+      } else { // If a bar doesn't exist initiate one:
+        progressBars.push({
+          file: message.file,
+          bar: new ProgressBar(`  Uploading [:bar] :percent (:etas left)   ${message.file}`, {
+            complete: '*',
+            incomplete: ' ',
+            width: 30,
+            total: message.total,
+            clear: true
+          })
+        })
+      }
+    })
+    
     const res = await datahub.push(dataset, options)
     // Analytics:
     if (process.env.datahub !== 'dev') {
@@ -140,7 +167,7 @@ Promise.resolve().then(async () => {
     }
     // Print success message and provide URL to showcase page:
     let revisionId = res.flow_id.split('/').pop()
-    const message = '🙌  your data is published!\n'
+    const message = '\n🙌  your data is published!\n'
     const url = urljoin(config.get('domain'), datahubConfigs.owner, dataset.descriptor.name,'v',revisionId,'?source=cli')
     let copied = ' (copied to clipboard)'
     try {
