@@ -128,10 +128,18 @@ Promise.resolve().then(async () => {
       // Check if a bar is already initiated:
       const barItem = progressBars.find(item => item.file === message.file)
       if (barItem) {
-        if (message.completed) {
-          barItem.bar.interrupt('Completed: ' + message.file)
-        } else {
-          barItem.bar.tick(message.chunk.length)
+        try {
+          if (message.completed) {
+            if (process.platform !== 'win32') {
+              barItem.bar.interrupt('Completed: ' + message.file)
+            } else {
+              info('Completed: ' + message.file)
+            }
+          } else {
+            barItem.bar.tick(message.chunk.length)
+          }
+        } catch (err) {
+          info(err.message)
         }
       } else { // If a bar doesn't exist initiate one:
         progressBars.push({
@@ -141,7 +149,7 @@ Promise.resolve().then(async () => {
             incomplete: ' ',
             width: 30,
             total: message.total,
-            clear: true
+            clear: process.platform === 'win32' ? false : true
           })
         })
       }
