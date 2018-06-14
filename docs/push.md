@@ -22,6 +22,8 @@
                            You also can list sheet numbers, e.g., `--sheets=1,2`. If you wanted to push only
                            the second sheet, you would do `--sheets=2`. Sheet number starts from 1.
 
+  --name                   Set the name of the dataset without interaction when pushing the single file. Eg: `--name=my-dataset`
+
 ### findability options:
 
 This options define the dataset visibility on the DataHub.io site:

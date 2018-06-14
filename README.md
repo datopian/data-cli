@@ -46,6 +46,15 @@ Mydataset Mydataset
   your data is published!
 🔗  https://datahub.io/myname/mydataset/v/1 (copied to clipboard)
 ```
+
+Alternatively you can set name without interaction
+```bash
+$ data push mydata.csv --name=mydataset
+  Uploading [******************************] 100% (0.0s left)
+  your data is published!
+🔗  https://datahub.io/myname/mydataset/v/1 (copied to clipboard)
+```
+
 **Note:** by default, findability flag for your dataset is set to `--public`. Use `--unlisted` flag if you want it to not appear in the search results.
 
 ### [data get](https://github.com/datahq/data-cli/blob/master/docs/get.md)
