@@ -14,8 +14,8 @@ const wait = require('../lib/utils/output/wait')
 
 const argv = minimist(process.argv.slice(2), {
   string: ['login'],
-  boolean: ['help'],
-  alias: {help: 'h'}
+  boolean: ['help', 'interactive'],
+  alias: {help: 'h', interactive: 'i'}
 })
 
 const configMarkdown = fs.readFileSync(path.join(__dirname, '../docs/login.md'), 'utf8')
@@ -65,6 +65,12 @@ Promise.resolve().then(async () => {
   ])
   const authUrl = out.providers[result.loginProvider].url
   info('Opening browser and waiting for you to authenticate online')
+  if (argv.interactive) {
+    info('Please copy and paste following URL in you browser:\n' + authUrl)
+  } else {
+    info('Note: If nothing is loaded in browser please run `data login -i`')
+  }
+
   try {
     await login(apiUrl, authUrl, config.get('domain'))
   } catch (err) {
