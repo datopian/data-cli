@@ -66,7 +66,7 @@ Promise.resolve().then(async () => {
   const authUrl = out.providers[result.loginProvider].url
   info('Opening browser and waiting for you to authenticate online')
   if (argv.interactive) {
-    info('Please copy and paste following URL in you browser:\n' + authUrl)
+    info('Please, copy and paste following URL in your browser:\n' + authUrl)
   } else {
     info('Note: If nothing is loaded in browser please run `data login -i`')
   }
