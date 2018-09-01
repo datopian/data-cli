@@ -3,21 +3,24 @@
 **"Data-cli"** is an important part of the [DataHub](https://datahub.io/docs/about) project. This is a command line tool, that helps you to manipulate your data (as `git` manipulates the code).
 
 For example you have a set of data as a result of your work, let it be few data-files and a description. And you want to share it with your colleagues. With the **"data-cli"** you just need to:
+
 ```shell
 cd data-folder
-data init  # convent my data files into the data-package
+data init  # convert my data files into the data-package
 > "Answer a few questions here, e.g. dataset name, files to include, etc"
 data push  # upload the dataset onto a DataHub
 > "As a result you'll got a link to share:
 http://datahub.io/user-name/data-package-name
 ```
+
 That's it! Your data is online. You can make your data unlisted or private, add some pretty graphics, and many more. Please read http://datahub.io/docs for details.
 
 With `data-cli` you can also:
+
 * Get data from online sources
 * Get info about data files and datasets (local and remote)
 * Validate your data to ensure its quality
-* init a new dataset
+* Initialize a new dataset (as a Data Package)
 
 ## Usage examples:
 
