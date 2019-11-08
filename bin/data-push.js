@@ -166,12 +166,14 @@ Promise.resolve().then(async () => {
         `/metastore/search/events?owner="${datahubConfigs.owner}"&size=0`,
         {headers: {'Auth-Token': token}}
       )
-      response = await response.json()
-      if (response.summary.total === 0) { // It's the first push
-        visitor.event('cli', 'push-first').send()
+      if (response.ok) {
+        response = await response.json()
+        if (response.summary && response.summary.total === 0) { // It's the first push
+          visitor.event('cli', 'push-first').send()
+        }
+        // Count sucessful pushes:
+        visitor.event('cli', 'push-success').send()
       }
-      // Count sucessful pushes:
-      visitor.event('cli', 'push-success').send()
     }
     // Print success message and provide URL to showcase page:
     let revisionId = res.flow_id.split('/').pop()
