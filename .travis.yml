@@ -2,26 +2,12 @@ language: node_js
 matrix:
   include:
   - os: linux
-    node_js: '8'
+    node_js: '12'
     env: TEST=true
     sudo: required
-  - os: linux
-    node_js: '7'
-    env: TEST=false
-    sudo: required
-  - os: linux
-    node_js: '9'
-    env: TEST=false
-    sudo: required
   - os: osx
-    node_js: '7'
-    env: TEST=false
-  - os: osx
-    node_js: '8'
+    node_js: '12'
     env: TEST=true DEPLOY=true
-  - os: osx
-    node_js: '9'
-    env: TEST=false
 install: if $TEST; then npm install; else echo 'skipping this script...'; fi
 script: if $TEST; then npm test; else echo 'skipping this script...'; fi
 before_deploy: if $DEPLOY; then git submodule init && git submodule update && npm run push:test && npm run pack; else echo 'skipping this script...'; fi

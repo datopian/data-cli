@@ -242,7 +242,7 @@ export DATAHUB_JSON=~/.config/datahub/my-special-config.json
 
 ## Environment
 
-*You need to have Node.js version >7.6*
+*You need to have Node.js version >11.15*
 
 **NOTE:** if you're a developer, you need to set `datahub=dev` environment variable so your usage of the CLI isn't tracked in the analytics:
 
