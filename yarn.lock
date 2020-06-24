@@ -34,7 +34,7 @@
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@ava/write-file-atomic/-/write-file-atomic-2.2.0.tgz#d625046f3495f1f5e372135f473909684b429247"
   dependencies:
-    graceful-fs "4.2.3"
+    graceful-fs "^4.1.11"
     imurmurhash "^0.1.4"
     slide "^1.1.5"
 
@@ -1119,7 +1119,7 @@ configstore@^2.0.0:
   resolved "https://registry.yarnpkg.com/configstore/-/configstore-2.1.0.tgz#737a3a7036e9886102aa6099e47bb33ab1aba1a1"
   dependencies:
     dot-prop "^3.0.0"
-    graceful-fs "4.2.3"
+    graceful-fs "^4.1.2"
     mkdirp "^0.5.0"
     object-assign "^4.0.1"
     os-tmpdir "^1.0.0"
@@ -1133,7 +1133,7 @@ configstore@^3.0.0:
   resolved "https://registry.yarnpkg.com/configstore/-/configstore-3.1.1.tgz#094ee662ab83fad9917678de114faaea8fcdca90"
   dependencies:
     dot-prop "^4.1.0"
-    graceful-fs "4.2.3"
+    graceful-fs "^4.1.2"
     make-dir "^1.0.0"
     unique-string "^1.0.0"
     write-file-atomic "^2.0.0"
@@ -1918,7 +1918,7 @@ flat-cache@^1.2.1:
   dependencies:
     circular-json "^0.3.1"
     del "^2.0.2"
-    graceful-fs "4.2.3"
+    graceful-fs "^4.1.2"
     write "^0.2.1"
 
 fn-name@^2.0.0:
@@ -1975,7 +1975,7 @@ fs-extra@4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-4.0.1.tgz#7fc0c6c8957f983f57f306a24e5b9ddd8d0dd880"
   dependencies:
-    graceful-fs "4.2.3"
+    graceful-fs "^4.1.2"
     jsonfile "^3.0.0"
     universalify "^0.1.0"
 
@@ -1983,7 +1983,7 @@ fs-extra@^2.0.0:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-2.1.2.tgz#046c70163cef9aad46b0e4a7fa467fb22d71de35"
   dependencies:
-    graceful-fs "4.2.3"
+    graceful-fs "^4.1.2"
     jsonfile "^2.1.0"
 
 fs-promise@2.0.3:
@@ -2018,7 +2018,7 @@ fstream-ignore@^1.0.5:
   version "0.1.31"
   resolved "https://registry.yarnpkg.com/fstream/-/fstream-0.1.31.tgz#7337f058fbbbbefa8c9f561a28cab0849202c988"
   dependencies:
-    graceful-fs "4.2.3"
+    graceful-fs "~3.0.2"
     inherits "~2.0.0"
     mkdirp "0.5"
     rimraf "2"
@@ -2027,7 +2027,7 @@ fstream@^1.0.0, fstream@^1.0.10, fstream@^1.0.2:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/fstream/-/fstream-1.0.11.tgz#5c1fb1f117477114f0632a0eb4b71b3cb0fd3171"
   dependencies:
-    graceful-fs "4.2.3"
+    graceful-fs "^4.1.2"
     inherits "~2.0.0"
     mkdirp ">=0.5 0"
     rimraf "2"
@@ -2191,10 +2191,10 @@ got@^6.7.1:
     unzip-response "^2.0.1"
     url-parse-lax "^1.0.0"
 
-graceful-fs@4.2.3:
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.3.tgz#4a12ff1b60376ef09862c2093edd908328be8423"
-  integrity sha512-a30VEBm4PEdx1dRB7MFK7BejejvCvBronbLjht+sHuGYj8PHs7M/5Z+rt5lw551vZ7yfTCj4Vuyy3mSJytDWRQ==
+graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.4, graceful-fs@~3.0.2:
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.4.tgz#2256bde14d3632958c465ebc96dc467ca07a29fb"
+  integrity sha512-WjKPNJF79dtJAVniUlGGWHYGz2jWxT6VhN/4m1NdkbZ2nOsEF+cI1Edgql5zCRhs/VsQYRvrXctxktVXZUkixw==
 
 har-schema@^1.0.5:
   version "1.0.5"
@@ -2315,7 +2315,7 @@ hullabaloo-config-manager@^1.1.0:
   dependencies:
     dot-prop "^4.1.0"
     es6-error "^4.0.2"
-    graceful-fs "4.2.3"
+    graceful-fs "^4.1.11"
     indent-string "^3.1.0"
     json5 "^0.5.1"
     lodash.clonedeep "^4.5.0"
@@ -2788,13 +2788,13 @@ jsonfile@^2.1.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/jsonfile/-/jsonfile-2.4.0.tgz#3736a2b428b87bbda0cc83b53fa3d633a35c2ae8"
   optionalDependencies:
-    graceful-fs "4.2.3"
+    graceful-fs "^4.1.6"
 
 jsonfile@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/jsonfile/-/jsonfile-3.0.1.tgz#a5ecc6f65f53f662c4415c7675a0331d0992ec66"
   optionalDependencies:
-    graceful-fs "4.2.3"
+    graceful-fs "^4.1.6"
 
 jsonify@~0.0.0:
   version "0.0.0"
@@ -2865,7 +2865,7 @@ load-json-file@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/load-json-file/-/load-json-file-1.1.0.tgz#956905708d58b4bab4c2261b04f59f31c99374c0"
   dependencies:
-    graceful-fs "4.2.3"
+    graceful-fs "^4.1.2"
     parse-json "^2.2.0"
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
@@ -2875,7 +2875,7 @@ load-json-file@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/load-json-file/-/load-json-file-2.0.0.tgz#7947e42149af80d696cbf797bcaabcfe1fe29ca8"
   dependencies:
-    graceful-fs "4.2.3"
+    graceful-fs "^4.1.2"
     parse-json "^2.2.0"
     pify "^2.0.0"
     strip-bom "^3.0.0"
@@ -3403,7 +3403,7 @@ package-hash@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/package-hash/-/package-hash-2.0.0.tgz#78ae326c89e05a4d813b68601977af05c00d2a0d"
   dependencies:
-    graceful-fs "4.2.3"
+    graceful-fs "^4.1.11"
     lodash.flattendeep "^4.4.0"
     md5-hex "^2.0.0"
     release-zalgo "^1.0.0"
@@ -3480,7 +3480,7 @@ path-type@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-1.1.0.tgz#59c44f7ee491da704da415da5a4070ba4f8fe441"
   dependencies:
-    graceful-fs "4.2.3"
+    graceful-fs "^4.1.2"
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
@@ -3754,7 +3754,7 @@ readdirp@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/readdirp/-/readdirp-2.1.0.tgz#4ed0ad060df3073300c48440373f72d1cc642d78"
   dependencies:
-    graceful-fs "4.2.3"
+    graceful-fs "^4.1.2"
     minimatch "^3.0.2"
     readable-stream "^2.0.2"
     set-immediate-shim "^1.0.1"
@@ -4692,7 +4692,7 @@ write-file-atomic@^1.1.2, write-file-atomic@^1.1.4:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/write-file-atomic/-/write-file-atomic-1.3.4.tgz#f807a4f0b1d9e913ae7a48112e6cc3af1991b45f"
   dependencies:
-    graceful-fs "4.2.3"
+    graceful-fs "^4.1.11"
     imurmurhash "^0.1.4"
     slide "^1.1.5"
 
@@ -4700,7 +4700,7 @@ write-file-atomic@^2.0.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/write-file-atomic/-/write-file-atomic-2.3.0.tgz#1ff61575c2e2a4e8e510d6fa4e243cce183999ab"
   dependencies:
-    graceful-fs "4.2.3"
+    graceful-fs "^4.1.11"
     imurmurhash "^0.1.4"
     signal-exit "^3.0.2"
 
@@ -4709,7 +4709,7 @@ write-json-file@^2.0.0, write-json-file@^2.2.0:
   resolved "https://registry.yarnpkg.com/write-json-file/-/write-json-file-2.3.0.tgz#2b64c8a33004d54b8698c76d585a77ceb61da32f"
   dependencies:
     detect-indent "^5.0.0"
-    graceful-fs "4.2.3"
+    graceful-fs "^4.1.2"
     make-dir "^1.0.0"
     pify "^3.0.0"
     sort-keys "^2.0.0"

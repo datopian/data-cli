@@ -1,6 +1,6 @@
 {
   "name": "data-cli",
-  "version": "0.9.6",
+  "version": "0.10.1",
   "description": "CLI for working with data packages",
   "main": "./lib/index.js",
   "bin": {
@@ -99,5 +99,8 @@
     "cross-spawn": "^5.1.0",
     "stream-to-array": "^2.3.0",
     "xo": "^0.18.2"
+  },
+  "resolutions": {
+    "graceful-fs": "^4.2.4"
   }
 }
