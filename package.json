@@ -92,7 +92,7 @@
     "unzip": "^0.1.11",
     "update-notifier": "^2.3.0",
     "url-join": "^2.0.2",
-    "xlsx": "^0.10.8"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "ava": "^0.25.0",
